@@ -11,26 +11,26 @@ const SignInGuard = (props) => {
 
   const { signedIn } = props.pin
 
-  return(
-    <DrawerNavigator ref={navigatorRef => {
-    NavigationService.setTopLevelNavigator(navigatorRef);
-  }} />
-)
+//   return(
+//     <DrawerNavigator ref={navigatorRef => {
+//     NavigationService.setTopLevelNavigator(navigatorRef);
+//   }} />
+// )
 
-  // if(signedIn){
-  //   return(
-  //       <DrawerNavigator ref={navigatorRef => {
-  //       NavigationService.setTopLevelNavigator(navigatorRef);
-  //     }} />
-  //   )
-  // }
-  // else{
-  //   return(
-  //     <View style={{flex: 1}}>
-  //       <PinScreen />
-  //     </View>
-  //   )
-  // }
+  if(signedIn){
+    return(
+        <DrawerNavigator ref={navigatorRef => {
+        NavigationService.setTopLevelNavigator(navigatorRef);
+      }} />
+    )
+  }
+  else{
+    return(
+      <View style={{flex: 1}}>
+        <PinScreen />
+      </View>
+    )
+  }
 }
 
 function mapStateToProps(state) {

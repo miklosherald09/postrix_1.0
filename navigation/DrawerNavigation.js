@@ -20,8 +20,9 @@ const DrawerConfig = {
     drawerWidth: Dimensions.get('window').width,
     drawerPosition: 'left',
     drawerBackgroundColor: 'transparent',
-    initialRouteName: 'Home',
     overlayColor: 'rgba(0, 0, 0, .8)',
+
+    initialRouteName: 'Home',
     // initialRouteName: 'Items',
     // initialRouteName: 'Settings',
     // initialRouteName: 'Transactions',

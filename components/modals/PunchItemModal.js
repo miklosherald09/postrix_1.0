@@ -30,7 +30,7 @@ const PunchItemModal = (props) => {
 						<View style={styles.wrap}>
 							<View style={myStyles.headerPan}>
 								<View style={myStyles.headerLeft}>
-									<CloseButton onPress={ () => props.setModalInvisible() }/>
+									<CloseButton onPress={ () => props.punchItemInvisible() }/>
 								</View>
 								<View style={myStyles.headerMiddle}>
 									<Text style={myStyles.headerModal}>CHANGE PUNCH ITEM</Text>

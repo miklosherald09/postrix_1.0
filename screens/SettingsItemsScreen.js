@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet, View, Text, TouchableOpacity, TextInput } from 'react-native'
+import { StyleSheet, View, Text, TouchableOpacity, TextInput, Alert } from 'react-native'
 import { connect } from 'react-redux'
 import { MenuButton } from '../components/MenuButton'
 import { updateGoogleSheetUrl, updateGoogleSheetUrlCsv } from '../actions/settingsActions';
@@ -16,7 +16,7 @@ const SettingsItemsScreen = props => {
 	}
 
   const { googleSheetUrl, googleSheetUrlCsv } = props.settings
-  const { searchText, syncingGoogleSheet, itemsCount,  } = props.items
+  const { syncingGoogleSheet, sync_percentage } = props.items
 
   return (
     <View style={styles.wrapper}>
@@ -54,7 +54,8 @@ const SettingsItemsScreen = props => {
                 </View>
               </View>
               <View>
-                <Text style={{marginTop: 10, marginLeft: 5}}>{syncingGoogleSheet?'synching...':''}</Text>
+                <Text style={{marginTop: 10, marginLeft: 5, color: 'green'}}>{syncingGoogleSheet?'synching...' + sync_percentage+'%' : ''}</Text>
+                <Text>sync_percentage: {sync_percentage}</Text>
               </View>
             </View>
           </View>
@@ -108,7 +109,16 @@ function mapDispatchToProps(dispatch) {
   return {
     updateGoogleSheetUrl: (text) => dispatch(updateGoogleSheetUrl(text)),
     updateGoogleSheetUrlCsv: (text) => dispatch(updateGoogleSheetUrlCsv(text)),
-    deleteAllItems: () => dispatch(deleteAllItems()),
+    deleteAllItems: () => {
+      Alert.alert(
+        'Delete All Itms',  'Are you sure?', [{
+            text: 'Cancel',
+            onPress: () => console.log('Delete All cancelled'),
+            style: 'cancel',
+          },
+          {text: 'OK', onPress: () => dispatch(deleteAllItems())}],
+        {cancelable: false},
+    )},
     syncGoogleSheet: () => dispatch(syncGoogleSheet()),
   }
 }

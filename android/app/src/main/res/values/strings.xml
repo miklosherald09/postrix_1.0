@@ -1,3 +1,4 @@
 <resources>
+	<string moduleConfig="true" name="reactNativeCodePush_androidDeploymentKey">oZAW_SVKmP-NM7hfZHoCCz2lwcDSk2tierLRA</string>
     <string name="app_name">postrix</string>
 </resources>

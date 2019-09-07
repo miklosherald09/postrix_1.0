@@ -16,6 +16,7 @@ import {
   SYNC_GOOGLE_SHEET_ITEM,
   SYNC_GOOGLE_SHEET_BEGIN,
   SYNC_GOOGLE_SHEET_SUCCESS,
+  SYNC_GOOGLE_SHEET_PERCENTAGE,
   DELETE_ALL_ITEMS_SUCCESS,
   GET_ITEMS_SUCCESS,
   GET_ITEMS_BEGIN,
@@ -47,7 +48,8 @@ const initialState = {
   page: 0,
   limit: 15,
   refreshing: false,
-  searchText: ''
+  searchText: '',
+  sync_percentage: 0,
 }
 
 export default function itemsReducer(state = initialState, action) {
@@ -262,6 +264,13 @@ export default function itemsReducer(state = initialState, action) {
       return {
         ...state,
         searchText: action.text
+      }
+    }
+    
+    case SYNC_GOOGLE_SHEET_PERCENTAGE: {
+      return {
+        ...state,
+        sync_percentage: action.sync_percentage 
       }
     }
 

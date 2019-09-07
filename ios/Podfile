@@ -27,7 +27,9 @@ target 'postrix' do
   pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec'
   pod 'Folly', :podspec => '../node_modules/react-native/third-party-podspecs/Folly.podspec'
 
-  pod 'RNKeyEvent', :path => '../node_modules/react-native-keyevent'
+
+
+  pod 'CodePush', :path => '../node_modules/react-native-code-push'
 
   target 'postrixTests' do
     inherit! :search_paths

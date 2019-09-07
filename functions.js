@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-community/async-storage';
 
 export function dump(obj) {
 	var out = '';
@@ -182,4 +183,25 @@ export function appendShelveButtonBox(items, activeShelve){
   }
 
   return data
+}
+
+  
+export const storeData = async (name, val) => {
+  try {
+    await AsyncStorage.setItem(name, val)
+  } catch (e) {
+    // saving error
+  }
+}
+
+export const getData = async (name) => {
+  try {
+    const value = await AsyncStorage.getItem(name)
+    if(value !== null) {
+      // value previously stored
+      return value
+    }
+  } catch(e) {
+    // error reading value
+  }
 }

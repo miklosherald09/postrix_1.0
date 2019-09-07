@@ -10,18 +10,20 @@ import ChargeList from '../components/ChargeList'
 import ItemSearchModal from '../components/modals/ItemSearchModal'
 import PayChangeModal from '../components/modals/PayChangeModal'
 import AddShelveModal from '../components/modals/AddShelveModal'
+import ShelveModal from '../components/modals/ShelveModal'
 import PunchItemModal from '../components/modals/PunchItemModal'
 import AddShelveItemsModal from '../components/modals/AddShelveItemsModal'
 import ItemColorsModal from '../components/modals/ItemColorsModal'
 import { AddShelveButton, ShelveAllButton, ChargeButton, ShelveButton, ItemSearchButton, PayButton } from './HomeScreenComponents'
 import { CONTENT_SHELVES, CONTENT_CHARGE, changeActiveContent } from '../actions/homeActions'
-import { addModalVisible, getShelveItems, selectShelve, deleteShelve, getShelveItemsRefresh } from '../actions/shelvesActions'
+import { addModalVisible, getShelveItems, selectShelve, deleteShelve, getShelveItemsRefresh, shelveModalVisible } from '../actions/shelvesActions'
 import { modalVisible } from '../actions/itemSearchActions'
 import { payModalVisible } from '../actions/payActions'
 import { currency } from '../constants/constants'
 import NumberFormat from 'react-number-format'
 import KeyEvent from 'react-native-keyevent'
 import { barcodeSeachItem } from '../actions/barcodeSearchActions'
+import { storeData } from '../functions'
 
 
 const HomeScreen = props => {
@@ -45,7 +47,6 @@ const HomeScreen = props => {
       clearTimeout(timeout);
 
       timeout = setTimeout(function () {
-        console.log('Input Value:'+ searchText)
         props.barcodeSeachItem(searchText)
         searchText = ''
       }, 500)
@@ -57,7 +58,7 @@ const HomeScreen = props => {
 
   openMenu = () => {
 		props.navigation.openDrawer()
-	}
+  }
 
   return (
     <View style={styles.container}>
@@ -88,16 +89,16 @@ const HomeScreen = props => {
             {
               shelves.map((v, i) => {
                 return (
-                <ShelveButton 
-                  key={i} 
-                  activeShelve={activeShelve} 
-                  shelve={v} 
+                <ShelveButton
+                  key={i}
+                  activeShelve={activeShelve}
+                  shelve={v}
                   onPress={() => props.selectShelve(v)}
-                  onLongPress={ () => props.deleteShelve(v)} >
+                  onLongPress={ () => { props.shelveModalVisible(v) } } >
                 </ShelveButton>)
               })
             }
-            <AddShelveButton onPress={() => props.addModalVisible()}/>
+            <AddShelveButton onPress={() => props.shelveModalVisible({})}/>
           </View>
         </View>
       </View>
@@ -133,6 +134,7 @@ const HomeScreen = props => {
         <AddShelveItemsModal />
         <PunchItemModal />
         <ItemColorsModal />
+        <ShelveModal />
       </View>
     </View>
   );
@@ -167,20 +169,17 @@ function mapDispatchToProps(dispatch) {
     payModalVisible: () => dispatch(payModalVisible()),
     showItemColorsModal: () => dispatch(showItemColorsModal()), 
     deleteShelve: (shelve) => {
-      Alert.alert(
-        'Delete Shelve',
-        'Are you sure?',
-        [{
-            text: 'Cancel',
-            style: 'cancel',
-          },
-          {
-            text: 'OK', 
-            onPress: () => dispatch(deleteShelve(shelve))
-        }],
-        {cancelable: false},
-      )
+      Alert.alert('Delete Shelve', 'Are you sure?', [{
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'OK', 
+          onPress: () => dispatch(deleteShelve(shelve))
+      }],
+      {cancelable: false} )
     },
+    shelveModalVisible: (v) => dispatch(shelveModalVisible(v))
   }
 }
 

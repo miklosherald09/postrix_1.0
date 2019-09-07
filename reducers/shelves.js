@@ -19,7 +19,12 @@ import {
   GET_OPTIONS_REFRESH,
   DELETE_SHELVE_SUCCESS,
   SEARCH_OPTIONS_SUCCESS,
-  SET_SHELVE_ITEM_COLOR
+  SET_SHELVE_ITEM_COLOR,
+  SHELVE_MODAL_VISIBLE,
+  SHELVE_MODAL_INVISIBLE,
+  UPDATE_MODAL_SHELVE,
+  UPDATE_SHELVE_SUCCESS,
+  SAVE_SHELVE,
 } from '../actions/shelvesActions'
 
 const initialState = {
@@ -39,7 +44,9 @@ const initialState = {
     page: 0,
     limit: 10,
     refreshing: false,
-  }
+  },
+  shelveModalVisible: false,
+  modalShelve: {}
 }
 
 export default function shelvesReducer(state = initialState, action) {
@@ -49,7 +56,7 @@ export default function shelvesReducer(state = initialState, action) {
     case ADD_SHELVE_ITEMS_VISIBLE: {
       return {
         ...state,
-        addShelveItemsVisible: true
+        addShelveItemsVisible: true,
       }
     }
 
@@ -75,9 +82,38 @@ export default function shelvesReducer(state = initialState, action) {
     }
 
     case ADD_SHELVE_SUCCESS: {
+      shelve = {
+        id: action.shelveId,
+        name: state.modalShelve.name
+      }
       return {
         ...state,
-        shelves: [...state.shelves, action.shelve]
+        shelves: [...state.shelves, shelve],
+        shelveModalVisible: false,
+      }
+    }
+
+    case UPDATE_SHELVE_SUCCESS: {
+
+
+      shelves = state.shelves.map((v) => {
+        if(v.id == state.modalShelve.id)
+          return state.modalShelve
+        else
+          return v
+      })
+
+      console.log(shelves)
+      console.log('shleve action')
+      console.log(state.modalShelve)
+      console.log('active shelves')
+      console.log(state.shelves)
+
+
+      return {
+        ...state,
+        shelves: [...shelves],
+        shelveModalVisible: false,
       }
     }
 
@@ -254,6 +290,31 @@ export default function shelvesReducer(state = initialState, action) {
       return {
         ...state,
         items: items
+      }
+    }
+
+    case SHELVE_MODAL_VISIBLE: {
+      return {
+        ...state,
+        shelveModalVisible: true,
+        modalShelve: action.modalShelve
+      }
+    }
+
+    case SHELVE_MODAL_INVISIBLE: {
+      return {
+        ...state,
+        shelveModalVisible: false
+      }
+    }
+
+    case UPDATE_MODAL_SHELVE: {
+      return {
+        ...state,
+        modalShelve: {
+          ...state.modalShelve,
+          name: action.modalShelveName
+        }
       }
     }
 

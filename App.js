@@ -34,10 +34,11 @@ class App extends Component{
     store.dispatch(initSettings())
     store.dispatch(initPrinter())
     store.dispatch(getItems())
-    // store.dispatch(getShelveItems())
     store.dispatch(getTransactions())
     store.dispatch(initShelves())
-    store.dispatch(initCharges())
+    // store.dispatch(initCharges())
+    // store.dispatch(getShelveItems())
+
   }
 
   state = store.getState();

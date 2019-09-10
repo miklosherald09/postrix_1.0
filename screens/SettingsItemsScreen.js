@@ -54,13 +54,11 @@ const SettingsItemsScreen = props => {
                 </View>
               </View>
               <View>
-                <Text style={{marginTop: 10, marginLeft: 5, color: 'green'}}>{syncingGoogleSheet?'synching...' + sync_percentage+'%' : ''}</Text>
-                <Text>sync_percentage: {sync_percentage}</Text>
+                <Text style={{marginTop: 10, marginLeft: 5, color: 'green'}}>{syncingGoogleSheet?'synching...' : ''}</Text>
               </View>
             </View>
           </View>
           <View style={{backgroundColor: 'white', margin: 10, padding: 10}}>
-            <Text>Warning! This will delete all item records</Text>
             { EraseAllItemsButton(props) }
           </View>
         </View>

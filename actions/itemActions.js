@@ -242,7 +242,7 @@ export function syncGoogleSheet() {
     .then((text) => {
 
       csvArray = csvJSON(text)
-      items = JSON.parse(csvArray)
+      items = JSON.parse(csvArray).slice(0, 20)
 
       async function synchronizeItems() {
 
@@ -282,9 +282,6 @@ export function syncGoogleSheet() {
 
 export function trimItems(items) {
 
-  console.log('REMOVING UNESSENTIAL ITEMS')
-  console.log(items)
-
   return (dispatch, getState) => {
 
     const { database } = getState()
@@ -294,11 +291,6 @@ export function trimItems(items) {
         `SELECT * FROM items`,
         [],
         function(tx, res){
-          console.log(res)
-          // savedItems = res.rows.items()
-          console.log('savedItems:')
-          console.log(items)
-
 
           for (i = 0; i < res.rows.length; ++i) {
             
@@ -306,10 +298,7 @@ export function trimItems(items) {
             console.log(savedItem)
             exists = false
             items.some(item => {
-              console.log('looping items')
-              console.log(savedItem.barcode+' == '+item.Barcode)
               if(savedItem.barcode == item.Barcode){
-                console.log('exist baby girl!')
                 exists = true
               }
             });
@@ -320,7 +309,6 @@ export function trimItems(items) {
                 `DELETE FROM items WHERE id = ? `,
                 [savedItem.id],
                 function(_, res){
-                  console.log('deleteing: '+saveItem.name)
                   console.log(res)
                 },
                 function(err){

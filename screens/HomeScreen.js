@@ -3,7 +3,6 @@ import { StyleSheet, Text, View, Alert, AppState, Keyboard, Button, TextInput } 
 import { connect } from 'react-redux'
 import { MenuButton } from '../components/MenuButton'
 import PayModal from '../components/modals/PayModal'
-import BarcodeSearch from '../components/BarcodeSearch'
 import PunchedItemList from '../components/PunchedItemList'
 import ShelveItemsList  from '../components/ShelveItemsList'
 import ChargeList from '../components/ChargeList'
@@ -14,6 +13,7 @@ import ShelveModal from '../components/modals/ShelveModal'
 import PunchItemModal from '../components/modals/PunchItemModal'
 import AddShelveItemsModal from '../components/modals/AddShelveItemsModal'
 import ItemColorsModal from '../components/modals/ItemColorsModal'
+import SaveChargeModal from '../components/modals/SaveChargeModal'
 import { AddShelveButton, ShelveAllButton, ChargeButton, ShelveButton, ItemSearchButton, PayButton } from './HomeScreenComponents'
 import { CONTENT_SHELVES, CONTENT_CHARGE, changeActiveContent } from '../actions/homeActions'
 import { addModalVisible, getShelveItems, selectShelve, deleteShelve, getShelveItemsRefresh, shelveModalVisible } from '../actions/shelvesActions'
@@ -23,7 +23,7 @@ import { currency } from '../constants/constants'
 import NumberFormat from 'react-number-format'
 import KeyEvent from 'react-native-keyevent'
 import { barcodeSeachItem } from '../actions/barcodeSearchActions'
-import { storeData } from '../functions'
+import { getCharges } from '../actions/chargeActions'
 
 
 const HomeScreen = props => {
@@ -39,11 +39,7 @@ const HomeScreen = props => {
 
       if(keyEvent.keyCode != 66)
         searchText += keyEvent.pressedKey
-      
-      // console.log(`onKeyDown pressedKey: ${keyEvent.pressedKey}`)
-      // console.log(`onKeyDown keyCode: ${keyEvent.keyCode}`)
-      // console.log(`Action: ${keyEvent.action}`);
-      
+
       clearTimeout(timeout);
 
       timeout = setTimeout(function () {
@@ -135,6 +131,7 @@ const HomeScreen = props => {
         <PunchItemModal />
         <ItemColorsModal />
         <ShelveModal />
+        <SaveChargeModal />
       </View>
     </View>
   );
@@ -159,12 +156,12 @@ function mapDispatchToProps(dispatch) {
       dispatch(getShelveItems(shelve))
       dispatch(changeActiveContent(CONTENT_SHELVES))
     },
-    changeActiveContent: (val) => dispatch(changeActiveContent(val)),
-    modalVisible: (e) => {
-      e.preventDefault()
-      console.log(e)
-      console.log(e.which)
-      dispatch(modalVisible(e))
+    changeActiveContent: (val) => {
+      dispatch(changeActiveContent(val))
+      dispatch(getCharges())
+    },
+    modalVisible: () => {
+      dispatch(modalVisible())
     },
     payModalVisible: () => dispatch(payModalVisible()),
     showItemColorsModal: () => dispatch(showItemColorsModal()), 

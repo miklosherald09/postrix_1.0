@@ -1,64 +1,114 @@
+import { appendAddChargeButton } from '../functions'
+
 import {
-  INIT_CHARGES,
-  INIT_CHARGES_SUCCESS,
-  CHARGE_MODAL_VISIBLE,
-  CHARGE_MODAL_INVISIBLE,
-  SAVE_INPUT_CHARGE,
-  SAVE_CHARGE_SUCCESS
+  SAVE_CHARGE_MODAL_VISIBLE,
+  GET_CHARGES_SUCCESS,
+  GET_CHARGES_BEGIN,
+  GET_CHARGES_ERROR,
+  SELECT_CHARGE,
+  SAVE_CHARGE_SUCCESS,
+  DELETE_CHARGE_SUCCESS
 } from '../actions/chargeActions'
 
 const initialState = {
   charges: [],
-  chargeModalVisible: false,
+  saveChargeModalVisible: false,
   inputCharge: {
     name: '',
     price: ''
-  }
+  },
+  lastId: 0,
+  selected: {}
 }
 
 export default function chargeReducer(state = initialState, action) {
 
   switch(action.type) {
 
-    case INIT_CHARGES_SUCCESS: {
+    case SAVE_CHARGE_MODAL_VISIBLE: {
       return {
         ...state,
-        charges: action.charges
+        saveChargeModalVisible: action.visible
       }
     }
 
-    case CHARGE_MODAL_VISIBLE: {
-      return {
-        ...state,
-        chargeModalVisible: true
+    case GET_CHARGES_SUCCESS: {
+      
+      // GET CHARGES LAST ID
+      lastId = 0
+      if(action.charges.length){
+        lastId = action.charges.slice(-1).shift().id
       }
-    }
-    
-    case CHARGE_MODAL_INVISIBLE: {
+
+      console.log('lastId: '+lastId)
+      charges = appendAddChargeButton(action.charges)
+      console.log(charges)
+      
       return {
         ...state,
-        chargeModalVisible: false
+        charges: action.charges,
+        lastId: lastId,
       }
     }
 
-    case SAVE_INPUT_CHARGE: {
-
-      value = action.inputCharge.value
-      if(action.inputCharge.name == 'price')
-        value = parseInt(value)
-
-      return {
-        ...state,
-        inputCharge: {
-          ...state.inputCharge,
-          [action.inputCharge.name]: value
-        }
-      }
-    }
-    
-    case SAVE_CHARGE_SUCCESS: {
+    case GET_CHARGES_BEGIN: {
       return {
         ...state
+      }
+    }
+    
+    case GET_CHARGES_ERROR: {
+      return {
+        ...state
+      }
+    }
+
+    case SELECT_CHARGE: {
+      return {
+        ...state,
+        selected: action.selectedCharge
+      }
+    }
+
+    case SAVE_CHARGE_SUCCESS: {
+
+      if(!state.selected.id){
+        // insert to charge list
+        charge = { ...state.selected, id: action.chargeId }
+        charges = [...state.charges, charge]
+      }
+      else{
+        // update charge list
+        charges = state.charges.map((v) => {
+          if(v.id == state.selected.id)
+            return action.charge
+          else
+            return v
+        })
+      }
+
+      return {
+        ...state,
+        charges: charges,
+        saveChargeModalVisible: false
+      }
+    }
+
+    case DELETE_CHARGE_SUCCESS: {
+      
+      // remove deleted item
+      charges = state.charges.map((v) => {
+        if(v.id != state.selected.id)
+          return v
+      })
+
+      // push item box for display
+      charges.push({ key: `blankx-${charges.length}`, type: 'EMPTY' })
+
+      return {
+        ...state,
+        charges: charges,
+        saveChargeModalVisible: false
       }
     }
 

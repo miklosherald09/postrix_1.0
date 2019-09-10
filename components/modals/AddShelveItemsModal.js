@@ -39,7 +39,7 @@ const AddShelveItemsModal = (props) => {
 								<View style={{ flex: 2 }}>
 									<Text style={{fontSize: 18, margin: 10}}>Add Shelves Item</Text>
 								</View>
-								<View style={{ flex: 1 }}>
+								<View style={{ flex: 1 }}> 
 									<CloseButton onPress={ () => props.addShelveItemsInvisible() }/>
 								</View>
 							</View>
@@ -50,17 +50,16 @@ const AddShelveItemsModal = (props) => {
 									leftIcon={{ type: 'font-awesome', name: 'search', color: '#CCC' }}
 								/>
 							</View>
-							<View style={{...styles.content, }}>
-								<ScrollView contentContainerStyle={{flexWrap: 'wrap'}}>
+							<View style={styles.content}>
+								<ScrollView contentContainerStyle={{flex: 1}}>
 									<FlatList
 										contentContainerStyle={styles.list}
 										keyExtractor={keyExtractor}
 										data={itemOptions}
-										// initialNumToRender={10}
-										// onEndReached={() => props.getOptions()}
+										onEndReached={() => props.getOptions()}
 										onEndReachedThreshold={0.1}
 										renderItem={({item}) => <RenderItem onPress={() => props.selectShelveItem(item)} item={item}/>}
-										// ListFooterComponent={this.renderFooter}
+										ListFooterComponent={this.renderFooter}
 									/>
 								</ScrollView>
 							</View>
@@ -94,7 +93,6 @@ function mapDispatchToProps(dispatch) {
 		saveShelveItems: () => {	dispatch(saveShelveItems()) },
 		searchOptions: (text) => { dispatch(searchOptions(text) )},
 		getOptions: () => {
-			// alert('getting options')
 			dispatch(getOptions()) 
 		}
 	}
@@ -128,13 +126,13 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, .5)',
   },
   container: {
-   
     backgroundColor: 'white',
     height: screenHeight - (screenHeight * 0.1 * 2),
     marginLeft: screenWidth * 0.2,
     marginRight: screenWidth * 0.2,
     marginTop: screenHeight * 0.05,
-    marginBottom: screenHeight * 0.01,
+		marginBottom: screenHeight * 0.01,
+		borderRadius: 10,
 	},
 	list: {
 		justifyContent: 'center',

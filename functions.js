@@ -185,6 +185,25 @@ export function appendShelveButtonBox(items, activeShelve){
   return data
 }
 
+export function appendAddChargeButton(data){
+
+
+  // add create button
+  data.push({type: 'ADD_BUTTON'})
+  numColumns = 4
+
+
+  // add empty box to correct list display
+  console.log(data)
+  const numberOfFullRows = Math.floor(data.length / numColumns);
+  let numberOfElementsLastRow = data.length - (numberOfFullRows * numColumns);
+  while (numberOfElementsLastRow !== numColumns && numberOfElementsLastRow !== 0) {
+    data.push({ key: `blank-${numberOfElementsLastRow}`, type: 'EMPTY' });
+    numberOfElementsLastRow++
+	}
+
+  return data;
+}
   
 export const storeData = async (name, val) => {
   try {

@@ -250,36 +250,34 @@ export function getShelveItems(){
 
     console.log('page: '+page+' limit: '+limit+' offset'+offset+' ++++ '+query)
 
-    setTimeout(() => {
-      database.db.transaction( function(txn){
-        txn.executeSql(query,
-        params,
-        function(tx, res){
-          itemsList = []
-          for (i = 0; i < res.rows.length; ++i) {
-            // console.log(res.rows.item(i))
-            itemsList.push({
-              barcode: res.rows.item(i).barcode,
-              buyPrice: parseInt(res.rows.item(i).buy_price),
-              datetime: res.rows.item(i).datetime,
-              id: res.rows.item(i).item_id,
-              name: res.rows.item(i).name,
-              sellPrice: parseInt(res.rows.item(i).sell_price),
-              color: res.rows.item(i).color,
-            })
-          }
+    database.db.transaction( function(txn){
+      txn.executeSql(query,
+      params,
+      function(tx, res){
+        itemsList = []
+        for (i = 0; i < res.rows.length; ++i) {
+          // console.log(res.rows.item(i))
+          itemsList.push({
+            barcode: res.rows.item(i).barcode,
+            buyPrice: parseInt(res.rows.item(i).buy_price),
+            datetime: res.rows.item(i).datetime,
+            id: res.rows.item(i).item_id,
+            name: res.rows.item(i).name,
+            sellPrice: parseInt(res.rows.item(i).sell_price),
+            color: res.rows.item(i).color,
+          })
+        }
 
-          console.log(itemsList)
-          
-          dispatch({type: GET_SHELVE_ITEMS_SUCCESS, items: itemsList})
-          console.log('shelves items successfully fetch...')
-        });
-      },
-      function(err){
-        console.log(err.message);
-        dispatch({type: GET_SHELVE_ITEMS_ERROR})
+        console.log(itemsList)
+        
+        dispatch({type: GET_SHELVE_ITEMS_SUCCESS, items: itemsList})
+        console.log('shelves items successfully fetch...')
       });
-    }, 1500)
+    },
+    function(err){
+      console.log(err.message);
+      dispatch({type: GET_SHELVE_ITEMS_ERROR})
+    });
   }
 }
 
@@ -338,7 +336,7 @@ export function searchOptions(text){
     if(text){
       database.db.transaction( function(tx){
         tx.executeSql(
-          `SELECT * FROM items WHERE name LIKE ? ORDER BY name ASC`,
+          `SELECT * FROM items WHERE name LIKE ? ORDER BY name ASC LIMIT 20`,
           ['%'+text+'%'],
           function(tn, res){
 
@@ -363,7 +361,6 @@ export function searchOptions(text){
       dispatch({type: GET_OPTIONS_REFRESH})
       dispatch(getOptions())
     }
-    
   }
 }
 

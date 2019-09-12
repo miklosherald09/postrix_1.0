@@ -1,24 +1,20 @@
 import React from 'react'
-import { Dimensions, StyleSheet, Text, View, TouchableOpacity, Modal, TextInput } from 'react-native'
+import { Dimensions, StyleSheet, Text, View, TouchableOpacity, Modal } from 'react-native'
 import { connect } from 'react-redux'
-import { Button, Icon } from 'react-native-elements'
-import { 
-  payModalInvisible,
-  setPayment, 
-  PAY_MODAL_VISIBLE, 
-  PAY_MODAL_INVISIBLE } from '../../actions/payActions'
+import { Button } from 'react-native-elements'
+import { payModalInvisible, setPayment, PAY_MODAL_VISIBLE, PAY_MODAL_INVISIBLE } from '../../actions/payActions'
 import { resetPunched } from '../../actions/punchedActions'
-import { RNInput } from '../../components/natives/RNTextInput'
 import { payChangeModalVisible, computeChange } from '../../actions/payChangeActions'
 import { addTransaction } from '../../actions/transactionActions'
 import { printReceipt as printReceiptAction } from '../../actions/receiptActions'
 import { togglePrintButton, resetPayment } from '../../actions/payActions'
 import { openCashDrawer } from '../../actions/cashDrawerActions'
-import formStyles from '../../constants/styles'
 import { CustomKeyboard } from '../../components/natives/CustomKeyboard'
 import { currency } from '../../constants/constants'
 import { CloseButton } from '../../components/Common'
 import NumberFormat from 'react-number-format'
+import Icon from 'react-native-vector-icons/FontAwesome5'
+
 
 const screenWidth = Math.round(Dimensions.get('window').width);
 const screenHeight = Math.round(Dimensions.get('window').height);
@@ -40,42 +36,50 @@ const PayModal = (props) => {
         <TouchableOpacity activeOpacity={1} style={styles.touchable} onPress={ () => {props.payModalInvisible()}}>
           <TouchableOpacity activeOpacity={1} style={styles.container} >
             <View style={{flex: 1, flexDirection: 'column', }}>
-							<View style={{height: 50, borderBottomColor: '#CCC', borderBottomWidth: 1, marginBottom: 10}}>
+							<View style={{height: 50, marginBottom: 10}}>
                 <CloseButton onPress={ () => props.payModalInvisible() } />
 							</View>
 							<View style={{flex: 1, flexDirection: 'row'}}>
 								<View style={{flex: 1, margin: 10, justifyContent: 'space-between'}}>
                   <View>
-                    <View style={{borderBottomColor: '#EEE', borderBottomWidth: 1, paddingVertical: 10}}>
-                      <Text style={{alignSelf: 'flex-start', color: '#333', fontSize: 15}}>Payment</Text>
-                      <Text style={{alignSelf: 'flex-end', color: '#2CB200', fontSize: 20, position: 'absolute', top: 5}}>
+                    <View style={{borderBottomColor: '#EEE', borderBottomWidth: 1, paddingVertical: 10, alignItems: 'center', marginBottom: 20 }}>
+                      <Text style={{color: '#333', fontSize: 12}}>PAYMENT</Text>
+                      <Text style={{color: '#2CB200', fontSize: 40 }}>
                         <NumberFormat renderText={value => <Text>{value}</Text>} fixedDecimalScale={true} decimalScale={2} value={payment} displayType={'text'} thousandSeparator={true} prefix={currency} />
                       </Text>
                     </View>
-                    <View style={{borderBottomColor: '#EEE', borderBottomWidth: 1, paddingVertical: 10}}>
-                      <Text style={{alignSelf: 'flex-start', color: '#333', fontSize: 15}}>Total Amout Due</Text>
-                      <Text style={{alignSelf: 'flex-end', color: '#B20000', fontSize: 20, position: 'absolute', top: 5}}>
+                    <View style={{borderBottomColor: '#EEE', borderBottomWidth: 1, paddingVertical: 10, alignItems: 'center'}}>
+                      <Text style={{color: '#333', fontSize: 12, }}>TOTAL</Text>
+                      <Text style={{color: '#333', fontSize: 40}}>
                         <NumberFormat renderText={value => <Text>{value}</Text>} fixedDecimalScale={true} decimalScale={2} value={total} displayType={'text'} thousandSeparator={true} prefix={currency} />
                       </Text>
                     </View>
                     <View>
                     </View>
                   </View>
-                  <View style={{}}>
+                  <View>
                     <Button
-                      containerStyle={{width: 60, marginBottom: 10}}
+                      containerStyle={{width: 100, marginBottom: 10}}
                       icon={
                         <Icon
-                          name="print"
-                          size={24}
-                          color={printReceipt?'white':'#2089dc'}
+                          name={printReceipt?'check':'minus-circle'}
+                          size={20}
+                          color={printReceipt?'#2CB200':'#666'}
                         />
-                    }
-                      iconRight
-                      type={printReceipt?'solid':'outline'}
+                      }
+                      iconContainerStyle={{marginTop: 2, paddingTop: 5}}
+                      // type={printReceipt?'solid':'clear'}
+                      type={'clear'}
                       onPress={props.togglePrintButton}
+                      title={printReceipt?'print':'unprint'}
+                      // titleStyle={printReceipt?{}:'no print'}
+                      titleStyle={{fontSize: 14, fontWeight: 'normal', color: '#666', marginLeft: 5, marginTop: -3}}
                     />
-                    <Button onPress={ () => props.submit({payment, total, punched, printReceipt}) } title="Pay"></Button>
+                    <TouchableOpacity onPress={ () => props.submit({payment, total, punched, printReceipt}) } title="PAY">
+                      <View style={{height: 60, backgroundColor: '#2089dc', borderRadius: 5, justifyContent: 'center', alignItems: 'center'}}>
+                        <Text style={{color: 'white', fontSize: 20, textAlign: 'center'}}>PAY</Text>
+                      </View>
+                    </TouchableOpacity>
                   </View>
 								</View>
 								<View style={{flex: 1, paddingHorizontal: 20, marginBottom: 10}}>

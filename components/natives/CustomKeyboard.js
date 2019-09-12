@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Button, View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import Icon from 'react-native-vector-icons/FontAwesome5'
 
 export class CustomKeyboard extends React.Component {
 
@@ -127,11 +128,15 @@ export class CustomKeyboard extends React.Component {
           }
         </View>
         <View style={{flex: 1, flexDirection: 'row'}}>
-          <View style={{...styles.box, flex: 2}}>
+          <View style={{...styles.box, flex: 2, alignItems: 'center'}}>
             <TouchableOpacity
               onPress={() => this.fire('del')}
               style={styles.to}>
-              <Text style={styles.num}>del</Text>
+               <Icon
+                name={'arrow-left'}
+                size={22}
+                color={'#333'}
+              />
             </TouchableOpacity>
           </View>
           <View style={{...styles.box, flex: 2}}>
@@ -145,14 +150,14 @@ export class CustomKeyboard extends React.Component {
             <TouchableOpacity
               onPress={() => this.fire('.')}
               style={styles.to}>
-              <Text style={styles.num}>.</Text>
+              <Text style={{...styles.num, fontSize: 35, marginTop: -20}}>.</Text>
             </TouchableOpacity>
           </View>
           <View style={styles.box}>
             <TouchableOpacity
               onPress={() => this.fire('x')}
               style={styles.to}>
-              <Text style={styles.num}>x</Text>
+              <Text style={{...styles.num, color: 'red'}}>C</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -187,5 +192,10 @@ const styles = StyleSheet.create({
   to: {
     flex: 1,
     justifyContent: 'center',
-  }
+  },
+  backspace: {
+    flex: 1,
+    justifyContent: 'center',
+    margin: 10,
+  },
 });

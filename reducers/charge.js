@@ -40,9 +40,7 @@ export default function chargeReducer(state = initialState, action) {
         lastId = action.charges.slice(-1).shift().id
       }
 
-      console.log('lastId: '+lastId)
       charges = appendAddChargeButton(action.charges)
-      console.log(charges)
       
       return {
         ...state,

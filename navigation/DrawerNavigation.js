@@ -21,10 +21,9 @@ const DrawerConfig = {
     drawerPosition: 'left',
     drawerBackgroundColor: 'transparent',
     overlayColor: 'rgba(0, 0, 0, .8)',
-
     initialRouteName: 'Home',
     // initialRouteName: 'Items',
-    // initialRouteName: 'Settings',
+    initialRouteName: 'Settings',
     // initialRouteName: 'Transactions',
     // initialRouteName: 'Reports',
     // initialRouteName: 'ReportSetup',

@@ -50,7 +50,6 @@ const ItemAdvanceScreen = (props) => {
     //If response is not in json then in error
     .catch((error) => {
         //Error 
-        console.log(JSON.stringify(error));
         console.log(error);
     });
   }

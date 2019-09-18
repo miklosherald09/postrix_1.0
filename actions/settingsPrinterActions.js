@@ -9,7 +9,7 @@ export function initPrinter() {
   console.log('initializing printer..')
   return dispatch => {
     BluetoothManager.enableBluetooth().then((r)=>{
-      var paired = [];
+      var paired = []
       if(r && r.length>0){
         for(var i=0;i<r.length;i++){
           try{
@@ -20,9 +20,8 @@ export function initPrinter() {
         }
       }
 
-      dispatch({
-        type: ADD_BLUETOOTH_DEVICES,
-        devices: paired,
+      paired.map((v) => {
+        dispatch({ type: ADD_BLUETOOTH_DEVICES, device: v })
       })
 
       // try to connect to bluetooth devices as printer
@@ -41,8 +40,6 @@ export function initPrinter() {
           })
         })
       }
-     
-
     },(err)=>{
       alert(err)
     });

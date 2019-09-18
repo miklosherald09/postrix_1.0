@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { StyleSheet, View, Text, DatePickerAndroid, TimePickerAndroid, ScrollView, TouchableOpacity, TextInput, ActivityIndicator } from 'react-native'
 import { connect } from 'react-redux'
 import { MenuButton } from '../components/MenuButton'
@@ -6,7 +6,7 @@ import TransactionSearch from '../components/TransactionSearch'
 import SalesReport from '../components/SalesReport'
 import ReceiptModal from '../components/modals/ReceiptModal'
 import { Button } from 'react-native-elements'
-import { changeStartDate, changeEndDate, generateSalesReport , changeStartTime, changeEndTime } from '../actions/reportsActions'
+import { changeStartDate, changeEndDate, generateSalesReport , changeStartTime, changeEndTime, printReport } from '../actions/reportsActions'
 import { formatDate } from '../functions';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
@@ -68,8 +68,6 @@ const ReportScreen = (props) => {
 			});
 			if (action !== TimePickerAndroid.dismissedAction) {
 				// Selected hour (0-23), minute (0-59)
-				// console.log('hour: '+hour)
-				// console.log('minute: '+minute)
 				time = ((hour * 60 * 60) + (minute * 60)) * 1000
 				props.changeStartTime(time)
 				props.generateSalesReport()
@@ -130,7 +128,6 @@ const ReportScreen = (props) => {
 				</View>
 				<View style={styles.rightContent}>
 					<View style={{height: 50, flexDirection: 'row', marginLeft: 10, marginTop: 10}}>
-						{/* <Text>startDate: {startDate}</Text> */}
 						<DatePicker onPress={ () => this.openStartDatePicker() }/>
 						<TimePicker onPress={ () => this.openStartTimePicker() }/>
 						<TextInput 
@@ -144,6 +141,18 @@ const ReportScreen = (props) => {
 							style={styles.inputStyle} 
 							value={(endDate)?formatDate(endDate, 2):''} 
 							placeholder={'end date'} 
+						/>
+						<Button
+							style={{marginLeft: 10}}
+							onPress={() => props.printReport()}
+							type="clear"
+							icon={
+								<Icon
+									name="print"
+									size={25}
+									color="#2089dc"
+								/>
+							}
 						/>
 					</View>
 					<View style={{flex: 1}}>
@@ -214,6 +223,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
+		printReport: () => { dispatch(printReport()) },
 		changeStartDate: (date) => { dispatch(changeStartDate(date)) },
 		changeEndDate: (date) => dispatch(changeEndDate(date)),
 		generateSalesReport: () => dispatch(generateSalesReport()), 

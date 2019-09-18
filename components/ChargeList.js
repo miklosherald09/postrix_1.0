@@ -11,6 +11,8 @@ numColumns = 4
 const ChargeList = (props) => {
 
   const { charges } = props.charge
+  const { userType } = props.pin
+
   keyExtractor = (trans, index) => index.toString();
 
   renderItem = ({ item, index }) => {
@@ -22,11 +24,14 @@ const ChargeList = (props) => {
         )
       }
       case 'ADD_BUTTON': {
+        
         return(
+          (userType == 'ROOT' || userType == 'ADMIN')?
           <AddButton onPress={() => {
             props.saveChargeModalVisible(true),
             props.selectCharge({id: null, name: '', price: ''})
-          }}/>
+          }}/>:
+          <View style={[styles.item, styles.itemInvisible]} />
         )
       }
       default: {
@@ -88,6 +93,7 @@ class AddButton extends React.Component{
 function mapStateToProps(state) {
 	return {
     charge: state.charge,
+    pin: state.pin,
 	}
 }
 

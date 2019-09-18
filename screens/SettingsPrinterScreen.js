@@ -26,6 +26,8 @@ const SettingsPrinterScreen = props => {
     props.connectPrinter(value)
   }
 
+  devices.push({name: 'sex', address: 'x'})
+
   return (
     <View style={styles.wrapper}>
       <View style={styles.topMenu}>

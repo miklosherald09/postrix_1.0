@@ -1,4 +1,5 @@
-import AsyncStorage from '@react-native-community/async-storage';
+import AsyncStorage from '@react-native-community/async-storage'
+import { USER_TYPE_STAFF, USER_TYPE_ADMIN, USER_TYPE_ROOT } from './constants/constants'
 
 export function dump(obj) {
 	var out = '';
@@ -10,9 +11,9 @@ export function dump(obj) {
 
 export function findWithAttr(array, attr, value) {
   for(var i = 0; i < array.length; i += 1) {
-      if(array[i][attr] === value) {
-          return i;
-      }
+    if(array[i][attr] === value) {
+        return i;
+    }
   }
   return -1;
 }
@@ -77,10 +78,9 @@ export function formatDate(date, format=0) {
   return [year, month, day].join('-');
 }
 
-
-//var csv is the CSV file with headers
 export function csvJSON(csv){
 
+  //var csv is the CSV file with headers
   var lines=csv.split("\n");
 
   var result = [];
@@ -104,15 +104,12 @@ export function csvJSON(csv){
   return JSON.stringify(result); //JSON
 }
 
-import { USER_TYPE_MANAGER, USER_TYPE_STAFF } from './constants/constants'
-
-// always use to restrict usertype 
 export function linkPermission(link, userType){
+  // always use to restrict usertype 
   switch(link){
-    case 'ItemsAdvance': {
-      if(userType == USER_TYPE_STAFF){
-        return false
-      }
+
+    case 'Home':{
+      return true
     }
 
     case 'Items':{
@@ -120,14 +117,34 @@ export function linkPermission(link, userType){
         return false
       }
     }
+
+    case 'Transactions':{
+      return true
+    }
     
     case 'Reports':{
+      return true
+    }
+    
+    case 'Settings':{
+      return true
+    }
+
+    case 'Settings_Basic':{
+      return true
+    }
+
+    case 'Settings_Items':{
       if(userType == USER_TYPE_STAFF){
         return false
       }
     }
-    
-    case 'Settings':{
+
+    case 'SettingsPrinter':{
+      return true
+    }
+
+    case 'ReportSetup':{
       if(userType == USER_TYPE_STAFF){
         return false
       }
@@ -185,8 +202,7 @@ export function appendShelveButtonBox(items, activeShelve){
   return data
 }
 
-export function appendAddChargeButton(data){
-
+export function appendAddChargeButton(data, logged){
 
   // add create button
   data.push({type: 'ADD_BUTTON'})
@@ -194,7 +210,6 @@ export function appendAddChargeButton(data){
 
 
   // add empty box to correct list display
-  console.log(data)
   const numberOfFullRows = Math.floor(data.length / numColumns);
   let numberOfElementsLastRow = data.length - (numberOfFullRows * numColumns);
   while (numberOfElementsLastRow !== numColumns && numberOfElementsLastRow !== 0) {

@@ -7,7 +7,10 @@ import {
   CHANGE_END_TIME,
   GENERATE_SALES_REPORT_BEGIN,
   GENERATE_SALES_REPORT_SUCCESS,
-  GENERATE_SALES_REPORT_ERROR
+  GENERATE_SALES_REPORT_ERROR,
+  PRINT_REPORT_BEGIN,
+  PRINT_REPORT_SUCCESS,
+  PRINT_REPORT_ERROR
 } from '../actions/reportsActions';
 
 const initialState = {
@@ -20,6 +23,7 @@ const initialState = {
   totalCharges: 0,
   itemSales: [],
   processing: false,
+
 }
 
 export default function reportsReducer(state = initialState, action) {
@@ -30,6 +34,7 @@ export default function reportsReducer(state = initialState, action) {
         startDate: action.startDate
       }
     }
+
     case CHANGE_END_DATE: {
       return {
         ...state,
@@ -62,9 +67,6 @@ export default function reportsReducer(state = initialState, action) {
       action.items.forEach((item) => {
         item.punched.forEach((punched) => {
           
-          console.log('punched: ')
-          console.log(punched)
-
           // check if item already exists, if yes, merge item
           // separate charges items type
           if(punched.type == 'CHARGE'){
@@ -136,6 +138,10 @@ export default function reportsReducer(state = initialState, action) {
         endDate: (state.endDate - state.endTime) + action.time,
         endTime: action.time
       }
+    }
+    
+    case PRINT_REPORT_BEGIN: {
+      
     }
 
     default:

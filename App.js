@@ -1,17 +1,15 @@
 import React, { Component } from 'react'
-import { View, StyleSheet, Text } from 'react-native'
+import { StyleSheet } from 'react-native'
 import { Provider } from 'react-redux'
 import { getTransactions } from './actions/transactionActions'
 import { initPrinter } from './actions/settingsPrinterActions'
-import { initDatabase, initItemsTable } from './actions/databaseActions'
+import { initDatabase } from './actions/databaseActions'
 import { initSettings } from './actions/settingsActions'
 import { getItems } from './actions/itemActions'
 import SignInGuard from './components/signInGuard'
-import HomeScreen from './screens/HomeScreen'
-import { initShelves, getShelveItems } from './actions/shelvesActions'
-import { initCharges } from './actions/chargeActions'
+import { initShelves } from './actions/shelvesActions'
+import { initReportDate } from './actions/reportsActions'
 import codePush from "react-native-code-push"
-
 
 /**
  * Store - holds our state - THERE IS ONLY ONE STATE 
@@ -36,9 +34,9 @@ class App extends Component{
     store.dispatch(getItems())
     store.dispatch(getTransactions())
     store.dispatch(initShelves())
+    store.dispatch(initReportDate())
     // store.dispatch(initCharges())
     // store.dispatch(getShelveItems())
-
   }
 
   state = store.getState();

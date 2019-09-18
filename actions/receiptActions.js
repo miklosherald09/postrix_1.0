@@ -10,7 +10,7 @@ export function printReceipt({payment, total, punched}){
 
   return (dispatch, getState) => {
 
-    const { settingsPrinter } = getState()
+    const { settingsPrinter, settings } = getState()
 
     if(settingsPrinter.connected == true){
       date = new Date;
@@ -20,7 +20,7 @@ export function printReceipt({payment, total, punched}){
       // console.log(punched)
       BluetoothEscposPrinter.printerAlign(BluetoothEscposPrinter.ALIGN.CENTER);
       BluetoothEscposPrinter.setBlob(0);
-      BluetoothEscposPrinter.printText("CTY STORE\n\r",{
+      BluetoothEscposPrinter.printText(settings.shopName+"\n\r",{
         encoding:'GBK',
         codepage:0,
         widthtimes:2,

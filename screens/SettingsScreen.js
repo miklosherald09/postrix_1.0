@@ -1,30 +1,23 @@
-import React from 'react'
-import { StyleSheet, View, Text, ScrollView, TouchableOpacity, TouchableHighlight, TextInput } from 'react-native'
+import React, { useEffect } from 'react'
+import { StyleSheet, View } from 'react-native'
 import { connect } from 'react-redux'
 import { MenuButton } from '../components/MenuButton'
+import { Input } from 'react-native-elements'
 import SettingsNav from '../navigation/SettingsNav'
-import { updateGoogleSheetUrl, updateGoogleSheetUrlCsv } from '../actions/settingsActions';
+import { updateShopName } from '../actions/settingsActions';
 import { deleteAllItems } from '../actions/itemActions'
-import Icon from 'react-native-vector-icons/FontAwesome5'
-
-
+import { linkPermission } from '../functions'
+import NavigationService from '../NavigationService';
 
 const settingsScreen = props => {
 
+  const { userType } = props.pin
 
 	const openMenu = () => {
 		props.navigation.openDrawer()
 	}
 
-  const navLink = (nav, text) => {
-		return(
-			<TouchableOpacity style={{height: 50}} onPress={() => props.navigation.navigate(nav)}>
-				<Text style={styles.link}>{text}</Text>
-			</TouchableOpacity>
-		)
-  }
-  
-  const { googleSheetUrl, googleSheetUrlCsv } = props.settings
+  const { shopName } = props.settings
 
   return (
     <View style={styles.wrapper}>
@@ -40,32 +33,38 @@ const settingsScreen = props => {
           <SettingsNav />
         </View>
         <View style={styles.rightContent}>
-          
+          <View style={styles.container}>
+            <Input
+              label={"SHOP NAME"}
+              type={"default"}
+              keyboardType={"default"}
+              labelStyle={styles.label}
+              containerStyle={{marginTop: 15}}
+              inputStyle={{}}
+              onChangeText={(text) => {props.updateShopName(text)}}
+              value={shopName}
+            />
+          </View>
         </View>
       </View>
     </View>
   );
 }
 
-
-
 function mapStateToProps(state) {
 	return {
     settingsPrinter: state.settingsPrinter,
     settings: state.settings,
+    pin: state.pin
 	}
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    updateGoogleSheetUrl: (text) => dispatch(updateGoogleSheetUrl(text)),
-    updateGoogleSheetUrlCsv: (text) => dispatch(updateGoogleSheetUrlCsv(text)),
     deleteAllItems: () => dispatch(deleteAllItems()),
+    updateShopName: (text) => dispatch(updateShopName(text))
   }
 }
-
-
-
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -113,8 +112,17 @@ const styles = StyleSheet.create({
   link: {
 		fontSize: 15,
 		color: '#333'
-	}
-});
+  },
+  container: {
+    backgroundColor: 'white',
+    flex: 1,
 
+  },
+  label: {
+    fontWeight: 'normal', 
+    fontSize: 12, 
+    color: '#999'
+  },
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(settingsScreen);

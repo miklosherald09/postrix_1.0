@@ -1,29 +1,32 @@
 import React from 'react'
 import { StyleSheet, View, ScrollView, TouchableOpacity, Text } from 'react-native'
 import { withNavigation } from 'react-navigation';
+import { linkPermission } from '../functions'
+import { connect } from 'react-redux'
+import NavigationService from '../NavigationService';
 
-class SettingsNav extends React.Component{
+const SettingsNav = (props) => {
 
-  navLink = (nav, text) => {
+  const { userType } = props.pin
+
+  const navLink = (nav, text) => {
 		return(
-			<TouchableOpacity style={{height: 50}} onPress={() => this.props.navigation.navigate(nav)}>
+			<TouchableOpacity style={{height: 50}} onPress={() => NavigationService.navigate(nav)}>
 				<Text style={styles.link}>{text}</Text>
 			</TouchableOpacity>
 		)
   }
 
-  render(){ 
-    return(
-      <ScrollView>
-        <View style={styles.navLinks}>
-          {this.navLink('Settings', 'Basic')}
-          {this.navLink('SettingsItems', 'Items')}
-          {this.navLink('SettingsPrinter', 'Printer')}
-          {this.navLink('ReportSetup', 'Reports')}
-        </View>
-      </ScrollView>
-    )
-  }
+  return(
+    <ScrollView>
+      <View style={styles.navLinks}>
+        {linkPermission('Settings_Basic', userType)?navLink('Settings', 'Basic'):null}
+        {linkPermission('Settings_Items', userType)?navLink('SettingsItems', 'Items'):null}
+        {linkPermission('SettingsPrinter', userType)?navLink('SettingsPrinter', 'Printer'):null}
+        {linkPermission('ReportSetup', userType)?navLink('ReportSetup', 'Reports'):null}
+      </View>
+    </ScrollView>
+  )
 }
 
 const styles = StyleSheet.create({
@@ -35,6 +38,18 @@ const styles = StyleSheet.create({
 		fontSize: 15,
 		color: '#333'
 	}
-});
+})
 
-export default withNavigation(SettingsNav)
+function mapStateToProps(state) {
+	return {
+    settings: state.settings,
+    pin: state.pin
+	}
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(SettingsNav)

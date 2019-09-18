@@ -170,4 +170,4 @@ const styles = StyleSheet.create({
 
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(MenuDrawer);
+export default connect(mapStateToProps, mapDispatchToProps)(MenuDrawer)

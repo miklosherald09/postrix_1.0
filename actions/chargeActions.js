@@ -86,7 +86,7 @@ export function getCharges(){
     const { database, charge } = getState()
     console.log('xx`1')
 
-    query = `SELECT * FROM charges `
+    query = `SELECT * FROM charges`
     database.db.transaction( function(txn){
       txn.executeSql(query,
       [],

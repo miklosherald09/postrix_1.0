@@ -77,8 +77,6 @@ function mapDispatchToProps(dispatch) {
 	}
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ReceiptModal);
-
 const printButton = (props, transaction) => {
   return (
     <Button
@@ -157,4 +155,5 @@ const styles = StyleSheet.create({
   },
 });
 
+export default connect(mapStateToProps, mapDispatchToProps)(ReceiptModal);
 

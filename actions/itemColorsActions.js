@@ -22,10 +22,6 @@ export function setItemColor(){
   
   return (dispatch, getState) => {
     const { database, itemColors } = getState()
-
-    console.log(itemColors.selectedColor)
-    console.log(itemColors.selectedItem)
-    console.log('trying to change item color..');
     
     database.db.transaction(function(txn){
       // UPDATE ITEM

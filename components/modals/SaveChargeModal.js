@@ -14,8 +14,6 @@ const screenWidth = Math.round(Dimensions.get('window').width)
 const screenHeight = Math.round(Dimensions.get('window').height)
 
 const onSubmit = (values, dispatch) => {
-  console.log('ónsubmit')
-  console.log(values)
   dispatch(saveCharge(values))
 }
 
@@ -51,7 +49,8 @@ const renderInput = ({
 
 const UpdateItemModal = (props) => {
  
-	const { saveChargeModalVisible } = props.charge
+  const { saveChargeModalVisible } = props.charge
+  const { userType } = props.pin
 	
 	return (
 		<View style={styles.wrapper}>
@@ -73,7 +72,7 @@ const UpdateItemModal = (props) => {
 									<Text style={myStyles.headerModal}>CHARGE</Text>
 								</View>
 								<View style={styles.headerRight}>
-									<SaveButton onPress={() => props.saveCharge()}/>
+									<SaveButton userType={userType} onPress={() => props.saveCharge()}/>
 								</View>
 							</View>
 							<View style={styles.content}>
@@ -86,7 +85,7 @@ const UpdateItemModal = (props) => {
 									</View>
 								</View>
                 <View style={{width: 100}}>
-									<DeleteButton onPress={() => props.deleteCharge()}/>
+									<DeleteButton userType={userType} onPress={() => props.deleteCharge()}/>
                 </View>
 							</View>
 						</View>
@@ -99,7 +98,8 @@ const UpdateItemModal = (props) => {
 
 function mapStateToProps(state) {
 	return {
-		charge: state.charge,
+    charge: state.charge,
+    pin: state.pin,
 		initialValues: {
 			id: String(state.charge.selected.id),
 			name: String(state.charge.selected.name),
@@ -127,14 +127,14 @@ function mapDispatchToProps(dispatch) {
 }
 
 export class SaveButton extends React.Component{
-
   render(){
     return (
+      (this.props.userType == 'ROOT' || this.props.userType == 'ADMIN')?
       <Button 
         onPress={this.props.onPress} style={styles.opacity}
         title="Save"
         containerStyle={{marginHorizontal: 5}}
-      />
+      />:null
     )
   }
 }
@@ -143,6 +143,7 @@ export class DeleteButton extends React.Component{
 
   render(){
     return (
+      (this.props.userType == 'ROOT' || this.props.userType == 'ADMIN')?
       <Button
         onPress={this.props.onPress} style={styles.opacity}
         title="Delete"
@@ -156,7 +157,7 @@ export class DeleteButton extends React.Component{
             color="#666"
           />
         }
-      />
+      />:null
     )
   }
 }

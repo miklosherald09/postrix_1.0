@@ -233,8 +233,6 @@ export function getShelveItems(){
     
     const { database, shelves } = getState()
    
-    // console.log(shelves.activeShelve)
-    
     limit = shelves.request.limit
     page = shelves.request.page
     offset = (page - 1) * limit
@@ -248,15 +246,12 @@ export function getShelveItems(){
       params = [shelves.activeShelve.id, limit, offset]
     }
 
-    console.log('page: '+page+' limit: '+limit+' offset'+offset+' ++++ '+query)
-
     database.db.transaction( function(txn){
       txn.executeSql(query,
       params,
       function(tx, res){
         itemsList = []
         for (i = 0; i < res.rows.length; ++i) {
-          // console.log(res.rows.item(i))
           itemsList.push({
             barcode: res.rows.item(i).barcode,
             buyPrice: parseInt(res.rows.item(i).buy_price),
@@ -268,8 +263,6 @@ export function getShelveItems(){
           })
         }
 
-        console.log(itemsList)
-        
         dispatch({type: GET_SHELVE_ITEMS_SUCCESS, items: itemsList})
         console.log('shelves items successfully fetch...')
       });

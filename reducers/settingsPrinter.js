@@ -17,7 +17,7 @@ export default function settingsPrinterReducer(state = initialState, action) {
     case ADD_BLUETOOTH_DEVICES: {
       return {
         ...state,
-        devices: action.devices
+        devices: [...state.devices, action.device]
       }
     }
 

@@ -103,13 +103,6 @@ export default function shelvesReducer(state = initialState, action) {
           return v
       })
 
-      console.log(shelves)
-      console.log('shleve action')
-      console.log(state.modalShelve)
-      console.log('active shelves')
-      console.log(state.shelves)
-
-
       return {
         ...state,
         shelves: [...shelves],
@@ -150,11 +143,8 @@ export default function shelvesReducer(state = initialState, action) {
         items.push(action.item)
 
       // // toggle items
-      // console.log('appendshelvekj: ')
       preps = appendShelveButtonBox(items, state.activeShelve)
       
-      // console.log(preps)
-
       return {
         ...state,
         items: preps

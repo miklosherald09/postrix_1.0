@@ -3,7 +3,7 @@ import { View, Text } from 'react-native';
 import { connect } from 'react-redux'
 import DrawerNavigator from '../navigation/DrawerNavigation'
 import PinScreen from '../screens/PinScreen'
-import NavigationService from '../NavigationService';
+import NavigationService from '../NavigationService'
 
 // export default class signInGuard extends React.Component {
 
@@ -11,11 +11,11 @@ const SignInGuard = (props) => {
 
   const { signedIn } = props.pin
 
-  return(
-    <DrawerNavigator ref={navigatorRef => {
-    NavigationService.setTopLevelNavigator(navigatorRef);
-  }} />
-)
+//   return(
+//     <DrawerNavigator ref={navigatorRef => {
+//     NavigationService.setTopLevelNavigator(navigatorRef);
+//   }} />
+// )
 
   if(signedIn){
     return(

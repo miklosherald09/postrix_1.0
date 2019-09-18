@@ -22,7 +22,6 @@ export function signIn(text) {
         if(res.rows.length > 0){
           user = res.rows.item(0)
           console.log('signin success')
-          console.log(user)
           dispatch({ type: SIGN_IN_SUCCESS, userType: user.type })
         }
         else{
@@ -35,7 +34,6 @@ export function signIn(text) {
       console.log(err.message);
     });
   
-    // console.log(text)
     return {
       type: SIGN_IN,
     }

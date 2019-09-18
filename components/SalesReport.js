@@ -4,12 +4,13 @@ import { StyleSheet, View, ScrollView, FlatList, Text } from 'react-native';
 import { connect } from 'react-redux'
 import { ListItem } from 'react-native-elements'
 import NumberFormat from 'react-number-format'
-import { currency } from '../constants/constants'
+import { currency, USER_TYPE_ADMIN, USER_TYPE_ROOT } from '../constants/constants'
 import myStyles from '../constants/styles'
 
 const SalesReport = (props) => {
 
   const { startDate, endDate, totalSales, totalProfit, itemSales, charges, totalCharges } = props.reports
+  const { userType } = props.pin
 
   renderItem = ({item}) => (
     <View>
@@ -43,7 +44,7 @@ const SalesReport = (props) => {
   return(
     <View style={styles.wrapper}>
       <ScrollView style={{padding: 10}}>
-      <View style={styles.headerField}>
+        <View style={styles.headerField}>
           {/* <Text style={styles.reportDate}>{(startDate)?formatDate(startDate, 1):'Start Date'} - {(endDate)?formatDate(endDate, 1):'End Date'}</Text> */}
           {/* <Text style={styles.totalSales}>
             Total sales: <NumberFormat renderText={value => <Text>{value}</Text>} fixedDecimalScale={true} decimalScale={2} value={totalSales} displayType={'text'} thousandSeparator={true} prefix={currency} />
@@ -66,12 +67,15 @@ const SalesReport = (props) => {
               titleStyle={myStyles.header2}
               rightTitle={ <NumberFormat renderText={value => <Text style={{fontSize: 20, color: 'black'}}>{value}</Text>} fixedDecimalScale={true} decimalScale={2} value={totalSales} displayType={'text'} thousandSeparator={true} prefix={currency} />}>
             </ListItem>
-            <ListItem
-              containerStyle={{margin: 2, padding: 5}}
-              title="TOTAL PROFIT"
-              titleStyle={myStyles.header2}
-              rightTitle={ <NumberFormat renderText={value => <Text style={{fontSize: 20, color: 'black'}}>{value}</Text>} fixedDecimalScale={true} decimalScale={2} value={totalProfit} displayType={'text'} thousandSeparator={true} prefix={currency} />}>
-            </ListItem>
+            {
+              (userType == USER_TYPE_ADMIN || userType == USER_TYPE_ROOT)?
+              <ListItem
+                containerStyle={{margin: 2, padding: 5}}
+                title="TOTAL PROFIT"
+                titleStyle={myStyles.header2}
+                rightTitle={ <NumberFormat renderText={value => <Text style={{fontSize: 20, color: 'black'}}>{value}</Text>} fixedDecimalScale={true} decimalScale={2} value={totalProfit} displayType={'text'} thousandSeparator={true} prefix={currency} />}>
+              </ListItem>:null
+            }
             <View style={styles.chargesPan}>
               <Text style={myStyles.header}>CHARGES</Text>
               <FlatList
@@ -95,7 +99,8 @@ const SalesReport = (props) => {
 
 function mapStateToProps(state) {
 	return {
-    reports: state.reports
+    reports: state.reports,
+    pin: state.pin
 	}
 }
 
@@ -103,8 +108,6 @@ function mapDispatchToProps(dispatch) {
   return {
   }
 }
-
-export default connect(mapStateToProps, mapDispatchToProps)(SalesReport);
 
 const header = () => {
   return (
@@ -130,7 +133,6 @@ const header = () => {
     />
   )
 }
-
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -172,3 +174,5 @@ const styles = StyleSheet.create({
     marginTop: 50
   },
 });
+
+export default connect(mapStateToProps, mapDispatchToProps)(SalesReport);

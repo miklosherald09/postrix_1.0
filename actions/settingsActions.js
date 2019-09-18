@@ -3,9 +3,11 @@ export const UPDATE_GOOGLE_SHEET_URL_CSV = 'UPDATE_GOOGLE_SHEET_URL_CSV'
 export const INIT_SETTINGS = 'INIT_SETTINGS'
 export const GOOGLE_SHEET_URL = 'GOOGLE_SHEET_URL'
 export const GOOGLE_SHEET_URL_CSV = 'GOOGLE_SHEET_URL_CSV'
+export const SHOP_NAME = 'SHOP_NAME'
 export const UPDATE_REPORT_EMAIL_SUCCESS = 'UPDATE_REPORT_EMAIL_SUCCESS'
 export const UPDATE_REPORT_EMAIL = 'UPDATE_REPORT_EMAIL'
 export const REPORT_EMAIL = 'REPORT_EMAIL'
+export const UPDATE_SHOP_NAME_SUCCESS = 'UPDATE_SHOP_NAME_SUCCESS'
 
 
 export function initSettings(val) {
@@ -27,6 +29,11 @@ export function initSettings(val) {
         }
 
         console.log('settings successfully fetch..');
+
+        dispatch({
+          type: UPDATE_SHOP_NAME_SUCCESS,
+          shopName: settings[SHOP_NAME]
+        })
 
         dispatch({
           type: UPDATE_GOOGLE_SHEET_URL,
@@ -138,5 +145,28 @@ export function updateReportEmailState(val) {
   }
 }
 
+export function updateShopName(text) {
+
+  return (dispatch, getState) => {
+   
+    const { database } = getState()
+
+    database.db.transaction(function(txn){
+      // UPDATE ITEM
+      console.log('saving shop name..');
+      txn.executeSql(`UPDATE settings set value = ? WHERE name = "SHOP_NAME"`,
+      [text],
+      function(tx, res){
+        // UDPATE STORE
+        dispatch({type: UPDATE_SHOP_NAME_SUCCESS, shopName: text})
+        console.log('update shopname done!');
+      });
+    },
+    function(err){
+      console.log('update shopname error' + err.message);
+    });
+  }
+ 
+}
 
 

@@ -46,7 +46,6 @@ export function searchItem(){
           function(tx, res){
             itemsList = []
             for (i = 0; i < res.rows.length; ++i) {
-              console.log(res.rows.item(i))
               itemsList.push({
                 barcode: res.rows.item(i).barcode,
                 buyPrice: res.rows.item(i).buy_price,

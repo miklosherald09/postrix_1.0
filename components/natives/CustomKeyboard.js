@@ -61,9 +61,6 @@ export class CustomKeyboard extends React.Component {
         number = this.state.number
         number.slice(0, -1)
         
-        console.log('number.toString(): '+number.toString())
-        console.log('number.toString():le '+number.toString().length)
-        
         if(number.toString().length == 0)
           number = 0
 

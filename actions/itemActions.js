@@ -27,6 +27,10 @@ export const REFRESH_ITEM_LIST = 'REFRESH_ITEM_LIST'
 export const SEARCH_ITEM_SUCCESS = 'SEARCH_ITEM_SUCCESS'
 export const UPDATE_SEARCH_TEXT = 'UPDATE_SEARCH_TEXT'
 export const SYNC_PERCENTAGE = 'SYNC_PERCENTAGE'
+export const GET_ITEMS_ERROR = 'GET_ITEMS_ERROR'
+export const SYNCED_ITEM = 'SYNCED_ITEM'
+export const REMOVING_UNUSED_ITEM = 'REMOVING_UNUSED_ITEM'
+export const SAVE_FIELD = 'SAVE_FIELD'
 
 export function itemInputDump() {
   return {
@@ -81,94 +85,8 @@ export function syncGoogleSheet() {
     })
     const { settings, database } = getState()
 
-    _insert = async (item) => {
-      return new Promise((resolve, reject) => {
-        database.db.transaction( function(txn){
-          txn.executeSql(
-            `INSERT INTO items(name, barcode, buy_price, sell_price) VALUES(?, ?, ?, ?)`,
-            [item.Name, item.Barcode, item.BuyPrice, item.SellPrice],
-            function(_, res){
-              resolve({
-                msg: 'insert item done!',
-                result: res,
-                item: res.rows.items()
-              })
-            },
-            function(err){
-              reject({msg: 'error!', err: err})
-            }
-          )
-        })
-      })
-    }
+    _syncItem = async (items, item, index) => {
 
-    _exists = async (item) => {
-      return new Promise((resolve, reject) => {
-        database.db.transaction( function(txn){
-          txn.executeSql(
-            `SELECT * FROM items WHERE name = ? AND barcode = ? LIMIT 1`,
-            [item.Name, item.Barcode],
-            function(_, res){
-
-              exists = res.rows.item(0) ? true:false
-
-              resolve({
-                msg: 'checked item exists done!',
-                exists: exists,
-                item: res.rows.item(0)
-              })
-            },
-            function(err){
-              reject({msg: 'error:', error: err})
-            }
-          )
-        })
-      })
-    }
-
-    _update = async (id, item) => {
-      return new Promise((resolve, reject) => {
-        database.db.transaction( function(txn){
-          txn.executeSql(
-            `UPDATE items set name=?, barcode=?, buy_price=? , sell_price=? WHERE id=?`,
-            [id, item.Name, item.Barcode, item.BuyPrice, item.SellPrice],
-            function(_, res){
-              resolve({
-                msg: 'update item done!',
-                result: res
-              })
-            },
-            function(err){
-              reject({msg: 'error!', err: err})
-            }
-          )
-        })
-      })
-    }
-
-    _insertx = (item) => {
-      console.log('invoking _insertx')
-      return new Promise((resolve, reject) => {
-        database.db.transaction( function(txn){
-          txn.executeSql(
-            `INSERT INTO items(name, barcode, buy_price, sell_price) VALUES(?, ?, ?, ?)`,
-            [item.Name, item.Barcode, item.BuyPrice, item.SellPrice],
-            function(_, res){
-              resolve({
-                msg: 'insert item done!',
-                result: res,
-                item: res.rows.items()
-              })
-            },
-            function(err){
-              reject({msg: 'error!', err: err})
-            }
-          )
-        })
-      })
-    }
-
-    _syncItem = async (items, item, i) => {
       return new Promise((resolve, reject) => {
         // CHECK IF ITEM EXISTS
         database.db.transaction( function(txn){
@@ -181,12 +99,14 @@ export function syncGoogleSheet() {
               existsItem = res.rows.item(0)
 
               if(!exists){
+                console.log('INSERTING ITEM')
                 // INSERT NEW ITEM
                 tx.executeSql(
                   `INSERT INTO items(name, barcode, buy_price, sell_price) VALUES(?, ?, ?, ?)`,
                   [item.Name, item.Barcode, item.BuyPrice, item.SellPrice],
                   function(_, res){
-                    if(i < items.length - 1){
+                    dispatch({type: SYNCED_ITEM, item: item})
+                    if(index < items.length - 1){
                       resolve({
                         msg: 'insert item done!',
                         result: res,
@@ -200,16 +120,28 @@ export function syncGoogleSheet() {
                 )
               }
               else{
+                console.log('UPDATING ITEM')
+                console.log('index: '+index)
+                console.log('item: ')
+                console.log(item)
+               
                 // UPDATE ITEM
                 tx.executeSql(
                   `UPDATE items set name=?, barcode=?, buy_price=? , sell_price=? WHERE id=?`,
                   [item.Name, item.Barcode, item.BuyPrice, item.SellPrice, existsItem.id],
                   function(_, res){
-                    if(i < items.length - 1){
+                    
+                    dispatch({type: SYNCED_ITEM, item: item})
+                    console.log('index < items.length - 1: ' + index + ' < ' + items.length - 1)
+
+                    if(index < items.length - 1){
                       resolve({
                         msg: 'update item done!',
                         result: res
                       })
+                    }
+                    else{
+                      console.log('shiiity uptedte')
                     }
                   },
                   function(err){
@@ -219,7 +151,7 @@ export function syncGoogleSheet() {
               }
 
               // REMOVE ITEMS THAT NOT EXISTS IN SYNC ITEMS
-              if(i == items.length - 1){
+              if(index == items.length - 1){
                 console.log('REMOVE ITEMS THAT NOT EXISTS IN SYNC ITEMS')
                 dispatch(trimItems(items))
               }
@@ -242,17 +174,19 @@ export function syncGoogleSheet() {
     .then((text) => {
 
       csvArray = csvJSON(text)
-      items = JSON.parse(csvArray)
+      items = JSON.parse(csvArray).slice(0, 100)
+      // items = JSON.parse(csvArray)
 
       async function synchronizeItems() {
 
         let resolvedFinalArray = await Promise.all(items.map(async (item, i) => { // map instead of forEach
+          console.log('i: '+i)
           const result = await _syncItem(items, item, i)
           
           finalValue = {}
           finalValue.item = result.item;
           return finalValue; // important to return the value
-        }));
+        })).done(result => console.log(result));
         return resolvedFinalArray;
       };
 
@@ -285,13 +219,15 @@ export function trimItems(items) {
   return (dispatch, getState) => {
 
     const { database } = getState()
-
+    
+    dispatch({type: REMOVING_UNUSED_ITEM, removing: true})
     database.db.transaction( function(txn){
       txn.executeSql(
         `SELECT * FROM items`,
         [],
         function(tx, res){
 
+          itemLength = res.rows.length
           for (i = 0; i < res.rows.length; ++i) {
             
             savedItem = res.rows.item(i)
@@ -303,18 +239,31 @@ export function trimItems(items) {
               }
             });
 
-            console.log('exists: '+exists)
+            console.log('exists: '+exists+ ' i: '+i+ ' itemLength: '+itemLength)
             if(!exists){
               tx.executeSql(
                 `DELETE FROM items WHERE id = ? `,
                 [savedItem.id],
                 function(_, res){
+                  // REMOVE ITEMS THAT NOT EXISTS IN SYNC ITEMS
+                  if(i == itemLength - 1){
+                    console.log('SYNC_GOOGLE_SHEET_SUCCESS')
+                    dispatch({type: SYNC_GOOGLE_SHEET_SUCCESS})
+                    dispatch({type: REMOVING_UNUSED_ITEM, removing: false})
+                  }
                   console.log(res)
                 },
                 function(err){
                   console.log(err)
                 }
               )
+            }
+            else{
+              if(i == itemLength - 1){
+                console.log('SYNC_GOOGLE_SHEET_SUCCESS')
+                dispatch({type: REMOVING_UNUSED_ITEM, removing: false})
+                dispatch({type: SYNC_GOOGLE_SHEET_SUCCESS})
+              }
             }
           
           }
@@ -390,36 +339,30 @@ export function getItems(){
     page = items.page
     offset = (page-1) * limit
 
-    setTimeout(async () => {
-      let promise = new Promise((resolve, reject) => {
-        database.db.transaction( function(txn){
-          txn.executeSql(`SELECT * FROM items ORDER BY name ASC LIMIT ? OFFSET ?`,
-          [limit, offset],
-          function(tx, res){
-            
-            itemsList = []
-            for (i = 0; i < res.rows.length; ++i) {
-              item = res.rows.item(i)
-              item.sellPrice = res.rows.item(i).sell_price
-              item.buyPrice = res.rows.item(i).buy_price
-              delete item.sell_price
-              delete item.buy_price
-              itemsList.push(item)
-            }
-            dispatch({type: GET_ITEMS_SUCCESS, items: itemsList})
-            resolve('items successfully fetch...')
-          });
-        },
-        function(err){
-          reject(err.message);
-          dispatch({type: GET_ITEMS_ERROR})
-        });
-      })
+    console.log('fetching items: p: '+ page+' l: '+limit)
+    console.log('SELECT * FROM items ORDER BY name ASC LIMIT '+limit+' OFFSET '+offset)
 
-      let result = await promise;
-      console.log(result)
-
-    }, 1500)
+    database.db.transaction( function(txn){
+      txn.executeSql(`SELECT * FROM items ORDER BY name ASC LIMIT ? OFFSET ?`,
+      [limit, offset],
+      function(tx, res){
+        
+        itemsList = []
+        for (i = 0; i < res.rows.length; ++i) {
+          item = res.rows.item(i)
+          item.sellPrice = res.rows.item(i).sell_price
+          item.buyPrice = res.rows.item(i).buy_price
+          delete item.sell_price
+          delete item.buy_price
+          itemsList.push(item)
+        }
+        console.log(itemsList)
+        dispatch({type: GET_ITEMS_SUCCESS, items: itemsList})
+      });
+    },
+    function(err){
+      dispatch({type: GET_ITEMS_ERROR})
+    });
   }
 }
 
@@ -439,10 +382,8 @@ export function saveItem(item){
         [item.name, item.buyPrice, item.sellPrice, item.barcode],
         function(tx, res){
           console.log(item)
-          dispatch({type: SAVE_ITEM_SUCCESS})
+          dispatch({type: SAVE_ITEM_SUCCESS, item: item})
           dispatch({type: ADD_ITEM_MODAL_INVISIBLE})
-          dispatch(refreshItemsList())
-          dispatch(getItems())
           console.log('item successfully saved');
         });
       },
@@ -510,7 +451,7 @@ export function seeAllItems(){
       function(err){
         console.log(err.message);
       });
-    }, 5000)
+    }, 500)
   }
 
 }
@@ -570,5 +511,13 @@ export function percentage(sync_percentage){
   return {
     type: SYNC_GOOGLE_SHEET_PERCENTAGE,
     sync_percentage: sync_percentage
+  }
+}
+
+export function saveField(field, value){
+  return {
+    type: SAVE_FIELD,
+    field: field,
+    value: value
   }
 }

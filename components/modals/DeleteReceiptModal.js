@@ -1,21 +1,21 @@
 import React from 'react'
 import { Dimensions, StyleSheet, Text, View, TouchableHighlight, TouchableOpacity, Modal, FlatList } from 'react-native'
 import { connect } from 'react-redux'
-import { ListItem, Button } from 'react-native-elements'
+import { ListItem, Button, Input } from 'react-native-elements'
 import { CloseButton } from '../../components/Common'
 import myStyles from '../../constants/styles'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import NumberFormat from 'react-number-format'
 import { currency } from '../../constants/constants'
-import { receiptModalInvisible, printReceipt, deleteReceiptModalVisible } from '../../actions/receiptActions'
-import moment from 'moment'
+import { receiptModalInvisible, printReceipt, deleteReceiptModalVisible, deleteReceipt } from '../../actions/receiptActions'
+
 
 const screenWidth = Math.round(Dimensions.get('window').width);
 const screenHeight = Math.round(Dimensions.get('window').height);
 
-const ReceiptModal = (props) => {
+const DeleteReceiptModal = (props) => {
  
-  const { receiptModalVisible, selected } = props.receipt
+  const { receiptModalVisible, selected, deleteReceiptModalVisible } = props.receipt
   const { shopName } = props.settings
   const { userType } = props.pin
 
@@ -30,34 +30,27 @@ const ReceiptModal = (props) => {
         titleStyle={{fontSize: 12}}
         subtitle={'x' + item.count}
         subtitleStyle={{fontSize: 12}}
-        rightTitle={<NumberFormat 
-          renderText={value => <Text style={{fontSize: 15, color: '#333'}}>{value}</Text>} 
-          fixedDecimalScale={true} 
-          decimalScale={2} 
-          value={item.accruePrice} 
-          displayType={'text'} 
-          thousandSeparator={true} 
-          prefix={currency} />}
-        rightTitleStyle={{fontSize: 15, color: '#333', }}
+        rightTitle={String(item.accruePrice)}
+        rightTitleStyle={{fontSize: 12}}
       />
     )
-  }
+  };
   
 	return (
     <View style={styles.wrapper}>
       <Modal
         animationType="none"
         transparent={true}
-        visible={receiptModalVisible}
+        visible={deleteReceiptModalVisible}
         onRequestClose={() => {
-          props.receiptModalInvisible()
+          props.deleteReceiptModalVisible(false)
         }}>
-        <TouchableOpacity activeOpacity={1} style={styles.touchable} onPress={ () => {props.receiptModalInvisible()}}>
+        <TouchableOpacity activeOpacity={1} style={styles.touchable} onPress={ () => {props.deleteReceiptModalVisible(false)}}>
           <TouchableOpacity activeOpacity={1} style={styles.container} >
-            <View style={styles.wrap} >
+            <View style={styles.wrap}>
               <View style={styles.headerPan}>
                 <View style={styles.headerLeft}>
-                  <CloseButton onPress={ () => props.receiptModalInvisible() }/>
+                  <CloseButton onPress={ () => props.deleteReceiptModalVisible(false) }/>
                 </View>
                 <View style={styles.headerMiddle}>
                   <Text style={myStyles.headerModal}>RECEIPT - {selected.id}</Text>
@@ -67,25 +60,17 @@ const ReceiptModal = (props) => {
                 </View>
               </View>
               <View style={styles.content}>
-                <View style={{height: 30, flexDirection: 'row', justifyContent: 'flex-end' }}>
-                  <Text>date: {moment(selected.datetime).format('MMMM Do YYYY, h:mm:ss a')}</Text>
-                  <DeleteButton userType={userType} onPress={() => props.deleteReceiptModalVisible(true)}/>
-                  <PrintButton userType={userType} onPress={() => props.printReceipt(selected)}/>
-                </View>
-                <View style={{flex: 1, alignContent: 'center', justifyContent: 'center'}}>
-                  <View style={{flex: 1, textAlign: 'center'}}>
-                    <Text style={styles.companyName}>{shopName}</Text>
-                    <FlatList
-                      keyExtractor={this.keyExtractor}
-                      data={selected.punched}
-                      style={{flex: 1}}
-                      renderItem={this.renderItem}
-                    />
-                  </View>
-                </View>
-                <Text style={{fontSize: 20}}>
-                  Total: <NumberFormat renderText={value => <Text>{value}</Text>} fixedDecimalScale={true} decimalScale={2} value={selected.total} displayType={'text'} thousandSeparator={true} prefix={currency} />
-                </Text>
+                <Text>ENTER ADMIN/MANAGER PIN</Text>
+                <Input
+                  label={"PIN"}
+                  type={"default"}
+                  keyboardType={"numeric"}
+                  labelStyle={myStyles.label1}
+                  containerStyle={{marginTop: 15}}
+                  inputStyle={{}}
+                  secureTextEntry={true}
+                  onSubmitEditing={({nativeEvent})=> props.deleteReceipt(nativeEvent.text)}
+                />
               </View>
             </View>
           </TouchableOpacity>
@@ -107,9 +92,9 @@ export class DeleteButton extends React.Component{
         titleStyle={{color: '#333', marginLeft: 5}}
         icon={
           <Icon 
-            name="times-circle"
+            name="minus-circle"
             size={30}
-            color="#FF0000"
+            color="#666"
           />
         }
       />:null
@@ -131,7 +116,7 @@ export class PrintButton extends React.Component{
           <Icon 
             name="print"
             size={30}
-            color="#2089dc"
+            color="#666"
           />
         }
       />:null
@@ -149,12 +134,10 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
 	return {
+    deleteReceiptModalVisible: (visible) => dispatch(deleteReceiptModalVisible(visible)),
     receiptModalInvisible: () => dispatch(receiptModalInvisible()),
-    deleteReceiptModalVisible: (visible) => { 
-      // dispatch(receiptModalInvisible())
-      dispatch(deleteReceiptModalVisible(visible))
-    },
-    printReceipt: (transaction) => dispatch(printReceipt(transaction))
+    printReceipt: (transaction) => dispatch(printReceipt(transaction)),
+    deleteReceipt: (pin) => dispatch(deleteReceipt(pin))
 	}
 }
 
@@ -193,11 +176,11 @@ const styles = StyleSheet.create({
     // height: screenHeight/2,
     borderRadius: 10,
     backgroundColor: 'white',
-    height: screenHeight - (screenHeight * 0.10 * 2),
-    marginLeft: screenWidth * 0.20,
-    marginRight: screenWidth * 0.20,
-    marginTop: screenHeight * 0.05,
-    marginBottom: screenHeight * 0.05,
+    height: screenHeight - (screenHeight * 0.30 * 2),
+    marginLeft: screenWidth * 0.25,
+    marginRight: screenWidth * 0.25,
+    marginTop: screenHeight * 0.15,
+    marginBottom: screenHeight * 0.15,
   },
   input: {
     borderColor: 'black',
@@ -236,7 +219,7 @@ const styles = StyleSheet.create({
 	},
 	content: {
 		flex: 1,
-		margin: 15,
+		margin: 20,
   },
   invalid: {
     marginLeft: 10,
@@ -305,5 +288,5 @@ const styles = StyleSheet.create({
 
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(ReceiptModal);
+export default connect(mapStateToProps, mapDispatchToProps)(DeleteReceiptModal);
 

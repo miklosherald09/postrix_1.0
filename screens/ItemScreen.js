@@ -62,7 +62,7 @@ const ItemScreen = (props) => {
         </View>
         <View style={styles.rightContent}>
 					<View style={styles.buttonPan}>
-            <AddItemBUtton openModal={() => props.setModalVisible()} />
+            
             {/* <View style={styles.buttonPanLeft}>
              
               { SyncItemButton(props) }
@@ -74,6 +74,7 @@ const ItemScreen = (props) => {
           </View>
           <ItemsList/>
         </View>
+        <AddItemBUtton openModal={() => props.setModalVisible()} />
       </View>
 			<View>
 				<AddItemModal />
@@ -132,13 +133,15 @@ class SearchInput extends React.Component{
 class AddItemBUtton extends React.Component{
   render(){
     return(
-      <TouchableOpacity onPress={() => this.props.openModal()}>
-        <Icon
-          name="plus-circle"
-          size={35}
-          color="#2B78FE"
-        />
-      </TouchableOpacity>
+      <View style={{position: 'absolute', bottom: 15, right: 15}}>
+        <TouchableOpacity onPress={() => this.props.openModal()}>
+          <Icon
+            name="plus-circle"
+            size={40}
+            color="#2B78FE"
+          />
+        </TouchableOpacity>
+      </View>
     )
   }
 }

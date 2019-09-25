@@ -7,12 +7,13 @@ import SalesReport from '../components/SalesReport'
 import ReceiptModal from '../components/modals/ReceiptModal'
 import { Button } from 'react-native-elements'
 import { changeStartDate, changeEndDate, generateSalesReport , changeStartTime, changeEndTime, printReport } from '../actions/reportsActions'
-import { formatDate } from '../functions';
-import Icon from 'react-native-vector-icons/FontAwesome5';
+import { formatDate } from '../functions'
+import Icon from 'react-native-vector-icons/FontAwesome5'
+import moment from 'moment'
 
 const ReportScreen = (props) => {
-
-	const { startDate, endDate, processing } = props.reports
+	
+	const { startDate, endDate, startTime, endTime, processing } = props.reports
 	
 	const navLink = (nav, text) => {
 		return(
@@ -128,32 +129,12 @@ const ReportScreen = (props) => {
 				</View>
 				<View style={styles.rightContent}>
 					<View style={{height: 50, flexDirection: 'row', marginLeft: 10, marginTop: 10}}>
-						<DatePicker onPress={ () => this.openStartDatePicker() }/>
-						<TimePicker onPress={ () => this.openStartTimePicker() }/>
-						<TextInput 
-							style={styles.inputStyle} 
-							value={(startDate)?formatDate(startDate, 2):''} 
-							placeholder={'start date'} 
-						/>
-						<DatePicker onPress={ () => this.openEndDatePicker() }/>
-						<TimePicker onPress={ () => this.openEndTimePicker() }/>
-						<TextInput 
-							style={styles.inputStyle} 
-							value={(endDate)?formatDate(endDate, 2):''} 
-							placeholder={'end date'} 
-						/>
-						<Button
-							style={{marginLeft: 10}}
-							onPress={() => props.printReport()}
-							type="clear"
-							icon={
-								<Icon
-									name="print"
-									size={25}
-									color="#2089dc"
-								/>
-							}
-						/>
+						<DatePicker title={formatDate(startDate, 3)} onPress={ () => this.openStartDatePicker() }/>
+						<TimePicker title={moment(startTime).format('hh:mm a')} onPress={ () => this.openStartTimePicker() }/>
+						<Icon name="arrows-alt-h" color="#CCC" size={20} style={{marginTop: 10}}/>
+						<DatePicker title={formatDate(endDate, 3)} onPress={ () => this.openEndDatePicker() }/>
+						<TimePicker title={moment(endTime).format('hh:mm a')} onPress={ () => this.openEndTimePicker() }/>
+						<PrintButton onPress={() => props.printReport()} />
 					</View>
 					<View style={{flex: 1}}>
 						{ !processing ? <SalesReport />: <Loading /> }
@@ -165,24 +146,15 @@ const ReportScreen = (props) => {
 	);
 }
 
-class Loading extends React.Component{
-	render(){
-		return (
-			<View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-				<ActivityIndicator size="large" />
-			</View>
-		)
-	}
-}
-
 class DatePicker extends React.Component{
 	render(){
 		return (
 			<Button
 					type="clear"
-					buttonStyle={{marginRight: 0}}
 					onPress={ this.props.onPress }
 					containerStyle={{marginBottom: 5}}
+					title={this.props.title}
+					titleStyle={{marginLeft: 10, fontSize: 15, fontWeight: 'normal'}}
 					icon={
 						<Icon
 							name="calendar"
@@ -193,7 +165,7 @@ class DatePicker extends React.Component{
 				/>
 		)
 	}
-} 
+}
 
 class TimePicker extends React.Component{
 	render(){
@@ -202,18 +174,45 @@ class TimePicker extends React.Component{
 					type="clear"
 					buttonStyle={{marginRight: 0}}
 					onPress={ this.props.onPress }
-					containerStyle={{marginBottom: 5}}
+					containerStyle={{}}
+					titleStyle={{color: 'black', marginLeft: 10, fontSize: 15, fontWeight: 'normal', marginLeft: -5, padding: 0}}
+					title={this.props.title}
+				/>
+		)
+	}
+} 
+
+class Loading extends React.Component{
+	render(){
+		return (
+			<View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+				<ActivityIndicator size="large" />
+			</View>
+		)
+	}
+}
+
+class PrintButton extends React.Component{
+	render(){
+		return (
+			<View style={{ width: 50, height: 50, position: 'absolute', right: 10}}>
+				<Button
+					style={{marginLeft: 10, alignSelf: 'flex-end', position: 'absolute', right: 0}}
+					onPress={this.props.onPress}
+					type="clear"
 					icon={
 						<Icon
-							name="clock"
+							name="print"
 							size={25}
 							color="#2089dc"
 						/>
 					}
 				/>
+			</View>
 		)
 	}
-} 
+}
+
 
 function mapStateToProps(state) {
 	return {
@@ -231,8 +230,6 @@ function mapDispatchToProps(dispatch) {
 		changeEndTime: (time) => { dispatch(changeEndTime(time)) }
 	}
 }
-
-export default connect(mapStateToProps, mapDispatchToProps)(ReportScreen);
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -290,3 +287,5 @@ const styles = StyleSheet.create({
 		marginRight: 30
 	}
 });
+
+export default connect(mapStateToProps, mapDispatchToProps)(ReportScreen)

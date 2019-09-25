@@ -14,7 +14,6 @@ const screenHeight = Math.round(Dimensions.get('window').height)
 
 const submit = (values, dispatch) => {
   dispatch(saveItem(values))
-	dispatch(getItems())
 }
 
 const renderInput = ({

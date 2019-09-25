@@ -24,7 +24,10 @@ import {
   SYNC_GOOGLE_SHEET_FAIL,
   REFRESH_ITEM_LIST,
   SEARCH_ITEM_SUCCESS,
-  UPDATE_SEARCH_TEXT
+  UPDATE_SEARCH_TEXT,
+  SYNCED_ITEM,
+  REMOVING_UNUSED_ITEM,
+  SAVE_FIELD
 } from '../actions/itemActions';
 
 const initialState = {
@@ -34,6 +37,7 @@ const initialState = {
   items: [],
   isFetching: false,
   syncingGoogleSheet: false,
+  removingUnusedItem: false,
   isDeletingAllItems: false,
   error: false,
   input: {
@@ -41,7 +45,8 @@ const initialState = {
     name: '',
     buyPrice: '',
     sellPrice: '',
-    barcode: ''
+    barcode: '',
+    sellPricex: 1,
   },
   itemsCsv: '',
   itemsCount: 0,
@@ -50,6 +55,7 @@ const initialState = {
   refreshing: false,
   searchText: '',
   sync_percentage: 0,
+  syncedItem: {Name: ''},
 }
 
 export default function itemsReducer(state = initialState, action) {
@@ -58,7 +64,8 @@ export default function itemsReducer(state = initialState, action) {
     case SAVE_ITEM_SUCCESS: {
       return {
         ...state,
-        saveItemMsg: 'item successfully saved'
+        saveItemMsg: 'item successfully saved',
+        items: [action.item, ...state.items]
       }
     }
     
@@ -118,8 +125,9 @@ export default function itemsReducer(state = initialState, action) {
           id: action.item.id,
           barcode: action.item.barcode,
           name: action.item.name,
-          buyPrice: String(action.item.buyPrice),
-          sellPrice: String(action.item.sellPrice),
+          buyPrice: action.item.buyPrice,
+          sellPrice: action.item.sellPrice,
+          sellPricex: action.item.sellPrice,
         }
       }
     }
@@ -271,6 +279,31 @@ export default function itemsReducer(state = initialState, action) {
       return {
         ...state,
         sync_percentage: action.sync_percentage 
+      }
+    }
+
+    case SYNCED_ITEM: {
+      return {
+        ...state,
+        syncedItem: action.item
+      }
+    }
+
+    case REMOVING_UNUSED_ITEM: {
+      return {
+        ...state,
+        removingUnusedItem: action.removing
+      }
+    }
+
+    case SAVE_FIELD: {
+      console.log('saving field: '+action.field+ ' - '+action.value)
+      return {
+        ...state,
+        input: {
+          ...state.input,
+          [action.field]: action.value
+        }
       }
     }
 

@@ -125,18 +125,23 @@ export default function reportsReducer(state = initialState, action) {
     }
 
     case CHANGE_START_TIME: {
+      date = new Date()
+      offset =  date.getTimezoneOffset() 
+
       return {
         ...state,
-        startDate: (state.startDate - state.startTime) + action.time,
-        startTime: action.time
+        startTime: action.time + (offset * 60 * 1000)
       }
     }
 
     case CHANGE_END_TIME: {
+
+      date = new Date()
+      offset =  date.getTimezoneOffset() 
+
       return {
         ...state,
-        endDate: (state.endDate - state.endTime) + action.time,
-        endTime: action.time
+        endTime: action.time + (offset * 60 * 1000)
       }
     }
     

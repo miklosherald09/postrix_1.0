@@ -1,13 +1,16 @@
 import {
   RECEIPT_MODAL_VISIBLE,
   RECEIPT_MODAL_INVISIBLE,
+  DELETE_RECEIPT_MODAL_VISIBLE,
   PRINT_RECEIPT_SUCCESS,
   PRINT_RECEIPT_ERROR,
   SELECT_RECEIPT,
+  DELETE_RECEIPT_SUCCESS
 } from '../actions/receiptActions'
 
 const initialState = {
   receiptModalVisible: false,
+  deleteReceiptModalVisible: false,
   printed: false,
   selected: {
     total: "",
@@ -19,6 +22,14 @@ const initialState = {
 export default function receiptReducer(state = initialState, action) {
 
   switch(action.type) {
+
+    case DELETE_RECEIPT_MODAL_VISIBLE: {
+      return {
+        ...state,
+        deleteReceiptModalVisible: action.visible,
+      }
+    }
+    
     case RECEIPT_MODAL_VISIBLE: {
       return {
         ...state,
@@ -54,6 +65,13 @@ export default function receiptReducer(state = initialState, action) {
       }
     }
 
+    case DELETE_RECEIPT_SUCCESS: {
+      return {
+        ...state,
+        receiptModalVisible: false,
+        deleteReceiptModalVisible: false,
+      }
+    }
 
     default:
       return state;

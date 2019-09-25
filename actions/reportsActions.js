@@ -49,7 +49,12 @@ export function generateSalesReport(){
     
     dispatch({type: GENERATE_SALES_REPORT_BEGIN })
 
-    const { reports, database } = getState();
+    const { reports, database } = getState()
+
+    offset =  date.getTimezoneOffset() 
+
+    startDateTime = reports.startDate + reports.startTime - (offset * 60 * 1000)
+    endDateTime = reports.endDate + reports.endTime - (offset * 60 * 1000)
 
     database.db.transaction(function(txn) {
       txn.executeSql(
@@ -57,7 +62,7 @@ export function generateSalesReport(){
         FROM transactions 
         WHERE datetime >= ? 
         AND datetime <= ?`,
-        [reports.startDate, reports.endDate],
+        [startDateTime, endDateTime],
         function(tx, res){
           var items = [];
           for (let i = 0; i < res.rows.length; ++i) {
@@ -109,7 +114,7 @@ export function printReport(){
 
   return (dispatch, getState) => {
 
-    const { settingsPrinter, reports } = getState()
+    const { settingsPrinter, reports, settings } = getState()
 
     if(!settingsPrinter.connected){
       alert('PRINTER NOT CONNECTED')
@@ -119,6 +124,10 @@ export function printReport(){
     
     date = new Date;
     columnWidths = [18, 4, 10];
+    date = new Date()
+    offset = date.getTimezoneOffset() * 60 * 1000
+    startDateTime = reports.startDate + reports.startTime - offset
+    endDateTime = reports.endDate + reports.endTime - offset
 
     console.log('printing receipt...')
     BluetoothEscposPrinter.printerAlign(BluetoothEscposPrinter.ALIGN.CENTER)
@@ -132,8 +141,8 @@ export function printReport(){
     })
     BluetoothEscposPrinter.printText("\n\r",{});
     BluetoothEscposPrinter.printerAlign(BluetoothEscposPrinter.ALIGN.LEFT)
-    BluetoothEscposPrinter.printText("From: "+formatDate(reports.startDate, 2)+"\n\r",{});
-    BluetoothEscposPrinter.printText("To: "+formatDate(reports.endDate, 2)+"\n\r",{});
+    BluetoothEscposPrinter.printText("From: "+formatDate(startDateTime, 2)+"\n\r",{});
+    BluetoothEscposPrinter.printText("To: "+formatDate(endDateTime, 2)+"\n\r",{});
     BluetoothEscposPrinter.printText("\n\r",{});
     BluetoothEscposPrinter.printText("--------------------------------\n\r",{});
     
@@ -150,6 +159,27 @@ export function printReport(){
     BluetoothEscposPrinter.printColumn(columnWidths, [BluetoothEscposPrinter.ALIGN.LEFT,BluetoothEscposPrinter.ALIGN.CENTER,BluetoothEscposPrinter.ALIGN.RIGHT],
       ["Total Sales", "", String(accounting.formatMoney(reports.totalSales, ''))],{});
 
+    BluetoothEscposPrinter.printText("\n\r",{});
+    BluetoothEscposPrinter.printText("\n\r",{});
+    BluetoothEscposPrinter.printText("\n\r",{});  
+    BluetoothEscposPrinter.printText("--------------------------------\n\r",{});
+
+    BluetoothEscposPrinter.printColumn(columnWidths, [BluetoothEscposPrinter.ALIGN.LEFT,BluetoothEscposPrinter.ALIGN.CENTER,BluetoothEscposPrinter.ALIGN.RIGHT],
+      ["Item",'Qty', 'Total'], {});
+
+    // iterate charges
+    reports.charges.map((v, i) => {
+      BluetoothEscposPrinter.printColumn(columnWidths, [BluetoothEscposPrinter.ALIGN.LEFT,BluetoothEscposPrinter.ALIGN.CENTER,BluetoothEscposPrinter.ALIGN.RIGHT],
+        [String(v.name.slice(0, 16)), 'x'+String(v.count), String(accounting.formatMoney(v.accruePrice, ''))],{});
+    })
+
+    BluetoothEscposPrinter.printText("\n\r",{});
+    BluetoothEscposPrinter.printColumn(columnWidths, [BluetoothEscposPrinter.ALIGN.LEFT,BluetoothEscposPrinter.ALIGN.CENTER,BluetoothEscposPrinter.ALIGN.RIGHT],
+      ["Total Charges", "", String(accounting.formatMoney(reports.totalCharges, ''))],{});
+
+    BluetoothEscposPrinter.printText("\n\r",{});
+    BluetoothEscposPrinter.printText("\n\r",{});
+    BluetoothEscposPrinter.printText("\n\r",{}); 
     BluetoothEscposPrinter.printText("--------------------------------\n\r",{});
     BluetoothEscposPrinter.printerAlign(BluetoothEscposPrinter.ALIGN.CENTER);
     BluetoothEscposPrinter.setBlob(1);
@@ -158,8 +188,10 @@ export function printReport(){
     BluetoothEscposPrinter.printText("\n\r",{});
     BluetoothEscposPrinter.printText("\n\r",{});
     BluetoothEscposPrinter.printText("\n\r",{});
+
     
     dispatch({ type: PRINT_REPORT_SUCCESS })
 
   }
 }
+

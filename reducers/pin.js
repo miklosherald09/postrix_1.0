@@ -10,7 +10,8 @@ const initialState = {
   loading: false,
   invalidPin: false,
   signedIn: false,
-  userType: '',
+  // userType: '',
+  userType: 'ADMIN'
 }
 
 export default function pinReducer(state = initialState, action) {

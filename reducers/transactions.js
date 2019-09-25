@@ -1,10 +1,19 @@
 import {
   ADD_TRANSACTION,
-  GET_TRANSACTIONS_SUCCESS
+  ADD_TRANSACTION_SUCCESS,
+  GET_TRANSACTIONS_SUCCESS,
+  GET_TRANSACTIONS_BEGIN,
+  GET_TRANSACTIONS_ERROR,
+  REFRESH_TRANSACTIONS,
+  DELETE_TRANSACTION_SUCCESS
 } from '../actions/transactionActions';
+import { appendTransactionEmptyBox } from '../functions'
 
 const initialState = {
   transactions: [],
+  refreshing: false,
+  lastId: 0,
+  limit: 15
 }
 
 export default function transactionsReducer(state = initialState, action) {
@@ -15,10 +24,83 @@ export default function transactionsReducer(state = initialState, action) {
       }
     }
 
-    case GET_TRANSACTIONS_SUCCESS: {
+    case ADD_TRANSACTION_SUCCESS: {
+
+      temp = [action.transaction, ...state.transactions]
+      transactions = appendTransactionEmptyBox(temp)
+
       return {
         ...state,
-        transactions: action.transactions
+        transactions: transactions
+      }
+    }
+    
+    case GET_TRANSACTIONS_SUCCESS: {
+      
+      console.log('pos1')
+      lastId = state.lastId
+      if(action.transactions.length){
+        lastId = action.transactions[action.transactions.length-1].id
+      }
+
+      console.log('pos2')
+
+      temp = [...state.transactions, ...action.transactions]
+      console.log('pos2.1')
+      transactions = appendTransactionEmptyBox(temp)
+
+      console.log('pos3')
+      return {
+        ...state,
+        transactions: transactions,
+        refreshing: false,
+        lastId: lastId
+      }
+    }
+
+    case GET_TRANSACTIONS_BEGIN: {
+      return {
+        ...state,
+        refreshing: true,
+      }
+    }
+
+    case GET_TRANSACTIONS_ERROR: {
+      return {
+        ...state,
+        refreshing: false,
+      }
+    }
+
+    case REFRESH_TRANSACTIONS: {
+      return {
+        ...state,
+        lastId: 0,
+        refreshing: true,
+        transactions: []
+      }
+    }
+
+    case DELETE_TRANSACTION_SUCCESS: {
+
+      console.log('DELETE_TRANSACTION_SUCCESS')
+      console.log(state.transactions)
+
+      transactions = state.transactions.filter((v) => {
+        return typeof(v.empty) !== 'undefined'
+      })
+
+      console.log(transaction)
+
+      _transactions = transactions.filter((v) => {
+        return v.id != action.transId
+      })
+
+      transactionFinal = appendTransactionEmptyBox(_transactions) 
+
+      return {
+        ...state,
+        transactions: transactionFinal
       }
     }
    

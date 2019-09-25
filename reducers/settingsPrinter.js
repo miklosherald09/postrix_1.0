@@ -2,13 +2,15 @@ import {
   ADD_BLUETOOTH_DEVICES,
   SELECT_PRINTER,
   PRINTER_CONNECTED,
-  PRINTER_DISCONNECTED
+  PRINTER_DISCONNECTED,
+  CONNECT_PRINTER_BEGIN
 } from '../actions/settingsPrinterActions';
 
 const initialState = {
   devices: [],
   printer: "",
   connected: false,
+  connecting: false,
 }
 
 export default function settingsPrinterReducer(state = initialState, action) {
@@ -32,15 +34,25 @@ export default function settingsPrinterReducer(state = initialState, action) {
       return {
         ...state,
         connected: true,
+        connecting: false,
       }
     }
 
     case PRINTER_DISCONNECTED: {
       return {
         ...state,
-        connected: false
+        connected: false,
+        connecting: false
       }
     }
+
+    case CONNECT_PRINTER_BEGIN: {
+      return {
+        ...state,
+        connecting: true
+      }
+    }
+
     default:
       // ALWAYS have a default case in a reducer
       return state;

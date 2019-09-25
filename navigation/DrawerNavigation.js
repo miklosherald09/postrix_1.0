@@ -15,17 +15,16 @@ import ReportSetupScreen from '../screens/ReportSetupScreen'
 import PinScreen from '../components/MenuDrawer'
 import MenuDrawer from '../components/MenuDrawer'
 
-
 const DrawerConfig = {
     drawerWidth: Dimensions.get('window').width,
     drawerPosition: 'left',
     drawerBackgroundColor: 'transparent',
     overlayColor: 'rgba(0, 0, 0, .8)',
-    initialRouteName: 'Home',
+    // initialRouteName: 'Home',
     // initialRouteName: 'Items',
-    initialRouteName: 'Settings',
+    // initialRouteName: 'Settings',
     // initialRouteName: 'Transactions',
-    // initialRouteName: 'Reports',
+    initialRouteName: 'Reports',
     // initialRouteName: 'ReportSetup',
     // initialRouteName: 'Debugger',
     // initialRouteName: 'Pin',

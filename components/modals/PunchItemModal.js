@@ -67,12 +67,12 @@ const PunchItemModal = (props) => {
 									</View>
 									<View style={{flex: 1}}>
 										<View style={{flex: 1, flexDirection: 'row', marginHorizontal: 20, justifyContent: 'space-between'}}>
-											<Button
+										<Button
 												type="solid"
-												onPress={() => props.punchedItemCount(1)}
-												buttonStyle={{ width: 40, height: 40}}
+												onPress={() => props.punchedItemCount(-1)}
+												buttonStyle={{  width: 40, height: 40}}
 												icon={<Icon
-													name="plus"
+													name="minus"
 													size={20}
 													color="white"
 												/>}>
@@ -80,10 +80,10 @@ const PunchItemModal = (props) => {
 											<Text style={{flex: 1, color: '#333', fontSize: 18, textAlign: 'center', marginTop: 3}}>{selectedItem.count}</Text>
 											<Button
 												type="solid"
-												onPress={() => props.punchedItemCount(-1)}
-												buttonStyle={{  width: 40, height: 40}}
+												onPress={() => props.punchedItemCount(1)}
+												buttonStyle={{ width: 40, height: 40}}
 												icon={<Icon
-													name="minus"
+													name="plus"
 													size={20}
 													color="white"
 												/>}>

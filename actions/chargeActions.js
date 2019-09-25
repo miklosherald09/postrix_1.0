@@ -124,7 +124,7 @@ export function selectCharge(v) {
   }
 }
 
-export function  deleteCharge() {
+export function deleteCharge() {
 
   console.log('trying delete items..')
   return (dispatch, getState) => {

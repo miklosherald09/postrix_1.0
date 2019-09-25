@@ -16,7 +16,7 @@ const SettingsItemsScreen = props => {
 	}
 
   const { googleSheetUrl, googleSheetUrlCsv } = props.settings
-  const { syncingGoogleSheet, sync_percentage } = props.items
+  const { syncingGoogleSheet, syncedItem, removingUnusedItem } = props.items
 
   return (
     <View style={styles.wrapper}>
@@ -54,7 +54,8 @@ const SettingsItemsScreen = props => {
                 </View>
               </View>
               <View>
-                <Text style={{marginTop: 10, marginLeft: 5, color: 'green'}}>{syncingGoogleSheet?'synching...' : ''}</Text>
+                <Text style={{marginTop: 10, marginLeft: 5, color: 'green'}}>{syncingGoogleSheet?'synching...'+syncedItem.Name : ''}</Text>
+                <Text style={{marginTop: 10, marginLeft: 5, color: 'green'}}>{removingUnusedItem?'removing unused item...': ''}</Text>
               </View>
             </View>
           </View>

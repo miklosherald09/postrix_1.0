@@ -5,6 +5,8 @@ import { MenuButton } from '../components/MenuButton'
 import { connectPrinter } from '../actions/settingsPrinterActions'
 import Icon from 'react-native-vector-icons/FontAwesome'
 import SettingsNav from '../navigation/SettingsNav'
+import myStyles from '../constants/styles'
+import { Button } from 'react-native-elements'
 
 const SettingsPrinterScreen = props => {
 
@@ -20,13 +22,11 @@ const SettingsPrinterScreen = props => {
 		)
   }
   
-  const { devices, printer, connected } = props.settingsPrinter;
+  const { devices, printer, connected, connecting } = props.settingsPrinter;
 
   const pickerChange = (value) => {
     props.connectPrinter(value)
   }
-
-  devices.push({name: 'sex', address: 'x'})
 
   return (
     <View style={styles.wrapper}>
@@ -42,26 +42,32 @@ const SettingsPrinterScreen = props => {
           <SettingsNav />
         </View>
         <View style={styles.rightContent}>
-          <View style={{margin: 20}}>
-            <View>
-              <Picker
-                selectedValue={printer}
-                style={{height: 50, width: 200}}
-                onValueChange={(itemValue, itemIndex) => pickerChange(itemValue)} >{
-                  devices.map( (v, i)=> {
-                    return <Picker.Item key={i} label={v.name} value={v.address} />
-                  })
-                }
-              </Picker>
+          <View style={styles.container}>
+            
+            <View style={{flexDirection: 'row', }}>
+              <Icon 
+                name="bluetooth"
+                size={25}
+                color="#2089dc"
+                style={{marginRight: 5}}
+              />
+             <Text style={myStyles.header2}> BLUETOOTH DEVICES</Text>
+            </View>
+            <View style={{marginVertical: 20}}>
+            {
+              devices.map( (v, i)=> {
+                return <Device key={i} device={v} onPress={() => props.connectPrinter(v)}/>
+              })
+            }
+            </View>
+            <View style={{marginLeft: 10}}>
               {
-                connected == true?
-                <Icon
-                  iconStyle={{fontSize: 24, }}
-                  name="check"
-                  size={24}
-                  color={"green"}
-                />:
-                <Text>Please Open bluetooth and connect printer</Text>
+                (connected == true)?
+                <Text style={{color: 'green'}}>Connected</Text>:
+                <Text>{connecting == false?'Please Open bluetooth and connect printer':null}</Text>
+              }
+              {
+                 connecting?<Text style={{color: 'green'}}>connecting...</Text>:null
               }
             </View>
           </View>
@@ -69,6 +75,29 @@ const SettingsPrinterScreen = props => {
       </View>
     </View>
   );
+}
+
+class Device extends React.Component{
+  render(){
+    return (
+      <View style={{flexDirection: 'row', marginBottom: 10}} >
+        <Button
+          title={this.props.device.name}
+          titleStyle={{textAlign: 'left', fontSize: 15, fontWeight: 'normal', color: '#2089dc', marginRight: 10}}
+          onPress={this.props.onPress}
+          type="clear"
+          iconRight
+          icon={
+            <Icon
+              name="wifi"
+              size={22}
+              color="#2089dc"
+            />
+          }
+        />
+      </View>
+    )
+  }
 }
 
 function mapStateToProps(state){
@@ -82,9 +111,6 @@ function mapDispatchToProps(dispatch){
     connectPrinter: (value) => { dispatch(connectPrinter(value)) }
   }
 }
-
-export default connect(mapStateToProps, mapDispatchToProps)(SettingsPrinterScreen);
-
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -132,5 +158,14 @@ const styles = StyleSheet.create({
   link: {
 		fontSize: 15,
 		color: '#333'
-	}
-});
+  },
+  container: {
+    backgroundColor: 'white',
+    margin: 10,
+    padding: 10,
+    paddingBottom: 50 
+  }
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(SettingsPrinterScreen);
+

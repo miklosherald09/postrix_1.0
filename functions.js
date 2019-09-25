@@ -72,6 +72,13 @@ export function formatDate(date, format=0) {
         strTime = hours + ':' + minutes + ' ' + ampm;
         return monthShortNames[month-1]+' '+day+', '+year+ ', ' + strTime;
       }
+      case 3: {
+        hours = hours % 12;
+        hours = hours ? hours : 12; // the hour '0' should be '12'
+        minutes = minutes < 10 ? '0'+minutes : minutes;
+        strTime = hours + ':' + minutes + ' ' + ampm;
+        return monthShortNames[month-1]+' '+day+', '+year;
+      }
     }
   }
 
@@ -219,6 +226,31 @@ export function appendAddChargeButton(data, logged){
 
   return data;
 }
+
+export function appendTransactionEmptyBox(data){
+  if(data.length){
+
+    // remove empty boxes
+    console.log('posx1')
+    filtered = data.filter((v) => {
+      console.log('filter: ')
+      console.log(v)
+      return v.empty != true  
+    })
+    console.log('posx2')
+    console.log(filtered)
+    const numberOfFullRows = Math.floor(filtered.length / numColumns);
+
+    let numberOfElementsLastRow = filtered.length - (numberOfFullRows * numColumns);
+    while (numberOfElementsLastRow !== numColumns && numberOfElementsLastRow !== 0) {
+      filtered.push({ key: `blank-${numberOfElementsLastRow}`, empty: true });
+      numberOfElementsLastRow++;
+    }
+    return filtered
+  }
+  else
+    return [];
+}
   
 export const storeData = async (name, val) => {
   try {
@@ -239,3 +271,4 @@ export const getData = async (name) => {
     // error reading value
   }
 }
+

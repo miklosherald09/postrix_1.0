@@ -1,27 +1,16 @@
 import React from 'react';
-import { StyleSheet, View, ScrollView, FlatList, Text, Dimensions, TouchableHighlight } from 'react-native';
+import { StyleSheet, View, ScrollView, FlatList, Text, Dimensions, TouchableHighlight } from 'react-native'
 import { connect } from 'react-redux'
 import { receiptModalVisible, selectReceipt } from '../actions/receiptActions'
-import { formatDate, dump } from '../functions'
+import { formatDate,  } from '../functions'
+import { getTransactions, refreshTransactions } from '../actions/transactionActions'
 
 const numColumns = 4;
-
-const formatData = (data, numColumns) => {
-  const numberOfFullRows = Math.floor(data.length / numColumns);
-
-  let numberOfElementsLastRow = data.length - (numberOfFullRows * numColumns);
-  while (numberOfElementsLastRow !== numColumns && numberOfElementsLastRow !== 0) {
-    data.push({ key: `blank-${numberOfElementsLastRow}`, empty: true });
-    numberOfElementsLastRow++;
-  }
-
-  return data;
-};
 
 const TransactionList = (props) => {
 
   const { punched } = props.punched;
-  const { transactions } = props.transactions
+  const { transactions, refreshing } = props.transactions
 
   keyExtractor = (trans, index) => index.toString();
 
@@ -33,42 +22,42 @@ const TransactionList = (props) => {
       <View style={styles.item} >
         <TouchableHighlight style={{flex: 1}} onPress={() => props.showReceipt(item)}>
           <View style={{flex: 1, flexDirection: 'column'}}>
-            <View style={{alignItems: 'center'}}>
-              <Text style={{color: '#666', fontSize: 10, }}>{formatDate(item.datetime)}</Text>
+            <View style={{alignItems: 'center', height: 45}}>
+              <Text style={{color: '#666', fontSize: 10, textAlign: 'left'}}>{formatDate(item.datetime)}</Text>
+              <Text style={{color: '#333', fontSize: 10}}>Trasaction ID: {item.id}</Text>
             </View>
             <View style={{justifyContent: 'center', alignItems: 'center', flex: 1, marginTop: 5}}>
-              <Text style={{textAlign: 'center', color: '#333', fontSize: 12}}>
+              <Text numberOfLines={5} style={{textAlign: 'center', color: '#333', fontSize: 10}}>
                 {
                   item.punched.map((v, i) => {
-                    return v.name
+                    return v.name.slice(0, 18)
                   })
                 } 
               </Text>
-              {/* <Text style={{textAlign: 'center', color: '#333', fontSize: 12}}>{item.punched}</Text> */}
               <Text style={{textAlign: 'center', color: '#333', fontSize: 12}}>{item.sellPrice}</Text>
             </View>
-            <View style={{alignItems: 'center'}}>
-              <Text style={{fontSize: 8 }}>Total</Text>
-              <Text style={{fontSize: 12, color: '#333'}}>{item.total}</Text>
+            <View style={{alignItems: 'center', height: 20}}>
+              <Text style={{fontSize: 12, color: '#333', textAlign: 'left'}}>Total: {item.total}</Text>
             </View>
           </View>
         </TouchableHighlight>
       </View>
-    );
-  };
-
+    )
+  }
 
   return(
-    <View style={styles.wrapper}>
-      <ScrollView contentContainerStyle={{flexWrap: null}}>
-        <FlatList
-          keyExtractor={this.keyExtractor}
-          data={formatData(transactions, numColumns)}
-          style={styles.container}
-          renderItem={this.renderItem}
-          numColumns={numColumns}
-        />
-      </ScrollView>
+    <View style={{flex: 1, margin: 10}}>
+      <FlatList
+        keyExtractor={this.keyExtractor}
+        data={transactions}
+        style={styles.container}
+        renderItem={this.renderItem}
+        numColumns={numColumns}
+        onEndReachedThreshold={0.1}
+        onEndReached={() => props.getTransactions()}
+        onRefresh={ () => props.refreshTransactions() }
+        refreshing={refreshing}
+      />
     </View>
   )
 }
@@ -83,9 +72,13 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     showReceipt: (value) => {
-      console.log(value)
       dispatch(receiptModalVisible())
       dispatch(selectReceipt(value))
+    },
+    getTransactions: () => dispatch(getTransactions()),
+    refreshTransactions: () => {
+      dispatch(refreshTransactions()), 
+      dispatch(getTransactions())
     }
   }
 }
@@ -98,13 +91,9 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    marginVertical: 10,
-    margin: 10
   },
   item: {
     backgroundColor: 'white',
-    // alignItems: 'center',
-    // justifyContent: 'center',
     flex: 1,
     margin: 5,
     padding: 5,

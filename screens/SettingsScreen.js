@@ -42,7 +42,7 @@ const settingsScreen = props => {
               containerStyle={{marginTop: 15}}
               inputStyle={{}}
               onChangeText={(text) => {props.updateShopName(text)}}
-              value={shopName}
+              defaultValue={shopName}
             />
           </View>
         </View>
@@ -115,8 +115,11 @@ const styles = StyleSheet.create({
   },
   container: {
     backgroundColor: 'white',
-    flex: 1,
-
+    margin: 10,
+    borderWidth: 1,
+    borderColor: '#DDD',
+    padding: 10,
+    paddingBottom: 40,
   },
   label: {
     fontWeight: 'normal', 

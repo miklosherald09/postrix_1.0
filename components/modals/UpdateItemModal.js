@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet, Text, View, TouchableOpacity, Modal, Dimensions, Alert } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, Modal, Dimensions, Alert, TextInput, ToastAndroid } from 'react-native'
 import { connect } from 'react-redux'
 import { Field, reduxForm } from 'redux-form'
 import { submit } from 'redux-form'
@@ -8,52 +8,51 @@ import Icon from 'react-native-vector-icons/FontAwesome5'
 import { CloseButton } from '../../components/Common'
 import validate from '../../validations'
 import myStyles from '../../constants/styles'
-import {
-	getItems, saveItem, deleteItem,
-	updateItemModalVisible as openModal,
-	updateItemModalInvisible as closeModal } from '../../actions/itemActions'
+import { getItems, saveItem, deleteItem, saveField,	updateItemModalVisible as openModal, updateItemModalInvisible as closeModal } from '../../actions/itemActions'
 
 const screenWidth = Math.round(Dimensions.get('window').width)
 const screenHeight = Math.round(Dimensions.get('window').height)
 
-const onSubmit = (values, dispatch) => {
-  dispatch(saveItem(values))
-	dispatch(getItems())
-}
-
-const renderInput = ({
-  label, 
-  type,
-  keyboardType,
-  labelStyle,
-  inputContainerStyle, 
-  containerStyle,
-  inputStyle,
-  meta: { touched, error, warning }, 
-  input: {onChange, ...restInput }}) => {
-
-  return (
-    <View>
-      <Input
-        label={label}
-        type={type}
-        keyboardType={keyboardType}
-        labelStyle={labelStyle}
-        inputContainerStyle={inputContainerStyle}
-        containerStyle={containerStyle}
-        onChangeText={onChange}
-				inputStyle={inputStyle}
-				{...restInput}
-      />
-      {touched && ((error && <Text style={styles.invalid}>{error}</Text>) ||
-      (warning && <Text style={styles.warning}>{warning}</Text>))}
-    </View>
-  )
-}
-
 const UpdateItemModal = (props) => {
  
-	const { input, updateItemModalVisible } = props.items
+  const { input, updateItemModalVisible } = props.items
+  
+  const submitField = (field, value) => {
+    console.log('field: '+field)
+    console.log('field: '+value)
+  
+    errors = []
+    if(field == 'name'){
+      if(value == ''){
+        errors.push(field + ' must have a value')    
+      }
+    }
+
+    if(field == 'barcode'){
+    }
+
+    if(field == 'buyPrice'){
+      if(value == ''){
+        errors.push(field + ' must have a value')    
+      }
+    }
+
+    if(field == 'sellPrice'){
+      if(value == ''){
+        errors.push(field + ' must have a value')    
+      }
+    }
+
+    console.log(errors)
+  
+    if(errors.length){
+      alert(errors.join(', '))
+    }
+    else{
+      props.saveField(field, value)
+    }
+  }
+
 	
 	return (
 		<View style={styles.wrapper}>
@@ -75,18 +74,23 @@ const UpdateItemModal = (props) => {
 									<Text style={myStyles.headerModal}>EDIT ITEM</Text>
 								</View>
 								<View style={styles.headerRight}>
-									<SaveButton onPress={() => props.saveItem()}/>
+									<SaveButton onPress={() => props.saveItem(input)}/>
 								</View>
 							</View>
 							<View style={styles.content}>
-								<Field component={renderInput} name="name" label="NAME" keyboardType="default" labelStyle={styles.label} containerStyle={{marginTop: 15}} />
-								<Field component={renderInput} name="barcode" label="BARCODE" keyboardType="default" labelStyle={styles.label} containerStyle={{marginTop: 15}} />
-								<View style={{flex: 1, flexDirection: 'row'}}>
-									<View style={{flex: 1}}>
-										<Field component={renderInput} name="sellPrice" label="SELL PRICE" keyboardType="numeric" labelStyle={styles.label} containerStyle={{marginTop: 15}} />
+
+                <View style={{marginBottom: 20}}>
+                  <UselessField key='input-name' style={myStyles.input1} label={'NAME'} defaultValue={input.name} onSubmitEditing={(e) => submitField('name', e.nativeEvent.text)} keyboardType="default"/>
+								</View>
+                <View style={{marginBottom: 20}}>
+                  <UselessField key='input-barcode' style={myStyles.input1} label={'BARCODE'} defaultValue={input.barcode} onSubmitEditing={(e) => submitField('barcode', e.nativeEvent.text)} keyboardType="default" />
+								</View>
+                <View style={{flex: 1, flexDirection: 'row'}}>
+                  <View style={{flex: 1, marginBottom: 20}}>
+                    <UselessField key='input-sellprice' style={myStyles.input1} label={'PRICE'} defaultValue={String(input.sellPrice)} onSubmitEditing={(e) => submitField('sellPrice', e.nativeEvent.text)} keyboardType="numeric" />
 									</View>
-                  <View style={{flex: 1}}>
-										<Field component={renderInput} name="buyPrice" label="BUY PRICE" keyboardType="numeric" labelStyle={styles.label} containerStyle={{marginTop: 15}} />
+                  <View style={{flex: 1, marginBottom: 20, marginRight: 20}}>
+                    <UselessField key='input-buyprice' style={myStyles.input1} label={'BASE PRICE'} defaultValue={String(input.buyPrice)} onSubmitEditing={(e) => submitField('buyPrice', e.nativeEvent.text)} keyboardType="numeric" />
 									</View>
 								</View>
                 <View style={{width: 100}}>
@@ -104,13 +108,6 @@ const UpdateItemModal = (props) => {
 function mapStateToProps(state) {
 	return {
 		items: state.items,
-		initialValues: {
-			id: String(state.items.input.id),
-			name: String(state.items.input.name),
-			barcode: String(state.items.input.barcode),
-			buyPrice: String(state.items.input.buyPrice),
-			sellPrice: String(state.items.input.sellPrice)
-		}
 	}
 }
 
@@ -118,7 +115,11 @@ function mapDispatchToProps(dispatch) {
 	return {
 		setModalVisible: () => dispatch(openModal()),
     setModalInvisible: () => dispatch(closeModal()),
-    saveItem: () => dispatch(submit('UPDATE_ITEM_FORM')),
+    saveField: (field, value) => dispatch(saveField(field, value)),
+    saveItem: (input) => {
+      dispatch(saveItem(input))
+      dispatch(getItems())
+    },
     deleteItem: () => {
       Alert.alert(
         'Logout',
@@ -135,7 +136,24 @@ function mapDispatchToProps(dispatch) {
         {cancelable: false},
       )
     }
+
 	}
+}
+
+export class UselessField extends React.Component{
+
+  render(){
+    return (
+      <View style={{borderColor: '#CCC', borderBottomWidth: 1}}>
+        <Text style={myStyles.label1}>{this.props.label}</Text>
+        <TextInput 
+          style={this.props.style}
+          defaultValue={this.props.defaultValue} 
+          onSubmitEditing={this.props.onSubmitEditing} 
+          keyboardType={this.props.keyboardType}/>
+      </View>
+    )
+  }
 }
 
 export class SaveButton extends React.Component{
@@ -278,10 +296,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default (connect(mapStateToProps, mapDispatchToProps)(reduxForm({
-  form: 'UPDATE_ITEM_FORM',
-	onSubmit: onSubmit,
-	validate: validate,
-  enableReinitialize: true
-})(UpdateItemModal)))
-
+export default connect(mapStateToProps, mapDispatchToProps)(UpdateItemModal)

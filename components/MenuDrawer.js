@@ -1,13 +1,5 @@
 import React from 'react';
-import {
-	View, 
-	Text,
-	Image,
-	ScrollView,
-	StyleSheet,
-	TouchableOpacity,
-	Alert
-} from 'react-native';
+import { View, Text, Image, ScrollView, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { Button } from 'react-native-elements'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import { connect } from 'react-redux'
@@ -45,7 +37,7 @@ const MenuDrawer = (props) => {
 			<View style={styles.headerBox}>
 				{/* <Text style={styles.header}>image</Text> */}
 				<Image
-					style={{width: 150, height: 56,  marginLeft: 7, marginTop: 2, borderWidth: 2 }}
+					style={{width: 150, marginLeft: 7, marginTop: 2, borderWidth: 2 }}
 					resizeMode="contain"
 					source={require('../assets/postrix-logo2.png')}
 				/>
@@ -82,7 +74,6 @@ function mapDispatchToProps(dispatch) {
     signOut: () => { dispatch(signOut()) },
   }
 }
-
 
 const signOutButton = (props) => {
 	return (
@@ -164,6 +155,7 @@ const styles = StyleSheet.create({
 	links: {
 		flex: 1,
 		// backgroundColor: 'yellow',
+		marginTop: 25,
 		paddingTop: 10,
 		paddingBottom: 450,
 	},

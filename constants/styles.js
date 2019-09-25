@@ -98,6 +98,17 @@ export default StyleSheet.create({
 			flex: 1,
 			flexDirection: 'row',
 			justifyContent: 'flex-end'
-		}
+		},
 	
+		// input styles
+		label1: {
+			fontWeight: 'normal', 
+			fontSize: 12, 
+			color: '#999',
+			fontFamily: 'sans-serif-condensed'
+		},
+		input1: {
+			fontSize: 20, 
+			color: '#333',
+		}
 });

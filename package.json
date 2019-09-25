@@ -12,6 +12,7 @@
     "@react-native-community/async-storage": "^1.6.1",
     "babel-runtime": "^6.26.0",
     "emoji-regex": "^8.0.0",
+    "moment": "^2.24.0",
     "react": "16.8.6",
     "react-form": "^3.5.7",
     "react-native": "0.60.5",

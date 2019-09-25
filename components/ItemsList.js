@@ -8,7 +8,7 @@ import NumberFormat from 'react-number-format'
 
 const ItemsList = (props) => {
 
-  const { items, refreshing, searchText } = props.items;
+  const { items, refreshing, searchText } = props.items
 
   renderItem = ({ item, index }) => {
     return (
@@ -20,7 +20,7 @@ const ItemsList = (props) => {
         // subtitle={String(item.price)}
         containerStyle={{padding: 10, marginBottom: 5, borderRadius: 4}}
         rightTitle={
-          <NumberFormat 
+          <NumberFormat
             renderText={value => <Text style={{fontSize: 12, color: '#333'}}>{value}</Text>} 
             fixedDecimalScale={true} 
             decimalScale={2} 
@@ -52,7 +52,6 @@ const ItemsList = (props) => {
         numColumns={1}
         onEndReached={() => searchText == ''?props.getItems():null}
         onEndReachedThreshold={0.1}
-        initialNumToRender={10}
         // ListFooterComponent={this.renderFooter}
         onRefresh={() => props.handleRefresh()}
         refreshing={refreshing}
@@ -82,7 +81,6 @@ function mapDispatchToProps(dispatch) {
       dispatch(getItems())
     },
     handleRefresh: () => {
-      dispatch(syncGoogleSheet())
       dispatch(refreshItemsList())
       dispatch(getItems())
     }

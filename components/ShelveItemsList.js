@@ -10,8 +10,6 @@ import { updateItemModalVisible, setItemInput } from '../actions/itemActions'
 import { selectItem, showItemColorsModal } from '../actions/itemColorsActions'
 import { addShelveItemsVisible, getOptions, getShelveItems, getShelveItemsRefresh } from '../actions/shelvesActions'
 
-
-
 const  numColumns  = 4
 
 const ShelveItemsList = (props) => {
@@ -23,8 +21,8 @@ const ShelveItemsList = (props) => {
   renderItem = ({ item, index }) => {
 
     const bgcolor = (item.color != null)?item.color:'white'
-    const txcolor = (item.color != null)?'white':'#666'
-    const bdcolor = (item.color != null)?'white':'#666'
+    const txcolor = (item.color != null)?'white':'#333'
+    const bdcolor = (item.color != null)?'white':'#ECECFB'
     
     if(item.empty === true) {
       if(item.isButton === true){
@@ -161,10 +159,10 @@ const styles = StyleSheet.create({
     // alignItems: 'center',
     // justifyContent: 'center',
     flex: 1,
-    margin: 0,
     padding: 0,
     marginBottom: 1,
     borderRadius: 5,
+    marginHorizontal: 5,
   },
   itemInvisible: {
     backgroundColor: 'transparent',
@@ -172,8 +170,6 @@ const styles = StyleSheet.create({
   itemText: {
     color: '#fff',
   },
-
-
   itemBoxPan: {
     flex: 1,
     marginTop: 10,
@@ -186,7 +182,7 @@ const styles = StyleSheet.create({
   namePan: {
     flex: 1,
     justifyContent: 'center',
-    borderBottomColor: '#CCCCCC',
+    borderBottomColor: '#ECECFB',
     borderBottomWidth: 1,
     marginHorizontal: 5,
   }, 

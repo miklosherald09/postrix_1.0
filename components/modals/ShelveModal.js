@@ -51,7 +51,7 @@ const ShelveModal = (props) => {
                     labelStyle={styles.label}
                     // onSubmitEditing={(e) => props.addShelve(e.nativeEvent.text)}
                     onChangeText={text => props.updateModalShelve(text)}
-                    value={modalShelve.name}
+                    defaultValue={modalShelve.name}
                   />
                   </View>
                 </View>
@@ -116,11 +116,11 @@ const styles = StyleSheet.create({
     // height: screenHeight/2,
     borderRadius: 10,
     backgroundColor: 'white',
-    height: screenHeight - (screenHeight * 0.10 * 2),
-    marginLeft: screenWidth * 0.05,
-    marginRight: screenWidth * 0.05,
-    marginTop: screenHeight * 0.05,
-    marginBottom: screenHeight * 0.05,
+    height: screenHeight - (screenHeight * 0.20 * 2),
+    marginLeft: screenWidth * 0.10,
+    marginRight: screenWidth * 0.10,
+    marginTop: screenHeight * 0.10,
+    marginBottom: screenHeight * 0.10,
   },
   input: {
     borderColor: 'black',

@@ -174,8 +174,8 @@ export function syncGoogleSheet() {
     .then((text) => {
 
       csvArray = csvJSON(text)
-      items = JSON.parse(csvArray).slice(0, 100)
-      // items = JSON.parse(csvArray)
+      // items = JSON.parse(csvArray).slice(0, 100)
+      items = JSON.parse(csvArray)
 
       async function synchronizeItems() {
 

@@ -23,7 +23,7 @@ const SettingsNav = (props) => {
         {linkPermission('Settings_Basic', userType)?navLink('Settings', 'Basic'):null}
         {linkPermission('Settings_Items', userType)?navLink('SettingsItems', 'Items'):null}
         {linkPermission('SettingsPrinter', userType)?navLink('SettingsPrinter', 'Printer'):null}
-        {linkPermission('ReportSetup', userType)?navLink('ReportSetup', 'Reports'):null}
+        {linkPermission('SettingsPin', userType)?navLink('SettingsPin', 'Pin'):null}
       </View>
     </ScrollView>
   )
@@ -36,7 +36,8 @@ const styles = StyleSheet.create({
   },
   link: {
 		fontSize: 15,
-		color: '#333'
+    color: '#333',
+    fontWeight: 'bold'
 	}
 })
 

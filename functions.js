@@ -151,7 +151,7 @@ export function linkPermission(link, userType){
       return true
     }
 
-    case 'ReportSetup':{
+    case 'SettingsPin':{
       if(userType == USER_TYPE_STAFF){
         return false
       }
@@ -231,14 +231,9 @@ export function appendTransactionEmptyBox(data){
   if(data.length){
 
     // remove empty boxes
-    console.log('posx1')
     filtered = data.filter((v) => {
-      console.log('filter: ')
-      console.log(v)
       return v.empty != true  
     })
-    console.log('posx2')
-    console.log(filtered)
     const numberOfFullRows = Math.floor(filtered.length / numColumns);
 
     let numberOfElementsLastRow = filtered.length - (numberOfFullRows * numColumns);

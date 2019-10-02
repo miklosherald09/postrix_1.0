@@ -1,14 +1,14 @@
 import React from 'react'
 import { Dimensions, StyleSheet, Text, View, TouchableOpacity, Modal, FlatList, ScrollView, ActivityIndicator } from 'react-native'
 import { connect } from 'react-redux'
-import { Button } from 'react-native-elements'
+import { ListItem, Icon } from 'react-native-elements'
 import { addShelveItemsInvisible, selectShelveItem, saveShelveItems, searchOptions, getOptions } from '../../actions/shelvesActions'
 import { CloseButton } from '../../components/Common'
-import { Input } from 'react-native-elements'
-import { RenderItem } from './AddShelveItemsModalComponents'
+import { Input, Button, Avatar } from 'react-native-elements'
+import myStyles from '../../constants/styles'
 
-const screenWidth = Math.round(Dimensions.get('window').width);
-const screenHeight = Math.round(Dimensions.get('window').height);
+const screenWidth = Math.round(Dimensions.get('window').width)
+const screenHeight = Math.round(Dimensions.get('window').height)
 
 const AddShelveItemsModal = (props) => {
  
@@ -17,7 +17,7 @@ const AddShelveItemsModal = (props) => {
 
 	renderFooter = () => {
     return(
-      <View style={{height: 50, alignItems: 'center'}}>
+      <View style={{flex: 1, marginTop: 20, alignItems: 'center', justifyContent: 'center'}}>
         {requestOption.refreshing? <ActivityIndicator size='large' />:null}
       </View>
     )
@@ -26,7 +26,7 @@ const AddShelveItemsModal = (props) => {
 	return (
 		<View style={styles.wrapper}>
       <Modal 
-        animationType="none"
+        animationType="fade"
         transparent={true}
         visible={addShelveItemsVisible}
 				onRequestClose={() => {
@@ -35,12 +35,15 @@ const AddShelveItemsModal = (props) => {
         <TouchableOpacity activeOpacity={1} style={styles.touchable} onPress={ () => {props.addShelveItemsInvisible()}}>
           <TouchableOpacity activeOpacity={1} style={styles.container} >
 						<View style={styles.wrap}>
-							<View style={styles.modalTopMenu}>
-								<View style={{ flex: 2 }}>
-									<Text style={{fontSize: 18, margin: 10}}>Add Shelves Item</Text>
-								</View>
-								<View style={{ flex: 1 }}> 
+							<View style={myStyles.headerPan}>
+								<View style={myStyles.headerLeft}>
 									<CloseButton onPress={ () => props.addShelveItemsInvisible() }/>
+								</View>
+								<View style={myStyles.headerMiddle}>
+									<Text style={myStyles.headerModal}>ADD SHELVES ITEM</Text>
+								</View>
+								<View style={myStyles.headerRight}>
+									<SaveButton onPress={() => props.saveItem(input)}/>
 								</View>
 							</View>
 							<View>
@@ -51,9 +54,8 @@ const AddShelveItemsModal = (props) => {
 								/>
 							</View>
 							<View style={styles.content}>
-								<ScrollView contentContainerStyle={{flex: 1}}>
+								<ScrollView contentContainerStyle={{flex: 1, borderRadius: 10, margin: 10}}>
 									<FlatList
-										contentContainerStyle={styles.list}
 										keyExtractor={keyExtractor}
 										data={itemOptions}
 										onEndReached={() => props.getOptions()}
@@ -63,19 +65,49 @@ const AddShelveItemsModal = (props) => {
 									/>
 								</ScrollView>
 							</View>
-							{/* <View style={{ height: 60 }}>
-								<Button
-                  onPress={ () => props.saveShelveItems()}
-									containerStyle={{margin: 10}}
-									title="Done"
-								/>
-							</View> */}
 						</View>
           </TouchableOpacity>
         </TouchableOpacity>
       </Modal>
 		</View>
 	);
+}
+
+export class SaveButton extends React.Component{
+
+  render(){
+    return (
+      <Button 
+        onPress={this.props.onPress} style={styles.opacity}
+        title="Save"
+        containerStyle={{marginHorizontal: 5}}
+      />
+    )
+  }
+}
+
+export const RenderItem = (props) => {
+
+  return (
+    <ListItem
+			leftAvatar={
+				props.item.selected?
+				<Icon
+					name="check-circle"
+					size={35}
+					color="#2089dc"
+				/>:
+				<Avatar
+					rounded
+					title={props.item.name.slice(0, 2)}
+				/>
+			}
+      onPress={props.onPress}
+      containerStyle={styles.shelveItem}
+      title={props.item.name}
+      titleStyle={{ color: '#333', fontSize: 15 }}
+    />
+  )
 }
 
 function mapStateToProps(state) {
@@ -87,14 +119,10 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
 	return {
     addShelveItemsInvisible: () => { dispatch(addShelveItemsInvisible()) },
-		selectShelveItem: (item) => { 
-			dispatch(selectShelveItem(item)) 
-		},
+		selectShelveItem: (item) => { dispatch(selectShelveItem(item)) },
 		saveShelveItems: () => {	dispatch(saveShelveItems()) },
 		searchOptions: (text) => { dispatch(searchOptions(text) )},
-		getOptions: () => {
-			dispatch(getOptions()) 
-		}
+		getOptions: () => { dispatch(getOptions()) }
 	}
 }
 
@@ -109,7 +137,8 @@ const styles = StyleSheet.create({
 	},
 	content: {
 		flex: 1,
-		flexDirection: 'row'
+		flexDirection: 'row',
+		borderRadius: 10,
 	},
 
   wrapper: {
@@ -119,7 +148,7 @@ const styles = StyleSheet.create({
 	},
 	wrap: {
 		flex: 1,
-		justifyContent: 'center'
+		justifyContent: 'center',
 	},
   touchable: {
     flex: 1, 
@@ -134,9 +163,12 @@ const styles = StyleSheet.create({
 		marginBottom: screenHeight * 0.01,
 		borderRadius: 10,
 	},
-	list: {
-		justifyContent: 'center',
-		flexDirection: 'column',
+	shelveItem: {
+		margin: 0,
+		paddingVertical: 10,
+		paddingHorizontal: 0,
+		borderBottomWidth: 1,
+		borderBottomColor: '#ECECFB'
 	}
 });
 

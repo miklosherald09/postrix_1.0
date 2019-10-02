@@ -68,7 +68,6 @@ export function getTransactions(){
             temp.push(item)
           }
           console.log('transactions successfully fetch..')
-          console.log(temp)
           dispatch({type: GET_TRANSACTIONS_SUCCESS, transactions: temp});
           
         });

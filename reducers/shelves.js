@@ -7,6 +7,7 @@ import {
   ADD_SHELVE_ITEMS_VISIBLE,
   ADD_SHELVE_ITEMS_INVISIBLE,
   SELECT_SHELVE,
+  SELECT_SHELVE_ITEM_BEGIN,
   SELECT_SHELVE_ITEM,
   SAVE_SHELVE_SUCCESS,
   GET_SHELVE_ITEMS_SUCCESS,
@@ -126,6 +127,24 @@ export default function shelvesReducer(state = initialState, action) {
       }
     }
 
+    case SELECT_SHELVE_ITEM_BEGIN: {
+
+      // toggle item option
+      itemOptions = state.itemOptions
+      itemOptions.map((v, i) => {
+        if(v.id == action.item.id){
+          itemOptions[i] = {
+            ...itemOptions[i],
+            selected: !itemOptions[i].selected
+          }
+        }
+      })
+
+      return {
+        ...state,
+        itemOptions: itemOptions
+      }
+    }
     case SELECT_SHELVE_ITEM: {
 
       // toggle shelve item to update
@@ -138,16 +157,16 @@ export default function shelvesReducer(state = initialState, action) {
           exists = true
         }
       })
-
+      
       if(!exists)
         items.push(action.item)
 
-      // // toggle items
+      // toggle items
       preps = appendShelveButtonBox(items, state.activeShelve)
       
       return {
         ...state,
-        items: preps
+        items: preps,
       }
     }
 

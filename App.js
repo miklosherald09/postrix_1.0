@@ -9,6 +9,7 @@ import { getItems } from './actions/itemActions'
 import SignInGuard from './components/signInGuard'
 import { initShelves } from './actions/shelvesActions'
 import { initReportDate } from './actions/reportsActions'
+import { getUsers } from './actions/pinActions'
 import codePush from "react-native-code-push"
 
 /**
@@ -33,6 +34,7 @@ class App extends Component{
     store.dispatch(initPrinter())
     store.dispatch(getItems())
     store.dispatch(getTransactions())
+    store.dispatch(getUsers())
     store.dispatch(initShelves())
     store.dispatch(initReportDate())
     // store.dispatch(initCharges())

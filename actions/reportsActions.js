@@ -2,6 +2,7 @@ import { formatDate } from '../functions'
 import { currency } from '../constants/constants'
 import { BluetoothEscposPrinter } from 'react-native-bluetooth-escpos-printer'
 import { accounting } from '../accounting.min.js'
+import moment from 'moment'
 
 export const GENERATE_SALES_REPORT_SUCCESS = 'GENERATE_SALES_REPORT_SUCCESS' 
 export const GENERATE_SALES_REPORT_BEGIN = 'GENERATE_SALES_REPORT_BEGIN'
@@ -123,7 +124,7 @@ export function printReport(){
     }
     
     date = new Date;
-    columnWidths = [18, 4, 10];
+    columnWidths = [17, 5, 10];
     date = new Date()
     offset = date.getTimezoneOffset() * 60 * 1000
     startDateTime = reports.startDate + reports.startTime - offset
@@ -183,6 +184,7 @@ export function printReport(){
     BluetoothEscposPrinter.printText("--------------------------------\n\r",{});
     BluetoothEscposPrinter.printerAlign(BluetoothEscposPrinter.ALIGN.CENTER);
     BluetoothEscposPrinter.setBlob(1);
+    BluetoothEscposPrinter.printText("Date: "+moment().format('LLL')+"\n\r",{});
     BluetoothEscposPrinter.printText("Sales Report!\n\r",{});
     BluetoothEscposPrinter.printText("\n\r",{});
     BluetoothEscposPrinter.printText("\n\r",{});

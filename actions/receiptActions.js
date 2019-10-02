@@ -3,6 +3,8 @@ import { accounting } from '../accounting.min.js'
 import { formatDate } from '../functions'
 import { currency } from '../constants/constants'
 import { DELETE_TRANSACTION_SUCCESS } from './transactionActions'
+import moment from 'moment'
+
 
 export const RECEIPT_MODAL_VISIBLE = 'RECEIPT_MODAL_VISIBLE'
 export const RECEIPT_MODAL_INVISIBLE = 'RECEIPT_MODAL_INVISIBLE'
@@ -18,6 +20,8 @@ export function printReceipt({payment, total, punched, datetime}){
   return (dispatch, getState) => {
 
     const { settingsPrinter, settings } = getState()
+
+    console.log('currency: '+currency)
 
     if(settingsPrinter.connected == true){
 
@@ -35,23 +39,23 @@ export function printReceipt({payment, total, punched, datetime}){
         fonttype:1
       });
       BluetoothEscposPrinter.printText("\n\r",{});
-      BluetoothEscposPrinter.printText("Date："+formatDate(datetime, 2)+"\n\r",{});
+      BluetoothEscposPrinter.printText("Date："+moment(datetime).format('LLL')+"\n\r",{});
       BluetoothEscposPrinter.printText("\n\r",{});
       BluetoothEscposPrinter.printText("--------------------------------\n\r",{});
       
       BluetoothEscposPrinter.printColumn(columnWidths, [BluetoothEscposPrinter.ALIGN.LEFT,BluetoothEscposPrinter.ALIGN.CENTER,BluetoothEscposPrinter.ALIGN.RIGHT,BluetoothEscposPrinter.ALIGN.RIGHT],
-        ["Item",'Qty','Price','Total'],{});
+        ["Item",'Qty','Price', 'Total'],{});
       
       // iterate punched items
       punched.map((v, i) => {
         BluetoothEscposPrinter.printColumn(columnWidths, [BluetoothEscposPrinter.ALIGN.LEFT,BluetoothEscposPrinter.ALIGN.CENTER,BluetoothEscposPrinter.ALIGN.RIGHT,BluetoothEscposPrinter.ALIGN.RIGHT],
-          [String(v.name.slice(0, 11)), 'x'+String(v.count), String(accounting.formatMoney(v.sellPrice, '$')), String(accounting.formatMoney(v.accruePrice, '$'))],{});
+          [String(v.name.slice(0, 11)), 'x'+String(v.count), String(accounting.formatMoney(v.sellPrice, 'P')), String(accounting.formatMoney(v.accruePrice, 'P'))],{});
       })
       
       BluetoothEscposPrinter.printText("\n\r",{});
       columnWidths = [16, 16];
       BluetoothEscposPrinter.printColumn(columnWidths, [BluetoothEscposPrinter.ALIGN.LEFT, BluetoothEscposPrinter.ALIGN.RIGHT],
-        ["Total", String(accounting.formatMoney(total, String(currency)))],{});
+        ["Total", String(accounting.formatMoney(total, 'P'))],{});
   
       BluetoothEscposPrinter.printText("--------------------------------\n\r",{});
       BluetoothEscposPrinter.printerAlign(BluetoothEscposPrinter.ALIGN.CENTER);
@@ -119,7 +123,6 @@ export function deleteReceipt(pin) {
               console.log('delete receipt done!')
             },
             function (err){
-              console.log('pos3')
               console.log('delete receipt error!')
             }
           )

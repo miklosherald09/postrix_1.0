@@ -5,6 +5,7 @@ export const INIT_SHELVES_SUCCESS = 'INIT_SHELVES_SUCCESS'
 export const ADD_SHELVE_ITEMS_VISIBLE = 'ADD_SHELVE_ITEMS_VISIBLE'
 export const ADD_SHELVE_ITEMS_INVISIBLE = 'ADD_SHELVE_ITEMS_INVISIBLE'
 export const SELECT_SHELVE = 'SELECT_SHELVE'
+export const SELECT_SHELVE_ITEM_BEGIN = 'SELECT_SHELVE_ITEM_BEGIN'
 export const SELECT_SHELVE_ITEM = 'SELECT_SHELVE_ITEM'
 export const SAVE_SHELVE_ITEMS = 'SAVE_SHELVE_ITEMS'
 export const SAVE_SHELVE_SUCCESS = 'SAVE_SHELVE_SUCCESS'
@@ -133,10 +134,13 @@ export function selectShelve(shelve) {
 export function selectShelveItem(item){
 
   console.log('toggling shelve item..')
+
   return ( dispatch, getState ) => {
 
     const { database, shelves } = getState()
     exists = false
+
+    dispatch({ type: SELECT_SHELVE_ITEM_BEGIN, item: item })
 
     // check shelve item if exists
     database.db.transaction( function(txn){
@@ -158,9 +162,9 @@ export function selectShelveItem(item){
           txx.executeSql(
             query,
             params,
-          function(txxn, res){
+          function(_, res){
+            
             console.log('toggle shelve item successful..')
- 
             dispatch({
               type: SELECT_SHELVE_ITEM,
               item: item
@@ -294,29 +298,39 @@ export function getOptions(){
     page = shelves.requestOption.page
     offset = (page - 1) * limit
 
-    setTimeout(() => {
-      database.db.transaction( function(txn){
-        txn.executeSql(`SELECT * FROM items ORDER BY name ASC LIMIT ? OFFSET ?`,
-        [limit, offset],
-        function(tx, res){
-          itemsList = []
-          for (i = 0; i < res.rows.length; ++i) {
-            item = res.rows.item(i)
-            item.sellPrice = res.rows.item(i).sell_price
-            item.buyPrice = res.rows.item(i).buy_price
-            delete item.sell_price
-            delete item.buy_price
-            itemsList.push(item)
+    database.db.transaction( function(txn){
+      txn.executeSql(`SELECT * FROM items ORDER BY name ASC LIMIT ? OFFSET ?`,
+      [limit, offset],
+      function(_, res){
+        options = []
+        for (i = 0; i < res.rows.length; ++i) {
+          item = res.rows.item(i)
+          item.sellPrice = res.rows.item(i).sell_price
+          item.buyPrice = res.rows.item(i).buy_price
+          delete item.sell_price
+          delete item.buy_price
+          options.push(item)
+        }
+
+        // add check property for selected item
+        options.map((v, i) => {
+          exists = shelves.items.some((x, j) => {
+            return x.id == v.id
+          })
+            
+          if(exists){
+            options[i].selected = true
           }
-          dispatch({type: GET_OPTIONS_SUCCESS, items: itemsList})
-          console.log('options successfully fetch...')
-        });
-      },
-      function(err){
-        console.log(err.message);
-        dispatch({type: GET_OPTIONS_ERROR})
+        })
+
+        dispatch({type: GET_OPTIONS_SUCCESS, items: options})
+        console.log('options successfully fetch...')
       });
-    }, 1500)
+    },
+    function(err){
+      console.log(err.message);
+      dispatch({type: GET_OPTIONS_ERROR})
+    });
   }
 }
 

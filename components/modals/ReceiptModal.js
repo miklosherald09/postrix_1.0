@@ -8,7 +8,6 @@ import Icon from 'react-native-vector-icons/FontAwesome5'
 import NumberFormat from 'react-number-format'
 import { currency } from '../../constants/constants'
 import { receiptModalInvisible, printReceipt, deleteReceiptModalVisible } from '../../actions/receiptActions'
-import moment from 'moment'
 
 const screenWidth = Math.round(Dimensions.get('window').width);
 const screenHeight = Math.round(Dimensions.get('window').height);
@@ -68,7 +67,6 @@ const ReceiptModal = (props) => {
               </View>
               <View style={styles.content}>
                 <View style={{height: 30, flexDirection: 'row', justifyContent: 'flex-end' }}>
-                  <Text>date: {moment(selected.datetime).format('MMMM Do YYYY, h:mm:ss a')}</Text>
                   <DeleteButton userType={userType} onPress={() => props.deleteReceiptModalVisible(true)}/>
                   <PrintButton userType={userType} onPress={() => props.printReceipt(selected)}/>
                 </View>
@@ -194,8 +192,8 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     backgroundColor: 'white',
     height: screenHeight - (screenHeight * 0.10 * 2),
-    marginLeft: screenWidth * 0.20,
-    marginRight: screenWidth * 0.20,
+    marginLeft: screenWidth * 0.30,
+    marginRight: screenWidth * 0.30,
     marginTop: screenHeight * 0.05,
     marginBottom: screenHeight * 0.05,
   },

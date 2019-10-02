@@ -79,6 +79,7 @@ export default function transactionsReducer(state = initialState, action) {
     case DELETE_TRANSACTION_SUCCESS: {
 
       console.log('DELETE_TRANSACTION_SUCCESS')
+      console.log(state.transactions)
 
       transactions = state.transactions.filter((v) => {
         return typeof(v.empty) !== 'undefined'

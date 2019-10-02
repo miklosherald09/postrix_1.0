@@ -9,9 +9,8 @@ import TransactionScreen from '../screens/TransactionScreen'
 import SettingsScreen from '../screens/SettingsScreen'
 import SettingsPrinterScreen from '../screens/SettingsPrinterScreen'
 import SettingsItemsScreen from '../screens/SettingsItemsScreen'
+import SettingsPinScreen from '../screens/SettingsPinScreen'
 import DebuggerScreen from '../screens/DebuggerScreen'
-import GoogleSheetScreen from '../screens/GoogleSheetScreen'
-import ReportSetupScreen from '../screens/ReportSetupScreen'
 import PinScreen from '../components/MenuDrawer'
 import MenuDrawer from '../components/MenuDrawer'
 
@@ -20,11 +19,11 @@ const DrawerConfig = {
     drawerPosition: 'left',
     drawerBackgroundColor: 'transparent',
     overlayColor: 'rgba(0, 0, 0, .8)',
-    // initialRouteName: 'Home',
+    initialRouteName: 'Home',
     // initialRouteName: 'Items',
     // initialRouteName: 'Settings',
     // initialRouteName: 'Transactions',
-    initialRouteName: 'Reports',
+    // initialRouteName: 'Reports',
     // initialRouteName: 'ReportSetup',
     // initialRouteName: 'Debugger',
     // initialRouteName: 'Pin',
@@ -42,12 +41,6 @@ const SettingsStack = createStackNavigator({
       header: null
     }
   },
-  GoogleSheet: {
-    screen: GoogleSheetScreen,
-    navigationOptions: {
-      header: null
-    },
-  },
   SettingsPrinter: {
     screen: SettingsPrinterScreen,
     navigationOptions: {
@@ -56,6 +49,12 @@ const SettingsStack = createStackNavigator({
   },
   SettingsItems: {
     screen: SettingsItemsScreen,
+    navigationOptions: {
+      header: null
+    },
+  },
+  SettingsPin: {
+    screen: SettingsPinScreen,
     navigationOptions: {
       header: null
     },
@@ -81,9 +80,6 @@ const SettingsStack = createStackNavigator({
     },
     Reports: {
       screen: ReportScreen
-    },
-    ReportSetup: {
-      screen: ReportSetupScreen
     },
     Settings: {
       screen: SettingsStack

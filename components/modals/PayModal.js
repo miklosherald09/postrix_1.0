@@ -119,7 +119,12 @@ function mapDispatchToProps(dispatch) {
       
       if(values.printReceipt == true){
         console.log('trying to print recipt')
-        dispatch(printReceiptAction(values))
+        dispatch(printReceiptAction({
+          payment: values.payment, 
+          total: values.total, 
+          punched: values.punched,
+          datetime: Date.now()
+        }))
       }
       
       dispatch(openCashDrawer())

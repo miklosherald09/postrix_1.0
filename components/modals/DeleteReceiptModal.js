@@ -60,9 +60,8 @@ const DeleteReceiptModal = (props) => {
                 </View>
               </View>
               <View style={styles.content}>
-                <Text>ENTER ADMIN/MANAGER PIN</Text>
                 <Input
-                  label={"PIN"}
+                  label={"ENTER ADMIN/ROOT PIN"}
                   type={"default"}
                   keyboardType={"numeric"}
                   labelStyle={myStyles.label1}

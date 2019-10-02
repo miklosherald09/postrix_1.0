@@ -4,9 +4,9 @@ const validate = values => {
   if (!values.name) {
     errors.name = 'Name Required'
   }
-  if (!values.barcode) {
-    errors.barcode = 'Barcode Required'
-  }
+  // if (!values.barcode) {
+  //   errors.barcode = 'Barcode Required'
+  // }
   if (!values.buyPrice) {
     errors.buyPrice = 'Buy Price Required'
   }

@@ -25,7 +25,6 @@ const ItemScreen = (props) => {
   }
 
   onChangeText = (text) => {
-    console.log('text: '+text)
     props.searchItems(text)
   }
 

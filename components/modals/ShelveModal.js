@@ -1,16 +1,13 @@
 import React, { useEffect } from 'react'
 import { StyleSheet, Text, View, TouchableOpacity, Modal, Dimensions, Alert } from 'react-native'
 import { connect } from 'react-redux'
-import { Field, reduxForm } from 'redux-form'
-import { ColorPicker } from 'react-native-color-picker'
 import { Button, Input } from 'react-native-elements'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import { CloseButton } from '../../components/Common'
 import myStyles from '../../constants/styles'
 import { hideItemColorsModal, setItemColor, selectColor } from '../../actions/itemColorsActions'
-import { shelveModalInvisible, addShelve, updateModalShelve, saveShelve } from '../../actions/shelvesActions'
-import { TouchableHighlight, TextInput } from 'react-native-gesture-handler';
-import { getData } from '../../functions'
+import { shelveModalInvisible, updateModalShelve, saveShelve, deleteShelve } from '../../actions/shelvesActions'
+
 
 const screenWidth = Math.round(Dimensions.get('window').width)
 const screenHeight = Math.round(Dimensions.get('window').height)
@@ -18,6 +15,7 @@ const screenHeight = Math.round(Dimensions.get('window').height)
 const ShelveModal = (props) => {
  
   const { shelveModalVisible, modalShelve } = props.shelves
+  const { userType } = props.pin
 
 	return (
 		<View style={styles.wrapper}>
@@ -45,14 +43,16 @@ const ShelveModal = (props) => {
 							<View style={styles.content}>
                 <View style={{flex: 1, flexDirection: 'column'}}>
                   <View style={{flex: 1, paddingRight: 10}}>
-                  <Input
-                    label={'SHELVE NAME'}
-                    keyboardType={'default'}
-                    labelStyle={styles.label}
-                    // onSubmitEditing={(e) => props.addShelve(e.nativeEvent.text)}
-                    onChangeText={text => props.updateModalShelve(text)}
-                    defaultValue={modalShelve.name}
-                  />
+                    <Input
+                      label={'SHELVE NAME'}
+                      keyboardType={'default'}
+                      labelStyle={styles.label}
+                      onChangeText={text => props.updateModalShelve(text)}
+                      defaultValue={modalShelve.name}
+                    />
+                  </View>
+                  <View style={{ height: 50, flexDirection: 'row'}}>
+                    <DeleteButton userType={userType} activeShelve={modalShelve} onPress={() => props.deleteShelve(modalShelve)} />
                   </View>
                 </View>
 							</View>
@@ -66,7 +66,8 @@ const ShelveModal = (props) => {
 
 function mapStateToProps(state) {
 	return {
-		shelves: state.shelves,
+    shelves: state.shelves,
+    pin: state.pin
 	}
 }
 
@@ -75,9 +76,9 @@ function mapDispatchToProps(dispatch) {
     shelveModalInvisible: () => dispatch(shelveModalInvisible()),
     selectColor: (v) => dispatch(selectColor(v)),
     setItemColor: () => dispatch(setItemColor()),
-    addShelve: (v) => dispatch(addShelve(v)),
     updateModalShelve: (text) => dispatch(updateModalShelve(text)),
-    saveShelve: () => dispatch(saveShelve())
+    saveShelve: () => dispatch(saveShelve()),
+    deleteShelve: (shelve) => dispatch(deleteShelve(shelve))
 	}
 }
 
@@ -92,6 +93,22 @@ export class SaveButton extends React.Component{
         type="clear"
         titleStyle={{color: '#2089dc'}}
       />
+    )
+  }
+}
+
+export class DeleteButton extends React.Component{
+
+  render(){
+    return (
+      ((this.props.userType == 'ROOT' || this.props.userType == 'ADMIN') && this.props.activeShelve.id !== undefined) ?
+      <Button 
+        onPress={this.props.onPress} style={styles.opacity}
+        title="Delete"
+        containerStyle={{marginHorizontal: 5}}
+        type="clear"
+        titleStyle={{color: 'red'}}
+      />:null
     )
   }
 }
@@ -117,10 +134,10 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     backgroundColor: 'white',
     height: screenHeight - (screenHeight * 0.20 * 2),
-    marginLeft: screenWidth * 0.10,
-    marginRight: screenWidth * 0.10,
+    marginLeft: screenWidth * 0.20,
+    marginRight: screenWidth * 0.20,
     marginTop: screenHeight * 0.10,
-    marginBottom: screenHeight * 0.10,
+    marginBottom: screenHeight * 0.20,
   },
   input: {
     borderColor: 'black',

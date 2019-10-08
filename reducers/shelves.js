@@ -26,6 +26,8 @@ import {
   UPDATE_MODAL_SHELVE,
   UPDATE_SHELVE_SUCCESS,
   SAVE_SHELVE,
+  REFRESH_OPTIONS,
+  SET_SELECTED
 } from '../actions/shelvesActions'
 
 const initialState = {
@@ -41,6 +43,7 @@ const initialState = {
     refreshing: false,
   },
   itemOptions: [],
+  selectedOptions: new Map(),
   requestOption: {
     page: 0,
     limit: 10,
@@ -83,14 +86,18 @@ export default function shelvesReducer(state = initialState, action) {
     }
 
     case ADD_SHELVE_SUCCESS: {
-      shelve = {
-        id: action.shelveId,
-        name: state.modalShelve.name
-      }
+
+      items = appendShelveButtonBox([], action.shelve)
+      console.log('shitxx')
+      console.log(action.shelve)
+      console.log(items)
+
       return {
         ...state,
-        shelves: [...state.shelves, shelve],
+        shelves: [...state.shelves, action.shelve],
         shelveModalVisible: false,
+        items: items,
+        activeShelve: action.shelve
       }
     }
 
@@ -131,20 +138,22 @@ export default function shelvesReducer(state = initialState, action) {
 
       // toggle item option
       itemOptions = state.itemOptions
-      itemOptions.map((v, i) => {
-        if(v.id == action.item.id){
-          itemOptions[i] = {
-            ...itemOptions[i],
-            selected: !itemOptions[i].selected
-          }
-        }
-      })
+      // itemOptions.map((v, i) => {
+      //   if(v.id == action.item.id){
+      //     itemOptions[i] = {
+      //       ...itemOptions[i],
+      //       selected: !itemOptions[i].selected
+      //     }
+      //   }
+      // })
 
       return {
         ...state,
-        itemOptions: itemOptions
+        selectedOption: item
+        // itemOptions: itemOptions
       }
     }
+    
     case SELECT_SHELVE_ITEM: {
 
       // toggle shelve item to update
@@ -192,6 +201,9 @@ export default function shelvesReducer(state = initialState, action) {
 
       temp = [...state.items, ...action.items]
       items = appendShelveButtonBox(temp, state.activeShelve)
+
+      console.log('GSIS')
+      console.log(items)
   
       return {
         ...state,
@@ -237,13 +249,22 @@ export default function shelvesReducer(state = initialState, action) {
     }
 
     case GET_OPTIONS_SUCCESS: {
+
+      const newSelected = new Map(state.selectedOptions)
+      action.items.forEach((v) => {
+        if(v.selected === true){
+          newSelected.set(v.id, true)
+        }
+      })
+
       return {
         ...state,
         itemOptions: [...state.itemOptions, ...action.items],
         requestOption: {
           ...state.requestOption,
           refreshing: false
-        } 
+        },
+        selectedOptions: newSelected
       }
     }
 
@@ -264,7 +285,9 @@ export default function shelvesReducer(state = initialState, action) {
         requestOption: {
           ...state.requestOption,
           page: 0,
-        }
+          
+        },
+        selectedOptions: new Map()
       }
     }
    
@@ -276,7 +299,8 @@ export default function shelvesReducer(state = initialState, action) {
       
       return {
         ...state,
-        shelves: shelves
+        shelves: shelves,
+        shelveModalVisible: false,
       }
     }
 
@@ -326,6 +350,32 @@ export default function shelvesReducer(state = initialState, action) {
         }
       }
     }
+
+    case REFRESH_OPTIONS: {
+      console.log('refreshing option shit!')
+
+      const newSelected = new Map(state.selectedOptions)
+      newSelected.clear()
+
+      return {
+        ...state,
+        itemOptions: [],
+        requestOption: {
+          ...state.requestOption,
+          page: 0,
+        },
+        selectedOptions: newSelected
+      }
+    }
+
+    case SET_SELECTED: {
+
+      return {
+        ...state,
+        selectedOptions: action.newSelected
+      }
+    }
+
 
     default:
       // ALWAYS have a default case in a reducer

@@ -38,10 +38,11 @@ const { addMovalVisible } = props.shelves;
           </View>
           <View style={styles.content}>
             <View style={styles.container}>
-            <TextInput
-              style={{...fstyle.inputContainerStyle, ...fstyle.curve, borderBottomWidth: 2}}
-              placeholder="name" 
-              onSubmitEditing={(e) => props.addShelve(e.nativeEvent.text)} />
+              <TextInput
+                style={{...fstyle.inputContainerStyle, ...fstyle.curve, borderBottomWidth: 2}}
+                placeholder="name"
+                onSubmitEditing={(e) => props.addShelve(e.nativeEvent.text)}
+              />
             </View>
           </View>
         </View>

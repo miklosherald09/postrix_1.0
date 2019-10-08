@@ -28,6 +28,8 @@ export const SHELVE_MODAL_INVISIBLE = 'SHELVE_MODAL_INVISIBLE'
 export const UPDATE_MODAL_SHELVE = 'UPDATE_MODAL_SHELVE'
 export const SAVE_SHELVE = 'SAVE_SHELVE'
 export const UPDATE_SHELVE_SUCCESS = 'UPDATE_SHELVE_SUCCESS'
+export const REFRESH_OPTIONS = 'REFRESH_OPTIONS'
+export const SET_SELECTED = 'SET_SELECTED'
 
 export function addShelveItemsVisible() {
   return {
@@ -50,45 +52,6 @@ export function addModalVisible() {
 export function addModalInvisible() {
   return {
     type: ADD_SHELVE_INVISIBLE
-  }
-}
-
-export function addShelve(name) {
-  console.log('signing in..')
-
-  
-  return ( dispatch, getState ) => {
-    
-    const { database, shelves } = getState()
-
-    console.log(shelves.modalShelve)
-    
-    database.db.transaction( function(txn){
-      txn.executeSql(
-        `INSERT INTO shelves(name) VALUES(?)`,
-      [name],
-      function(tx, res){
-        console.log('shevels added')
-        // console.log(res)
-        // console.log(res.insertId)
-
-        if(res.rowsAffected == 1){
-          shelve = {
-            name: text,
-            id: res.insertId
-          }
-
-          dispatch({ type: ADD_SHELVE_INVISIBLE })
-          dispatch({ type: ADD_SHELVE_SUCCESS, shelve: shelve })
-        }
-        else{
-          console.log('insert shelve error')
-        }
-      });
-    },
-    function(err){
-      console.log(err.message);
-    });
   }
 }
 
@@ -278,6 +241,15 @@ export function getShelveItems(){
   }
 }
 
+export function selectedOptions(){
+  
+  console.log('trying to shitOptions!!...')
+  
+  return ( dispatch, getState ) => {
+    
+  }
+}
+
 export function getShelveItemsRefresh(){
   return {
     type: GET_SHELVE_ITEMS_REFRESH
@@ -318,9 +290,8 @@ export function getOptions(){
             return x.id == v.id
           })
             
-          if(exists){
-            options[i].selected = true
-          }
+          options[i].selected = exists?true:false
+        
         })
 
         dispatch({type: GET_OPTIONS_SUCCESS, items: options})
@@ -372,6 +343,7 @@ export function searchOptions(text){
 }
 
 export function deleteShelve(shelve){
+  
   return (dispatch, getState) => {
 
     const { database } = getState()
@@ -380,13 +352,19 @@ export function deleteShelve(shelve){
       tx.executeSql(
         `DELETE FROM shelves WHERE id = ?`,
         [shelve.id],
-        function(tn, res){
-          dispatch({
-            type: DELETE_SHELVE_SUCCESS,
-            shelve: shelve
+        function(txx, _){
+          txx.executeSql(
+            `DELETE FROM shelve_items WHERE shelve_id = ?`,
+            [shelve.id],
+            function(_, __){
+              dispatch({
+                type: DELETE_SHELVE_SUCCESS,
+                shelve: shelve
+              })
+              console.log('delete shelve items done!..')
           })
-          console.log('delete shelve successful..')
-        });
+          console.log('delete shelve done!..')
+      })
     },
     function(err){
       console.log(err.message);
@@ -414,7 +392,7 @@ export function updateModalShelve(text){
   }
 }
 
-export function  saveShelve() {
+export function saveShelve() {
 
   return ( dispatch, getState ) => {
     
@@ -428,8 +406,14 @@ export function  saveShelve() {
           `INSERT INTO shelves(name) VALUES(?)`,
         [shelves.modalShelve.name],
         function(tx, res){
+
           console.log('insert shelve item')
-          dispatch({type: ADD_SHELVE_SUCCESS, shelveId: {id: res.insertId } })
+          shelve = {
+            id: res.insertId,
+            name: shelves.modalShelve.name,
+          }
+
+          dispatch({type: ADD_SHELVE_SUCCESS, shelve: shelve })
         });
       },
       function(err){
@@ -451,5 +435,18 @@ export function  saveShelve() {
         console.log(err.message);
       });
     }
+  }
+}
+
+export function refreshOptions() {
+  return {
+    type: REFRESH_OPTIONS
+  }
+}
+
+export function setSelected(newSelected){
+  return {
+    type: SET_SELECTED,
+    newSelected: newSelected
   }
 }

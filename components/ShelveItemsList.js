@@ -8,7 +8,7 @@ import { currency as curr } from '../constants/constants'
 import { punch } from '../actions/punchedActions'
 import { updateItemModalVisible, setItemInput } from '../actions/itemActions'
 import { selectItem, showItemColorsModal } from '../actions/itemColorsActions'
-import { addShelveItemsVisible, getOptions, getShelveItems, getShelveItemsRefresh } from '../actions/shelvesActions'
+import { addShelveItemsVisible, getOptions, getShelveItems, getShelveItemsRefresh, refreshOptions } from '../actions/shelvesActions'
 
 const  numColumns  = 4
 
@@ -130,8 +130,9 @@ function mapDispatchToProps(dispatch) {
       dispatch(updateItemModalVisible()) 
     },
     addShelveItemsVisible: () => {
-      dispatch(getOptions())
       dispatch(addShelveItemsVisible())
+      dispatch(refreshOptions())
+      dispatch(getOptions())
     },
     getShelveItems: () => {
       dispatch(getShelveItems())
@@ -142,9 +143,6 @@ function mapDispatchToProps(dispatch) {
     }
   }
 }
-
-export default connect(mapStateToProps, mapDispatchToProps)(ShelveItemsList);
-
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -203,3 +201,5 @@ const styles = StyleSheet.create({
   }
 
 });
+
+export default connect(mapStateToProps, mapDispatchToProps)(ShelveItemsList);

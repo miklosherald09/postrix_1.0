@@ -57,7 +57,7 @@ export class ChargeButton extends React.Component {
 export class ShelveButton extends React.Component{
   render(){
     return(
-      <View style={this.props.activeShelve.name == this.props.shelve.name?styles.menuIconActive:styles.menuIcon}>
+      <View style={this.props.activeShelve.id == this.props.shelve.id?styles.menuIconActive:styles.menuIcon}>
         <Button 
           onPress={this.props.onPress}
           onLongPress={this.props.onLongPress}
@@ -107,7 +107,6 @@ export class PayButton extends React.Component {
     )
   }
 };
-
 
 const styles = StyleSheet.create({
   menuIcon: {

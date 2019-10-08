@@ -177,7 +177,7 @@ export function toggleElements(array, value) {
 export function appendShelveButtonBox(items, activeShelve){
 
   // remove unnescessary empty items
-  var data = items.filter((v, i, x) => {
+  data = items.filter((v, i, x) => {
     return v.empty != true
   });
   
@@ -190,20 +190,10 @@ export function appendShelveButtonBox(items, activeShelve){
   else
     isButton = true
 
-  if(data.length == 0 || numberOfElementsLastRow == 0){
-    i = 0
-    while(i < numColumns){
-      data.push({ key: `blank-${numberOfElementsLastRow}`, empty: true, isButton: isButton })
-      isButton = false,
-      i++
-    }
-  }
-  else{
-    while (numberOfElementsLastRow !== numColumns && numberOfElementsLastRow !== 0) {
-      data.push({ key: `blank-${numberOfElementsLastRow}`, empty: true, isButton: isButton })
-      numberOfElementsLastRow++
-      isButton = false
-    }
+  while (numberOfElementsLastRow !== numColumns) {
+    data.push({ key: `blank-${numberOfElementsLastRow}`, empty: true, isButton: isButton })
+    numberOfElementsLastRow++
+    isButton = false
   }
 
   return data

@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { StyleSheet, Text, View, Alert, AppState, Keyboard, Button, TextInput } from 'react-native'
+import { StyleSheet, Text, View, Alert, AppState, Keyboard, Button, TextInput, TouchableOpacity } from 'react-native'
 import { connect } from 'react-redux'
 import { MenuButton } from '../components/MenuButton'
 import PayModal from '../components/modals/PayModal'
@@ -24,6 +24,8 @@ import NumberFormat from 'react-number-format'
 import KeyEvent from 'react-native-keyevent'
 import { barcodeSeachItem } from '../actions/barcodeSearchActions'
 import { getCharges } from '../actions/chargeActions'
+import { ListItem, Icon } from 'react-native-elements'
+import {  Avatar } from 'react-native-elements'
 
 
 const HomeScreen = props => {
@@ -105,6 +107,8 @@ const HomeScreen = props => {
           </View>
         </View>
         <View style={{flex: 1, padding: 10}}>
+          
+           
           <PunchedItemList />
         </View>
         <View style={styles.rightBottomBar}>

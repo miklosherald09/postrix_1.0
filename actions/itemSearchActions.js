@@ -34,36 +34,30 @@ export function searchItem(){
     
     const { database, itemSearch } = getState()
    
-    limit = itemSearch.request.limit
-    page = itemSearch.request.page
-    offset = (page - 1) * limit
-
-    setTimeout(() => {
-      database.db.transaction( function(txn){
-        txn.executeSql(
-          `SELECT * FROM items WHERE name LIKE ? ORDER BY name ASC LIMIT ? OFFSET ?`,
-          ['%'+itemSearch.searchText+'%', limit, offset],
-          function(tx, res){
-            itemsList = []
-            for (i = 0; i < res.rows.length; ++i) {
-              itemsList.push({
-                barcode: res.rows.item(i).barcode,
-                buyPrice: res.rows.item(i).buy_price,
-                datetime: res.rows.item(i).datetime,
-                id: res.rows.item(i).item_id,
-                name: res.rows.item(i).name,
-                sellPrice: res.rows.item(i).sell_price
-              })
-            }
-          
-          dispatch({type: GET_SEARCH_ITEMS_SUCCESS, items: itemsList})
-          console.log('search items successfully fetch...')
-        });
-      },
-      function(err){
-        console.log(err.message);
-        dispatch({type: GET_SEARCH_ITEMS_ERROR})
+    database.db.transaction( function(txn){
+      txn.executeSql(
+        `SELECT * FROM items WHERE name LIKE ? ORDER BY name ASC LIMIT 50`,
+        ['%'+itemSearch.searchText+'%'],
+        function(tx, res){
+          itemsList = []
+          for (i = 0; i < res.rows.length; ++i) {
+            itemsList.push({
+              barcode: res.rows.item(i).barcode,
+              buyPrice: res.rows.item(i).buy_price,
+              datetime: res.rows.item(i).datetime,
+              id: res.rows.item(i).item_id,
+              name: res.rows.item(i).name,
+              sellPrice: res.rows.item(i).sell_price
+            })
+          }
+        
+        dispatch({type: GET_SEARCH_ITEMS_SUCCESS, items: itemsList})
+        console.log('search items successfully fetch...')
       });
-    }, 0)
+    },
+    function(err){
+      console.log(err.message);
+      dispatch({type: GET_SEARCH_ITEMS_ERROR})
+    });
   }
 }

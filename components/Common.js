@@ -2,15 +2,15 @@ import React from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
-export const CloseButton = (props) =>  {
+export const CloseButton = ({onPress, color}) =>  {
     return (
       <TouchableOpacity
         style={{margin: 0, padding: 10, alignSelf: 'flex-end'}}
-        onPress={ props.onPress }>
+        onPress={ onPress }>
         <Icon
           name="close"
           size={30}
-          color="#333"
+          color={color?color:"#999"}
         />
       </TouchableOpacity>
     );

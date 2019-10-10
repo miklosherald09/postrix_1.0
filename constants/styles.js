@@ -65,6 +65,12 @@ export default StyleSheet.create({
 			color: '#333',
 			fontFamily: 'sans-serif-condensed'
 		},
+		header3: {
+			fontSize: 22, 
+			fontWeight: 'bold',
+			color: '#333',
+			fontFamily: 'sans-serif-condensed'
+		},
 		headerModal: {
 			fontSize: 18,
 			fontWeight: 'bold',

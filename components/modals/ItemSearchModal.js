@@ -2,14 +2,24 @@ import React from 'react'
 import { Text, StyleSheet, Modal, View, TouchableHighlight } from 'react-native'
 import { connect } from 'react-redux'
 import ItemSearchList from '../ItemSearchList'
-import SearchInput from '../SearchInput'
-import { modalClose } from '../../actions/itemSearchActions'
+import { modalClose, searchItem, setSearchText } from '../../actions/itemSearchActions'
 import { CloseButton } from '../buttons/GenericButtons'
-
+import { Input } from 'react-native-elements'
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 const ItemSearchModal = (props) => {
- 
-	const { itemSearchModalVisible } = props.itemSearch;
+
+	const { searchText, itemSearchModalVisible } = props.itemSearch;
+	
+	timer = null
+	const onChangeText = (text) => {
+		
+		clearTimeout(timer);
+
+		timer = setTimeout(function () {
+			props.searchItem(text)
+		}, 500)
+	}
 	
 	return (
 		<View style={styles.wrapper}>
@@ -25,7 +35,23 @@ const ItemSearchModal = (props) => {
 					<View style={styles.leftTopBar}>
 						<View style={{flexDirection: 'row'}} >
 							<View style={{flex: 2}}>
-								<SearchInput />
+							<Input
+									inputStyle={styles.input}
+									inputContainerStyle={{borderBottomColor: 'white'}}
+									placeholder='search'
+									onChangeText={ (text) => onChangeText(text) }
+									keyboardType='default'
+									clearTextOnFocus={true}
+									focus={itemSearchModalVisible}
+									defaultValue={searchText}
+									leftIcon={
+										<Icon
+											name='search'
+											size={24}
+											color='#CCCCCC'
+										/>
+									}
+								/>
 							</View>
 							<View style={styles.closeButtonPan}>
 								<CloseButton onPress={ () => props.modalClose() } color="#333"/>
@@ -41,6 +67,7 @@ const ItemSearchModal = (props) => {
 	);
 }
 
+
 function mapStateToProps(state) {
 	return {
     itemSearch: state.itemSearch,
@@ -50,6 +77,10 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
 	return {
 		modalClose: () => dispatch(modalClose()),
+		searchItem: (text) => {
+			dispatch(setSearchText(text))
+			dispatch(searchItem(text))
+		}
 	}
 }
 
@@ -76,6 +107,12 @@ const styles = StyleSheet.create({
 		alignSelf: 'flex-end',
 		width: 50,
 	},
-	
+	input: {
+		// backgroundColor: 'blue',
+		height: 58,
+		paddingLeft: 10,
+		borderBottomWidth: 0,
+		borderBottomColor: 'white',
+	}
 });
 

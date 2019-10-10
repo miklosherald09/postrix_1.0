@@ -1,7 +1,7 @@
 import React from 'react'
 import { StyleSheet, View, FlatList, ActivityIndicator, Text } from 'react-native'
 import { connect } from 'react-redux'
-import { updateItemModalVisible, setItemInput, getItems, refreshItemsList, syncGoogleSheet } from '../actions/itemActions'
+import { updateItemModalVisible, setItemInput, getItems, refreshItemsList } from '../actions/itemActions'
 import { ListItem } from 'react-native-elements'
 import { currency } from '../constants/constants'
 import NumberFormat from 'react-number-format'

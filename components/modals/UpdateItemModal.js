@@ -9,6 +9,7 @@ import { CloseButton } from '../../components/Common'
 import validate from '../../validations'
 import myStyles from '../../constants/styles'
 import { getItems, saveItem, deleteItem, saveField,	updateItemModalVisible as openModal, updateItemModalInvisible as closeModal } from '../../actions/itemActions'
+import { deleteShelveItemByItemID } from '../../actions/shelvesActions'
 
 const screenWidth = Math.round(Dimensions.get('window').width)
 const screenHeight = Math.round(Dimensions.get('window').height)
@@ -94,7 +95,7 @@ const UpdateItemModal = (props) => {
 									</View>
 								</View>
                 <View style={{width: 100}}>
-									<DeleteButton onPress={() => props.deleteItem()}/>
+									<DeleteButton onPress={() => props.deleteItem(input)}/>
                 </View>
 							</View>
 						</View>
@@ -120,7 +121,7 @@ function mapDispatchToProps(dispatch) {
       dispatch(saveItem(input))
       dispatch(getItems())
     },
-    deleteItem: () => {
+    deleteItem: (item) => {
       Alert.alert(
         'Logout',
         'Are you sure?',
@@ -131,7 +132,10 @@ function mapDispatchToProps(dispatch) {
             onPress: () => console.log('logout cancelled'),
             style: 'cancel',
           },
-          {text: 'OK', onPress: () => dispatch(deleteItem())},
+          {text: 'OK', onPress: () => {
+            dispatch(deleteItem()),
+            dispatch(deleteShelveItemByItemID(item.id))
+          }},
         ],
         {cancelable: false},
       )

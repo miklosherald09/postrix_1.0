@@ -26,7 +26,7 @@ const SearchInput = (props) => {
         clearTextOnFocus={true}
         focus={itemSearchModalVisible}
         // onKeyPress={this.onKeyPress}
-        value={searchText}
+        defaultValue={searchText}
         leftIcon={
           <Icon
             name='search'

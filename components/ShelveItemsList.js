@@ -14,7 +14,7 @@ const  numColumns  = 4
 
 const ShelveItemsList = (props) => {
 
-  const { items, activeShelve, request } = props.shelves
+  const { items, request } = props.shelves
 
   keyExtractor = (item, index) => index.toString()
 

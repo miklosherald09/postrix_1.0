@@ -12,57 +12,8 @@ const screenHeight = Math.round(Dimensions.get('window').height)
 
 const AddShelveItemsModal = (props) => {
 
-	// const [ selected, setSelected ] = React.useState(new Map());
 	const { addShelveItemsVisible, itemOptions, requestOption, selectedOptions } = props.shelves
 	const keyExtractor = (item, index) => index.toString();
-
-	// renderFooter = () => {
-  //   return(
-  //     <View style={{flex: 1, marginTop: 20, alignItems: 'center', justifyContent: 'center'}}>
-  //       {requestOption.refreshing? <ActivityIndicator size='large' />:null}
-  //     </View>
-  //   )
-	// }
-
-	const RenderItem1 = ({item, selected, onSelect }) => {
-
-		return (
-			<TouchableOpacity
-				style={[
-					{ height: 50 },
-					{ backgroundColor: selected ? 'skyblue' : 'white' },
-				]}
-				title={item.name}
-				titleStyle={{ color: '#333', fontSize: 15 }}	
-				onPress={() => onSelect(item)} >
-				<Text>{item.name} - selected: {selected}</Text>			
-			</TouchableOpacity>
-		)
-	}
-
-	const RenderItem2 = ({item, selected, onSelect }) => {
-
-		return (
-			<ListItem
-				key={'key-'+item.id}
-				leftAvatar={
-				selected?
-					<Icon
-						name="check-circle"
-						size={35}
-						color="#2089dc"
-					/>:
-					<Avatar
-						rounded
-						title={item.name.slice(0, 2)}
-					/>
-				}
-				title={item.name}
-				onPress={() => onSelect(item)}
-				containerStyle={styles.shelveItem}
-			/>
-		)
-	}
 
 	const RenderItem3 = ({item, selected, onSelect}) => {
 
@@ -84,6 +35,16 @@ const AddShelveItemsModal = (props) => {
 				</View>
 			</TouchableOpacity>
 		)
+	}
+
+	timer = null
+	const onChangeText = (text) => {
+
+		clearTimeout(timer)
+
+		timer = setTimeout(function () {
+			props.searchOptions(text)
+		}, 500)
 	}
 
 	const onSelect2 = React.useCallback(
@@ -119,14 +80,15 @@ const AddShelveItemsModal = (props) => {
 									<Text style={myStyles.headerModal}>ADD SHELVES ITEM</Text>
 								</View>
 								<View style={myStyles.headerRight}>
-									<SaveButton onPress={() => props.saveItem(input)}/>
+									{/* <SaveButton onPress={() => props.saveItem(input)}/> */}
 								</View>
 							</View>
 							<View>
 								<Input
-									onChangeText={(text) => props.searchOptions(text)}
+									onChangeText={(text) => onChangeText(text)}
 									placeholder='search'
-									leftIcon={{ type: 'font-awesome', name: 'search', color: '#CCC' }}
+									leftIcon={{ type: 'font-awesome', name: 'search', color: '#EEE' }}
+									inputContainerStyle={{borderBottomColor: '#EEE'}}
 								/>
 							</View>
 							<View style={styles.content}>
@@ -178,7 +140,10 @@ function mapDispatchToProps(dispatch) {
 		saveShelveItems: () => {	dispatch(saveShelveItems()) },
 		searchOptions: (text) => { dispatch(searchOptions(text) )},
 		getOptions: () => { dispatch(getOptions()) },
-		refreshOptions: () => { dispatch(refreshOptions()), dispatch(getOptions()) },
+		refreshOptions: () => { 
+			dispatch(refreshOptions()),
+			dispatch(getOptions()) 
+		},
 		shitOptions: () => { dispatch(shitOptions()) },
 		setSelected: (item) => { dispatch(setSelected(item)) }
 	}

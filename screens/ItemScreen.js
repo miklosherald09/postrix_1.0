@@ -24,8 +24,15 @@ const ItemScreen = (props) => {
     props.setModalVisible();
   }
 
+  timer = null
   onChangeText = (text) => {
-    props.searchItems(text)
+    clearTimeout(timer);
+    console.log('trying to search: '+text)
+		timer = setTimeout(function () {
+      console.log('searching... : '+text)
+			props.searchItems(text)
+		}, 500)
+    
   }
 
   keyExtractor = (item, index) => index.toString();
@@ -45,7 +52,7 @@ const ItemScreen = (props) => {
 					<MenuButton openMenu={this.openMenu.bind(this)} color="#333333"/>
 				</View>
 				<View style={styles.topMenuRight}>
-					<SearchInput onChangeText={(text) => props.searchItems(text)}/>
+					<SearchInput onChangeText={(text) => onChangeText(text)}/>
 				</View>
 			</View>
 			<View style={styles.wrap}>
@@ -144,7 +151,6 @@ class AddItemBUtton extends React.Component{
     )
   }
 }
-
 
 const styles = StyleSheet.create({
   wrapper: {

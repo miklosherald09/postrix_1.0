@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet, View, Text, TouchableOpacity, TextInput, Alert } from 'react-native'
+import { StyleSheet, View, Text, TouchableOpacity, TextInput, Alert, Image, Dimensions, ScrollView } from 'react-native'
 import { connect } from 'react-redux'
 import { MenuButton } from '../components/MenuButton'
 import { updateGoogleSheetUrl, updateGoogleSheetUrlCsv } from '../actions/settingsActions';
@@ -7,7 +7,7 @@ import { deleteAllItems } from '../actions/itemActions'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import SettingsNav from '../navigation/SettingsNav'
 import { syncGoogleSheet } from '../actions/itemActions'
-
+import myStyles from '../constants/styles'
 
 const SettingsItemsScreen = props => {
 
@@ -15,7 +15,7 @@ const SettingsItemsScreen = props => {
 		props.navigation.openDrawer()
 	}
 
-  const { googleSheetUrl, googleSheetUrlCsv } = props.settings
+  const { googleSheetUrlCsv } = props.settings
   const { syncingGoogleSheet, syncedItem, removingUnusedItem } = props.items
 
   return (
@@ -32,37 +32,43 @@ const SettingsItemsScreen = props => {
           <SettingsNav />
         </View>
         <View style={styles.rightContent}>
-         
-          <View style={{backgroundColor: 'white', margin: 10, padding: 10}}>
-            {/* <Text>Google Sheets</Text>
-            <TextInput 
-              style={{marginTop: 5, borderWidth: 1, borderColor: '#CCC'}}
-              placeholder="enter published google sheet link" 
-              onChangeText={(text) => props.updateGoogleSheetUrl(text)}
-              value={googleSheetUrl} /> */}
-            
-            <View>
-              <Text style={{}}>Google Sheets CSV</Text>
-              <View style={{flexDirection: 'row'}}>
-              <TextInput
-                style={{flex: 5, marginTop: 5, borderWidth: 1, borderColor: '#CCC'}}
-                placeholder="enter published google sheet csv link"
-                onChangeText={(text) => props.updateGoogleSheetUrlCsv(text)}
-                value={googleSheetUrlCsv} />
-                <View style={{flex: 1, alignItems: 'center'}}>
-                  { SyncItemButton(props) }
+            <ScrollView>
+              <View style={{backgroundColor: 'white', margin: 10, padding: 10}}>
+                {/* <Text>Google Sheets</Text>
+                <TextInput 
+                  style={{marginTop: 5, borderWidth: 1, borderColor: '#CCC'}}
+                  placeholder="enter published google sheet link" 
+                  onChangeText={(text) => props.updateGoogleSheetUrl(text)}
+                  value={googleSheetUrl} /> */}
+                
+                <View>
+                  <Text style={{...myStyles.header3, margin: 10}}>GOOGLE SHEET CSV</Text>
+                  <View style={{flexDirection: 'column'}}>
+                    <TextInput
+                      style={{flex: 5, marginTop: 5, borderBottomWidth: 1, borderColor: '#999'}}
+                      placeholder="enter published google sheet csv link"
+                      onChangeText={(text) => props.updateGoogleSheetUrlCsv(text)}
+                      defaultValue={googleSheetUrlCsv} 
+                    />
+                    <View style={{flex: 1, flexDirection: 'row', justifyContent: 'flex-start'}}>
+                      { SyncItemButton(props) }
+                      { EraseAllItemsButton(props) }
+                    </View>
+                  </View>
+                  <View>
+                    <Text style={{marginTop: 10, marginLeft: 5, color: 'green'}}>{syncingGoogleSheet?'synching...'+syncedItem.Name : ''}</Text>
+                    <Text style={{marginTop: 10, marginLeft: 5, color: 'green'}}>{removingUnusedItem?'removing unused item...': ''}</Text>
+                  </View>
                 </View>
               </View>
-              <View>
-                <Text style={{marginTop: 10, marginLeft: 5, color: 'green'}}>{syncingGoogleSheet?'synching...'+syncedItem.Name : ''}</Text>
-                <Text style={{marginTop: 10, marginLeft: 5, color: 'green'}}>{removingUnusedItem?'removing unused item...': ''}</Text>
+              {/* <View style={{backgroundColor: 'white', margin: 10, padding: 10}}>
+              </View> */}
+              <View style={{ backgroundColor: 'white', margin: 10, padding: 10}}>
+                <Text style={{...myStyles.header3, margin: 10}}>STEPS TO LINK TO GOOGLE SHEET</Text>
+                <Image style={{marginTop: -200, width: '100%', resizeMode: 'contain'}} source={require('../assets/syncitem-steps.jpg')} />
               </View>
-            </View>
+            </ScrollView>
           </View>
-          <View style={{backgroundColor: 'white', margin: 10, padding: 10}}>
-            { EraseAllItemsButton(props) }
-          </View>
-        </View>
       </View>
     </View>
   );
@@ -73,10 +79,10 @@ const EraseAllItemsButton = (props) => {
   return (
     <TouchableOpacity onPress={() => props.deleteAllItems()}>
       <Icon
-        style={{marginHorizontal: 10, marginVertical: 5}}
+        style={{marginHorizontal: 10, marginVertical: 10}}
         name="trash"
-        size={30}
-        color="#666"
+        size={32}
+        color="#CCC"
       />
     </TouchableOpacity>
   )
@@ -89,7 +95,7 @@ const SyncItemButton = (props) => {
       <Icon
         style={{marginVertical: 10, marginHorizontal: 10}}
         name="sync-alt"
-        size={35}
+        size={32}
         color="#2B78FE"
       />
     </TouchableOpacity>
@@ -110,7 +116,7 @@ function mapDispatchToProps(dispatch) {
     updateGoogleSheetUrlCsv: (text) => dispatch(updateGoogleSheetUrlCsv(text)),
     deleteAllItems: () => {
       Alert.alert(
-        'Delete All Itms',  'Are you sure?', [{
+        'Delete All Items',  'Are you sure?', [{
             text: 'Cancel',
             onPress: () => console.log('Delete All cancelled'),
             style: 'cancel',

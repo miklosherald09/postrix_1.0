@@ -250,6 +250,7 @@ export default function itemsReducer(state = initialState, action) {
       return{
         ...state,
         isDeletingAllItems: false,
+        items: []
       }
     }
     

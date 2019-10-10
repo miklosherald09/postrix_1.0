@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet, View, Text, ScrollView, TouchableOpacity, Picker } from 'react-native'
+import { StyleSheet, View, Text, ScrollView, TouchableOpacity } from 'react-native'
 import { connect } from 'react-redux'
 import { MenuButton } from '../components/MenuButton'
 import { connectPrinter } from '../actions/settingsPrinterActions'
@@ -54,11 +54,13 @@ const SettingsPrinterScreen = props => {
              <Text style={myStyles.header2}> BLUETOOTH DEVICES</Text>
             </View>
             <View style={{marginVertical: 20}}>
-            {
-              devices.map( (v, i)=> {
-                return <Device key={i} device={v} onPress={() => props.connectPrinter(v)}/>
-              })
-            }
+              <ScrollView>
+                {
+                  devices.map( (v, i)=> {
+                    return <Device key={i} device={v} onPress={() => props.connectPrinter(v)}/>
+                  })
+                }
+              </ScrollView>
             </View>
             <View style={{marginLeft: 10}}>
               {

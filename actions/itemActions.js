@@ -1,4 +1,6 @@
 import { csvJSON } from '../functions'
+import { ToastAndroid } from 'react-native';
+import { SET_SHELVE_ITEMS } from './shelvesActions'
 
 export const SAVE_ITEM_SUCCESS = 'SAVE_ITEM_SUCCESS'
 export const SAVE_ITEM_ERROR = 'SAVE_ITEM_ERROR'
@@ -69,20 +71,13 @@ export function setItemInput(item) {
   }
 }
 
-export function deleteAllItemsSucess() {
-  return {
-      type: DELETE_ALL_ITEMS_SUCCESS,
-  }
-}
-
 export function syncGoogleSheet() {
 
   return (dispatch, getState) => {
 
     console.log('trying to sync google sheet...')
-    dispatch({
-      type: SYNC_GOOGLE_SHEET_BEGIN,
-    })
+    dispatch({ type: SYNC_GOOGLE_SHEET_BEGIN })
+    
     const { settings, database } = getState()
 
     _syncItem = async (items, item, index) => {
@@ -99,7 +94,6 @@ export function syncGoogleSheet() {
               existsItem = res.rows.item(0)
 
               if(!exists){
-                console.log('INSERTING ITEM')
                 // INSERT NEW ITEM
                 tx.executeSql(
                   `INSERT INTO items(name, barcode, buy_price, sell_price) VALUES(?, ?, ?, ?)`,
@@ -120,11 +114,6 @@ export function syncGoogleSheet() {
                 )
               }
               else{
-                console.log('UPDATING ITEM')
-                console.log('index: '+index)
-                console.log('item: ')
-                console.log(item)
-               
                 // UPDATE ITEM
                 tx.executeSql(
                   `UPDATE items set name=?, barcode=?, buy_price=? , sell_price=? WHERE id=?`,
@@ -180,7 +169,6 @@ export function syncGoogleSheet() {
       async function synchronizeItems() {
 
         let resolvedFinalArray = await Promise.all(items.map(async (item, i) => { // map instead of forEach
-          console.log('i: '+i)
           const result = await _syncItem(items, item, i)
           
           finalValue = {}
@@ -198,19 +186,6 @@ export function syncGoogleSheet() {
       alert(error)
     });
 
-    
-    function validHeaders(item){
-
-      headers = ['Barcode', 'BuyPrice', 'SellPrice', 'Name']
-
-      for(i = 0; i < headers.length; i++){
-        if(!item.hasOwnProperty(headers[i])){
-          return false
-        }
-      }
-      
-      return true
-    }
   }
 }
 
@@ -231,7 +206,6 @@ export function trimItems(items) {
           for (i = 0; i < res.rows.length; ++i) {
             
             savedItem = res.rows.item(i)
-            console.log(savedItem)
             exists = false
             items.some(item => {
               if(savedItem.barcode == item.Barcode){
@@ -249,6 +223,7 @@ export function trimItems(items) {
                   if(i == itemLength - 1){
                     console.log('SYNC_GOOGLE_SHEET_SUCCESS')
                     dispatch({type: SYNC_GOOGLE_SHEET_SUCCESS})
+                    dispatch({ type: SET_SHELVE_ITEMS, items: [] })
                     dispatch({type: REMOVING_UNUSED_ITEM, removing: false})
                   }
                   console.log(res)
@@ -262,6 +237,7 @@ export function trimItems(items) {
               if(i == itemLength - 1){
                 console.log('SYNC_GOOGLE_SHEET_SUCCESS')
                 dispatch({type: REMOVING_UNUSED_ITEM, removing: false})
+                dispatch({ type: SET_SHELVE_ITEMS, items: [] })
                 dispatch({type: SYNC_GOOGLE_SHEET_SUCCESS})
               }
             }
@@ -287,11 +263,9 @@ export function deleteItem() {
     database.db.transaction(function(txn){
       txn.executeSql(`DELETE FROM items WHERE id = ?`,
       [items.input.id],
-      function(tx, res){
-        dispatch({
-          type: DELETE_ITEM_SUCCESS,
-        });
-        console.log('delete item success...');
+      function(tx, _){
+        dispatch({ type: DELETE_ITEM_SUCCESS });
+        console.log('delete item success...')
       });
     },
     function(err){
@@ -307,21 +281,24 @@ export function deleteAllItems() {
     const { database } = getState()
 
     database.db.transaction(function(txn){
-      // UPDATE ITEM
       console.log('trying delete all items..');
       txn.executeSql(`DELETE FROM items`,
       [],
-      function(tx, res){
-        // UDPATE STORE
-        dispatch({
-          type: DELETE_ALL_ITEMS_SUCCESS,
-        });
-        console.log('success deleting all items...');
-      });
+      function(tx, _){
+
+        tx.executeSql(`DELETE FROM shelve_items`,
+        [],
+        function(__, ___){
+          dispatch({ type: DELETE_ALL_ITEMS_SUCCESS })
+          dispatch({ type: SET_SHELVE_ITEMS, items: [] })
+          ToastAndroid.show('All items are removed', ToastAndroid.LONG)
+          console.log('delete all items done! xoxo')
+        })
+      })
     },
     function(err){
       console.log('error deleting all items:' + err.message);
-    });
+    })
   }
 }
 

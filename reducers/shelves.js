@@ -19,15 +19,19 @@ import {
   GET_OPTIONS_ERROR,
   GET_OPTIONS_REFRESH,
   DELETE_SHELVE_SUCCESS,
+  DELETE_SI_BY_ITEMID_SUCCESS,
+  SEARCH_OPTIONS_BEGIN,
   SEARCH_OPTIONS_SUCCESS,
+  SEARCH_OPTIONS_END,
   SET_SHELVE_ITEM_COLOR,
   SHELVE_MODAL_VISIBLE,
   SHELVE_MODAL_INVISIBLE,
   UPDATE_MODAL_SHELVE,
   UPDATE_SHELVE_SUCCESS,
-  SAVE_SHELVE,
   REFRESH_OPTIONS,
-  SET_SELECTED
+  SET_SELECTED,
+  SET_SHELVE_ITEMS,
+  
 } from '../actions/shelvesActions'
 
 const initialState = {
@@ -50,12 +54,21 @@ const initialState = {
     refreshing: false,
   },
   shelveModalVisible: false,
-  modalShelve: {}
+  modalShelve: {},
+  searchingOption: false,
 }
 
 export default function shelvesReducer(state = initialState, action) {
 
   switch(action.type) {
+
+    // SPECIAL CASE DIRECT STORE MANIPULATION
+    case SET_SHELVE_ITEMS: {
+      return {
+        ...state,
+        items: action.items
+      }
+    }
 
     case ADD_SHELVE_ITEMS_VISIBLE: {
       return {
@@ -257,9 +270,12 @@ export default function shelvesReducer(state = initialState, action) {
         }
       })
 
+      //don't append if items is happening
+      itemsOptions = (state.searchingOption == false)?[...state.itemOptions, ...action.items]:[...state.itemOptions]
+
       return {
         ...state,
-        itemOptions: [...state.itemOptions, ...action.items],
+        itemOptions: itemsOptions,
         requestOption: {
           ...state.requestOption,
           refreshing: false
@@ -307,7 +323,26 @@ export default function shelvesReducer(state = initialState, action) {
     case SEARCH_OPTIONS_SUCCESS: {
       return {
         ...state,
-        itemOptions: options
+        itemOptions: options,
+        refreshing: false
+      }
+    }
+
+    case SEARCH_OPTIONS_BEGIN: {
+      return {
+        ...state,
+        searchingOption: true,
+        requestOption: {
+          ...state.requestOption,
+          refreshing: true
+        }
+      }
+    }
+
+    case SEARCH_OPTIONS_END: {
+      return {
+        ...state,
+        searchingOption: false
       }
     }
 
@@ -376,6 +411,19 @@ export default function shelvesReducer(state = initialState, action) {
       }
     }
 
+    case DELETE_SI_BY_ITEMID_SUCCESS: {
+
+      items = state.items.filter((v) => {
+        return v.id != action.itemId
+      })
+
+      items = appendShelveButtonBox(items, state.activeShelve)
+
+      return {
+        ...state,
+        items: items
+      }
+    }
 
     default:
       // ALWAYS have a default case in a reducer

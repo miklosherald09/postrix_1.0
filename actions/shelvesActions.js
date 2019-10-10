@@ -10,7 +10,6 @@ export const SELECT_SHELVE_ITEM = 'SELECT_SHELVE_ITEM'
 export const SAVE_SHELVE_ITEMS = 'SAVE_SHELVE_ITEMS'
 export const SAVE_SHELVE_SUCCESS = 'SAVE_SHELVE_SUCCESS'
 export const SELECT_ALL_SHELVE = 'SELECT_ALL_SHELVE'
-export const SET_ITEMS = 'SET_ITEMS'
 export const FETCH_ITEMS = 'FETCH_ITEMS'
 export const GET_SHELVE_ITEMS_BEGIN = 'GET_SHELVE_ITEMS_BEGIN'
 export const GET_SHELVE_ITEMS_SUCCESS = 'GET_SHELVE_ITEMS_SUCCESS'
@@ -21,7 +20,10 @@ export const GET_OPTIONS_SUCCESS = 'GET_OPTIONS_SUCCESS'
 export const GET_OPTIONS_ERROR = 'GET_OPTIONS_ERROR'
 export const GET_OPTIONS_REFRESH = 'GET_OPTIONS_REFRESH'
 export const SEARCH_OPTIONS_SUCCESS = 'SEARCH_OPTIONS_SUCCESS'
+export const SEARCH_OPTIONS_BEGIN = 'SEARCH_OPTIONS_BEGIN'
+export const SEARCH_OPTIONS_END = 'SEARCH_OPTIONS_END'
 export const DELETE_SHELVE_SUCCESS = 'DELETE_SHELVE_SUCCESS'
+export const DELETE_SI_BY_ITEMID_SUCCESS = 'DELETE_SI_BY_ITEMID_SUCCESS'
 export const SET_SHELVE_ITEM_COLOR = 'SET_SHELVE_ITEM_COLOR'
 export const SHELVE_MODAL_VISIBLE = 'SHELVE_MODAL_VISIBLE'
 export const SHELVE_MODAL_INVISIBLE = 'SHELVE_MODAL_INVISIBLE'
@@ -30,6 +32,7 @@ export const SAVE_SHELVE = 'SAVE_SHELVE'
 export const UPDATE_SHELVE_SUCCESS = 'UPDATE_SHELVE_SUCCESS'
 export const REFRESH_OPTIONS = 'REFRESH_OPTIONS'
 export const SET_SELECTED = 'SET_SELECTED'
+export const SET_SHELVE_ITEMS = 'SET_SHELVE_ITEMS'
 
 export function addShelveItemsVisible() {
   return {
@@ -289,11 +292,8 @@ export function getOptions(){
           exists = shelves.items.some((x, j) => {
             return x.id == v.id
           })
-            
           options[i].selected = exists?true:false
-        
         })
-
         dispatch({type: GET_OPTIONS_SUCCESS, items: options})
         console.log('options successfully fetch...')
       });
@@ -310,6 +310,7 @@ export function searchOptions(text){
   return (dispatch, getState) => {
     
     const { database } = getState()
+    dispatch({type: SEARCH_OPTIONS_BEGIN})
 
     if(text){
       database.db.transaction( function(tx){
@@ -321,6 +322,8 @@ export function searchOptions(text){
             options = []
             for (i = 0; i < res.rows.length; ++i) {
               item = res.rows.item(i)
+              item.sellPrice = res.rows.item(i).sell_price
+              item.buyPrice = res.rows.item(i).buy_price
               options.push(item)
             }
 
@@ -329,13 +332,15 @@ export function searchOptions(text){
               options: options
             })
             console.log('search option successful..')
-          });
+          })
       },
       function(err){
+        dispatch({type: SEARCH_OPTIONS_ERROR})
         console.log(err.message);
       });
     }
     else{
+      dispatch({type: SEARCH_OPTIONS_END})
       dispatch({type: GET_OPTIONS_REFRESH})
       dispatch(getOptions())
     }
@@ -448,5 +453,25 @@ export function setSelected(newSelected){
   return {
     type: SET_SELECTED,
     newSelected: newSelected
+  }
+}
+
+export function deleteShelveItemByItemID(itemId){
+
+  return ( dispatch, getState ) => {
+    
+    const { database } = getState()
+
+    database.db.transaction( function(txn){
+      txn.executeSql(`DELETE FROM shelve_items WHERE item_id = ?`,
+      [itemId],
+      function(_, res){
+        console.log('delete si bid done!')
+        dispatch({type: DELETE_SI_BY_ITEMID_SUCCESS, itemId: itemId })
+      });
+    },
+    function(err){
+      console.log(err.message);
+    });
   }
 }

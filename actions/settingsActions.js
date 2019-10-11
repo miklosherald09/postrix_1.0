@@ -8,7 +8,11 @@ export const UPDATE_REPORT_EMAIL_SUCCESS = 'UPDATE_REPORT_EMAIL_SUCCESS'
 export const UPDATE_REPORT_EMAIL = 'UPDATE_REPORT_EMAIL'
 export const REPORT_EMAIL = 'REPORT_EMAIL'
 export const UPDATE_SHOP_NAME_SUCCESS = 'UPDATE_SHOP_NAME_SUCCESS'
-
+export const UPDATE_RECEIPT_HEADER_SUCCESS = 'UPDATE_RECEIPT_HEADER_SUCCESS'
+export const UPDATE_RECEIPT_FOOTER_SUCCESS = 'UPDATE_RECEIPT_FOOTER_SUCCESS'
+export const UPDATE_SETTINGS = 'UPDATE_SETTINGS'
+export const RECEIPT_HEADER = 'RECEIPT_HEADER'
+export const RECEIPT_FOOTER = 'RECEIPT_FOOTER'
 
 export function initSettings(val) {
 
@@ -30,10 +34,7 @@ export function initSettings(val) {
 
         console.log('settings successfully fetch..');
 
-        dispatch({
-          type: UPDATE_SHOP_NAME_SUCCESS,
-          shopName: settings[SHOP_NAME]
-        })
+        console.log(settings)
 
         dispatch({
           type: UPDATE_GOOGLE_SHEET_URL,
@@ -46,9 +47,23 @@ export function initSettings(val) {
         })
 
         dispatch({
-          type: UPDATE_REPORT_EMAIL_SUCCESS,
-          reportEmail: settings[REPORT_EMAIL]
+          type: UPDATE_SETTINGS,
+          settings: 'receiptHeader',
+          value: settings[RECEIPT_HEADER]
         })
+
+        dispatch({
+          type: UPDATE_SETTINGS,
+          settings: 'receiptFooter',
+          value: settings[RECEIPT_FOOTER]
+        })
+
+        dispatch({
+          type: UPDATE_SETTINGS,
+          settings: 'shopName',
+          value: settings[SHOP_NAME]
+        })
+
       });
     },
     function(err){
@@ -153,13 +168,13 @@ export function updateShopName(text) {
 
     database.db.transaction(function(txn){
       // UPDATE ITEM
-      console.log('saving shop name..');
+      console.log('saving shop name..')
       txn.executeSql(`UPDATE settings set value = ? WHERE name = "SHOP_NAME"`,
       [text],
       function(tx, res){
         // UDPATE STORE
-        dispatch({type: UPDATE_SHOP_NAME_SUCCESS, shopName: text})
-        console.log('update shopname done!');
+        dispatch({type: UPDATE_SHOP_NAME_SUCCESS})
+        console.log('update shopname done!')
       });
     },
     function(err){
@@ -168,5 +183,56 @@ export function updateShopName(text) {
   }
  
 }
+
+export function updateReceiptHeader(text){
+
+  return (dispatch, getState) => {
+   
+    const { database } = getState()
+
+    database.db.transaction(function(txn){
+      // UPDATE ITEM
+      console.log('saving receipt header..');
+      txn.executeSql(`UPDATE settings set value = ? WHERE name = "RECEIPT_HEADER"`,
+      [text],
+      function(tx, res){
+        // UDPATE STORE
+        dispatch({type: UPDATE_RECEIPT_HEADER_SUCCESS})
+        console.log('update receipt header done!');
+      });
+    },
+    function(err){
+      console.log('update receipt header error' + err.message);
+    });
+  }
+
+}
+
+export function updateReceiptFooter(text){
+
+  return (dispatch, getState) => {
+   
+    const { database } = getState()
+
+    database.db.transaction(function(txn){
+      // UPDATE ITEM
+      console.log('saving shop name..');
+      txn.executeSql(`UPDATE settings set value = ? WHERE name = "RECEIPT_FOOTER"`,
+      [text],
+      function(tx, res){
+        // UDPATE STORE
+        dispatch({type: UPDATE_RECEIPT_FOOTER_SUCCESS})
+        console.log('update receipt footer done!');
+      });
+    },
+    function(err){
+      console.log('update receipt footer error' + err.message);
+    });
+  }
+  
+}
+
+
+
 
 

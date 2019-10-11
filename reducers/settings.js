@@ -3,14 +3,19 @@ import {
   UPDATE_GOOGLE_SHEET_URL_CSV,
   INIT_SETTINGS,
   UPDATE_REPORT_EMAIL_SUCCESS,
-  UPDATE_SHOP_NAME_SUCCESS
+  UPDATE_SHOP_NAME_SUCCESS,
+  UPDATE_RECEIPT_HEADER_SUCCESS,
+  UPDATE_RECEIPT_FOOTER_SUCCESS,
+  UPDATE_SETTINGS
 } from '../actions/settingsActions'
 
 const initialState = {
   googleSheetUrl: '',
   googleSheetUrlCsv: '',
   reportEmail: '',
-  shopName: ''
+  shopName: '',
+  receiptHeader: '',
+  receiptFooter: ''
 }
 
 export default function settingsReducer(state = initialState, action) {
@@ -46,7 +51,25 @@ export default function settingsReducer(state = initialState, action) {
     case UPDATE_SHOP_NAME_SUCCESS: {
       return {
         ...state,
-        shopName: action.shopName
+      }
+    }
+
+    case UPDATE_RECEIPT_HEADER_SUCCESS: {
+      return {
+        ...state,
+      }
+    }
+
+    case UPDATE_RECEIPT_FOOTER_SUCCESS: {
+      return {
+        ...state,
+      }
+    }
+
+    case UPDATE_SETTINGS: {
+      return {
+        ...state,
+        [action.settings]: action.value
       }
     }
 

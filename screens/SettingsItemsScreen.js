@@ -37,7 +37,7 @@ const SettingsItemsScreen = props => {
                 {/* <Text>Google Sheets</Text>
                 <TextInput 
                   style={{marginTop: 5, borderWidth: 1, borderColor: '#CCC'}}
-                  placeholder="enter published google sheet link" 
+                  placeholder="enter published google sheet]]]]] link" 
                   onChangeText={(text) => props.updateGoogleSheetUrl(text)}
                   value={googleSheetUrl} /> */}
                 
@@ -128,7 +128,6 @@ function mapDispatchToProps(dispatch) {
   }
 }
 
-
 const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
@@ -183,6 +182,5 @@ const styles = StyleSheet.create({
     flexDirection:'row',
   },
 });
-
 
 export default connect(mapStateToProps, mapDispatchToProps)(SettingsItemsScreen);

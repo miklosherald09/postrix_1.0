@@ -31,13 +31,16 @@ export function printReceipt({payment, total, punched, datetime}){
       // console.log(punched)
       BluetoothEscposPrinter.printerAlign(BluetoothEscposPrinter.ALIGN.CENTER);
       BluetoothEscposPrinter.setBlob(0);
-      BluetoothEscposPrinter.printText(settings.shopName+"\n\r",{
+      BluetoothEscposPrinter.printText(settings.shopName,{
         encoding:'GBK',
         codepage:0,
         widthtimes:2,
         heigthtimes:1,
         fonttype:1
       });
+      BluetoothEscposPrinter.printText("\n\r",{});
+      BluetoothEscposPrinter.printText("\n\r",{});
+      BluetoothEscposPrinter.printText(settings.receiptHeader,{});
       BluetoothEscposPrinter.printText("\n\r",{});
       BluetoothEscposPrinter.printText("Date："+moment(datetime).format('LLL')+"\n\r",{});
       BluetoothEscposPrinter.printText("\n\r",{});
@@ -60,7 +63,7 @@ export function printReceipt({payment, total, punched, datetime}){
       BluetoothEscposPrinter.printText("--------------------------------\n\r",{});
       BluetoothEscposPrinter.printerAlign(BluetoothEscposPrinter.ALIGN.CENTER);
       BluetoothEscposPrinter.setBlob(1);
-      BluetoothEscposPrinter.printText("Thank you!\n\r",{});
+      BluetoothEscposPrinter.printText(settings.receiptFooter,{});
       BluetoothEscposPrinter.printText("\n\r",{});
       BluetoothEscposPrinter.printText("\n\r",{});
       BluetoothEscposPrinter.printText("\n\r",{});

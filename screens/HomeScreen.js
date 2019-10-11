@@ -24,8 +24,6 @@ import NumberFormat from 'react-number-format'
 import KeyEvent from 'react-native-keyevent'
 import { barcodeSeachItem } from '../actions/barcodeSearchActions'
 import { getCharges } from '../actions/chargeActions'
-import { ListItem, Icon } from 'react-native-elements'
-import {  Avatar } from 'react-native-elements'
 
 
 const HomeScreen = props => {

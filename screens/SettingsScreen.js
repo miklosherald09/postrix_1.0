@@ -4,10 +4,9 @@ import { connect } from 'react-redux'
 import { MenuButton } from '../components/MenuButton'
 import { Input } from 'react-native-elements'
 import SettingsNav from '../navigation/SettingsNav'
-import { updateShopName } from '../actions/settingsActions';
+import { updateShopName, updateReceiptHeader, updateReceiptFooter } from '../actions/settingsActions';
 import { deleteAllItems } from '../actions/itemActions'
-import { linkPermission } from '../functions'
-import NavigationService from '../NavigationService';
+import myStyles from '../constants/styles'
 
 const settingsScreen = props => {
 
@@ -17,7 +16,40 @@ const settingsScreen = props => {
 		props.navigation.openDrawer()
 	}
 
-  const { shopName } = props.settings
+  const { shopName, receiptHeader, receiptFooter } = props.settings
+
+  timeout = null
+
+  const updateShopName = (text) => {
+    clearTimeout(timeout);
+    console.log('updateShopName1')
+    timeout = setTimeout(function () {
+      console.log('updateShopName2')
+      props.updateShopName(text)
+    }, 500)
+  }
+
+  timeout = null
+  
+  const updateReceiptHeader = (text) => {
+    clearTimeout(timeout);
+    console.log('updateReceiptHeader1')
+    timeout = setTimeout(function () {
+      console.log('updateReceiptHeader2')
+      props.updateReceiptHeader(text)
+    }, 500)
+  }
+
+  timeout = null
+
+  const updateReceiptFooter = (text) => {
+    clearTimeout(timeout);
+    console.log('updateReceiptFooter1')
+    timeout = setTimeout(function () {
+      console.log('updateReceiptFooter2')
+      props.updateReceiptFooter(text)
+    }, 500)
+  }
 
   return (
     <View style={styles.wrapper}>
@@ -38,11 +70,31 @@ const settingsScreen = props => {
               label={"SHOP NAME"}
               type={"default"}
               keyboardType={"default"}
-              labelStyle={styles.label}
+              labelStyle={myStyles.header2}
+              containerStyle={{marginTop: 15, marginBottom: 50}}
+              inputStyle={{}}
+              onChangeText={(text) => {updateShopName(text)}} 
+              defaultValue={shopName}
+            />
+            <Input
+              label={"RECEIPT HEADER"}
+              type={"default"}
+              keyboardType={"default"}
+              labelStyle={myStyles.header2}
+              containerStyle={{marginTop: 15, marginBottom: 50}}
+              inputStyle={{}}
+              onChangeText={(text) => {updateReceiptHeader(text)}}
+              defaultValue={receiptHeader}
+            />
+            <Input
+              label={"RECEIPT FOOTER"}
+              type={"default"}
+              keyboardType={"default"}
+              labelStyle={myStyles.header2}
               containerStyle={{marginTop: 15}}
               inputStyle={{}}
-              onChangeText={(text) => {props.updateShopName(text)}}
-              defaultValue={shopName}
+              onChangeText={(text) => {updateReceiptFooter(text)}}
+              defaultValue={receiptFooter}
             />
           </View>
         </View>
@@ -62,7 +114,9 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     deleteAllItems: () => dispatch(deleteAllItems()),
-    updateShopName: (text) => dispatch(updateShopName(text))
+    updateShopName: (text) => dispatch(updateShopName(text)),
+    updateReceiptHeader: (text) => dispatch(updateReceiptHeader(text)),
+    updateReceiptFooter: (text) => dispatch(updateReceiptFooter(text))
   }
 }
 

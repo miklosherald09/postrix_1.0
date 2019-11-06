@@ -1,10 +1,12 @@
-import { BluetoothEscposPrinter } from 'react-native-bluetooth-escpos-printer';
+import { BluetoothEscposPrinter } from 'react-native-bluetooth-escpos-printer'
+ 
 import { accounting } from '../accounting.min.js'
-import { formatDate } from '../functions'
+import { formatDate, textDelimiter } from '../functions'
 import { currency } from '../constants/constants'
 import { DELETE_TRANSACTION_SUCCESS } from './transactionActions'
-import moment from 'moment'
-
+import moment, { HTML5_FMT } from 'moment'
+import { USBPrinter, NetPrinter, BLEPrinter } from 'react-native-printer'
+import { CONNECTION_TYPE_USB, CONNECTION_TYPE_BT } from './settingsPrinterActions'
 
 export const RECEIPT_MODAL_VISIBLE = 'RECEIPT_MODAL_VISIBLE'
 export const RECEIPT_MODAL_INVISIBLE = 'RECEIPT_MODAL_INVISIBLE'
@@ -17,13 +19,12 @@ export const DELETE_RECEIPT_ERROR = 'DELETE_RECEIPT_ERROR'
 
 export function printReceipt({payment, total, punched, datetime}){
 
-  return (dispatch, getState) => {
+  return  (dispatch, getState) => {
 
     const { settingsPrinter, settings } = getState()
 
-    console.log('currency: '+currency)
 
-    if(settingsPrinter.connected == true){
+    if(settingsPrinter.connectionType == CONNECTION_TYPE_BT){
 
       columnWidths = [12, 4, 8, 8];
   
@@ -70,13 +71,81 @@ export function printReceipt({payment, total, punched, datetime}){
       BluetoothEscposPrinter.printText("\n\r",{});
      
       dispatch({ type: PRINT_RECEIPT_SUCCESS })
+    
     }
-    else{
-      alert('Printer Error!')
+
+    if(settingsPrinter.connectionType == CONNECTION_TYPE_USB){
+
+      // USBPrinter.printText('<C>1這是一個測試列印</C>\n')
+      // USBPrinter.printText('<C>2這是一個測試列印</C>\n')
+      // USBPrinter.printBill("<C>3這是一段列印測試文字</C>")
+      // USBPrinter.printBill("<C>4這是一段列印測試文字</C>\n")
+      // USBPrinter.printBill("<C>5這是一段列印測試文字</C>\n")
+      printReceiptUSB(settings, punched, datetime, total)
+     
+      dispatch({ type: PRINT_RECEIPT_SUCCESS })
+    }
+    if(settingsPrinter.connectionType == null){
+      alert('Printer Not Connected!')
       dispatch({ type: PRINT_RECEIPT_ERROR })
     }
   }
 }
+
+function printReceiptUSB(settings, punched, datetime, total) {
+
+  // USBPrinter.printText("<M>the quick brown fox</M>\n")
+  // USBPrinter.printText("<B>the quick brown fox</B>\n")
+  // USBPrinter.printText("<D>the quick brown fox</D>\n")
+  // USBPrinter.printText("<C>the quick brown fox</C>\n")
+  // USBPrinter.printText("<CM>the quick brown fox</CM>\n")
+  // USBPrinter.printText("<CD>the quick brown fox</CD>\n")
+  // USBPrinter.printText("<CB>the quick brown fox</CB>\n")
+
+  USBPrinter.printText("<C><B>"+settings.shopName+"</B></C>\n")
+  USBPrinter.printText("\n")
+  USBPrinter.printText("\n")
+  USBPrinter.printText("<C>"+settings.receiptHeader+"<C>\n")
+  USBPrinter.printText("\n")
+  USBPrinter.printText("Date："+moment(datetime).format('LLL')+"\n")
+  USBPrinter.printText("\n")
+  USBPrinter.printText("--------------------------------\n")
+  
+  h1 = textDelimiter('Item', 12, 'LEFT')
+  h2 = textDelimiter('Qty', 4, 'LEFT')
+  h3 = textDelimiter('Price', 8, 'RIGHT')
+  h4 = textDelimiter('Total', 8, 'RIGHT')
+
+  USBPrinter.printText(h1 + h2 + h3 + h4 +"\n")
+
+  // iterate punched items
+  punched.map((v, i) => {
+    name = textDelimiter(String(v.name.slice(0, 10)), 12, 'LEFT')
+    count = textDelimiter(String('x'+v.count), 4, 'LEFT')
+    sellPrice = textDelimiter(String(accounting.formatMoney(v.sellPrice, 'P')), 8, 'RIGHT')
+    accruePrice = textDelimiter(String(accounting.formatMoney(v.accruePrice, 'P')), 8, 'RIGHT')
+
+    USBPrinter.printText(name + count + sellPrice + accruePrice +'\n')
+  })
+  
+  USBPrinter.printText("\n")
+
+  h5 = textDelimiter('Total', 16, 'LEFT')
+  h6 = textDelimiter(String(accounting.formatMoney(total, 'P')), 16, 'RIGHT')
+
+  USBPrinter.printText(h5 + h6 + "\n")
+  USBPrinter.printText("--------------------------------\n")
+  USBPrinter.printText("<C>"+settings.receiptFooter+"</C>\n")
+  USBPrinter.printText("\n")
+  USBPrinter.printText("\n")
+  USBPrinter.printText("\n")
+  USBPrinter.printText("\n")
+  
+
+  return true
+}
+
+
 
 export function receiptModalVisible() {
   return {

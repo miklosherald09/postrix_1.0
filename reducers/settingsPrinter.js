@@ -1,16 +1,26 @@
 import {
   ADD_BLUETOOTH_DEVICES,
-  SELECT_PRINTER,
   PRINTER_CONNECTED,
   PRINTER_DISCONNECTED,
-  CONNECT_PRINTER_BEGIN
+  CONNECT_PRINTER_BEGIN,
+  CONNECT_USB_PRINTER,
+  SCAN_USB_DEVICES,
+  CONNECT_USB_PRINTER_BEGIN,
+  USB_PRINTER_CONNECTED,
+  ADD_USB_DEVICES,
+  CONNECTION_TYPE_USB,
+  CONNECTION_TYPE_BT
 } from '../actions/settingsPrinterActions';
 
 const initialState = {
   devices: [],
-  printer: "",
   connected: false,
   connecting: false,
+  usbDevices: [],
+  usbDeviceConnected: false,
+  usbDeviceConnecting: false,
+  connectionType: null,
+  connectedDevice: null
 }
 
 export default function settingsPrinterReducer(state = initialState, action) {
@@ -23,18 +33,20 @@ export default function settingsPrinterReducer(state = initialState, action) {
       }
     }
 
-    case SELECT_PRINTER: {
+    case ADD_USB_DEVICES: {
       return {
         ...state,
-        printer: action.printer
+        usbDevices: action.usbDevices
       }
     }
-
+    
     case PRINTER_CONNECTED: {
       return {
         ...state,
         connected: true,
         connecting: false,
+        connectedDevice: action.connectedDevice,
+        connectionType: CONNECTION_TYPE_BT
       }
     }
 
@@ -50,6 +62,38 @@ export default function settingsPrinterReducer(state = initialState, action) {
       return {
         ...state,
         connecting: true
+      }
+    }
+
+    case CONNECT_USB_PRINTER: {
+      return {
+        ...state,
+        usbPrinter: action.printer,
+        selected: action.selected
+      }
+    }
+    
+    case SCAN_USB_DEVICES: {
+      return {
+        ...state,
+        usbDevices: action.usbDevices,
+      }
+    }
+
+    case CONNECT_USB_PRINTER_BEGIN: {
+      return {
+        ...state,
+        usbDeviceConnecting: true
+      }
+    }
+
+    case USB_PRINTER_CONNECTED: {
+      return {
+        ...state,
+        usbDeviceConnected: true,
+        usbDeviceConnecting: false,
+        connectedDevice: action.connectedDevice,
+        connectionType: CONNECTION_TYPE_USB
       }
     }
 

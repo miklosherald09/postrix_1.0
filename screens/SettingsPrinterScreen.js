@@ -2,31 +2,19 @@ import React from 'react'
 import { StyleSheet, View, Text, ScrollView, TouchableOpacity } from 'react-native'
 import { connect } from 'react-redux'
 import { MenuButton } from '../components/MenuButton'
-import { connectPrinter } from '../actions/settingsPrinterActions'
+import { connectPrinter, connectUSBPrinter } from '../actions/settingsPrinterActions'
 import Icon from 'react-native-vector-icons/FontAwesome'
 import SettingsNav from '../navigation/SettingsNav'
 import myStyles from '../constants/styles'
-import { Button } from 'react-native-elements'
+import { Button, ListItem } from 'react-native-elements'
 
 const SettingsPrinterScreen = props => {
 
 	const openMenu = () => {
 		props.navigation.openDrawer();
 	}
-
-  const navLink = (nav, text) => {
-		return(
-			<TouchableOpacity style={{height: 50}} onPress={() => props.navigation.navigate(nav)}>
-				<Text style={styles.link}>{text}</Text>
-			</TouchableOpacity>
-		)
-  }
   
-  const { devices, printer, connected, connecting } = props.settingsPrinter;
-
-  const pickerChange = (value) => {
-    props.connectPrinter(value)
-  }
+  const { devices, connected, connecting, usbDevices, usbDeviceConnecting, usbDeviceConnected } = props.settingsPrinter;
 
   return (
     <View style={styles.wrapper}>
@@ -43,36 +31,60 @@ const SettingsPrinterScreen = props => {
         </View>
         <View style={styles.rightContent}>
           <View style={styles.container}>
-            
-            <View style={{flexDirection: 'row', }}>
-              <Icon 
-                name="bluetooth"
-                size={25}
-                color="#2089dc"
-                style={{marginRight: 5}}
-              />
-             <Text style={myStyles.header2}> BLUETOOTH DEVICES</Text>
-            </View>
-            <View style={{marginVertical: 20}}>
-              <ScrollView>
-                {
-                  devices.map( (v, i)=> {
-                    return <Device key={i} device={v} onPress={() => props.connectPrinter(v)}/>
-                  })
-                }
-              </ScrollView>
-            </View>
-            <View style={{marginLeft: 10}}>
-              {
-                (connected == true)?
-                <Text style={{color: 'green'}}>Connected</Text>:
-                <Text>{connecting == false?'Please Open bluetooth and connect printer':null}</Text>
-              }
-              {
-                 connecting?<Text style={{color: 'green'}}>connecting...</Text>:null
-              }
+            <View style={styles.containerBox}>
+              <View style={{flexDirection: 'row', height: 30}}>
+                <Icon 
+                  name="bluetooth"
+                  size={25}
+                  color="#2089dc"
+                  style={{marginRight: 5}}
+                />
+                <Text style={myStyles.header2}> BLUETOOTH DEVICES</Text>
+              </View>
+              <View style={{marginVertical: 20, flex: 1}}>
+                <ScrollView>
+                  {
+                    devices.map( (v, i)=> {
+                      return <Device key={i} device={v} onPress={() => props.connectPrinter(v)}/>
+                    })
+                  }
+                </ScrollView>
+              </View>
+              <View style={{marginLeft: 10, height: 20}}>
+                {(connected == true && connecting == false)?<Text style={{color: 'green'}}>Connected</Text>:null}
+                {(connected == false && connecting == false)?<Text>Open bluetooth and connect printer</Text>:null}
+                {(connecting == true)?<Text style={{color: 'green'}}>connecting...</Text>:null}
+              </View>
             </View>
           </View>
+          <View style={styles.container}>
+            <View style={styles.containerBox} >
+              <View style={{height: 30}}>
+                <ListItem 
+                  title={'USB DEVICES'} 
+                  titleStyle={myStyles.header2}
+                  leftIcon={<Icon 
+                    name='usb'
+                    size={25}
+                  />}/>
+              </View>
+              <View style={{flex: 1, marginVertical: 20}}>
+                <ScrollView>
+                  {
+                    usbDevices.map( (v, i)=> {
+                      return <USBDevice key={i} device={v} count={i} onPress={() => props.connectUSBPrinter(v)}/>
+                    })
+                  }
+                </ScrollView>
+              </View>
+              <View style={{height: 20, marginLeft: 10}}>
+                {(usbDeviceConnected == true && usbDeviceConnecting == false)?<Text style={{color: 'green'}}>Connected</Text>:null}
+                {(usbDeviceConnected == false && usbDeviceConnecting == false)?<Text>Connect USB printer</Text>:null}
+                {(usbDeviceConnecting == true)?<Text style={{color: 'green'}}>connecting...</Text>:null}
+              </View>
+            </View>
+          </View>
+          <View style={{height: 10}}></View>
         </View>
       </View>
     </View>
@@ -102,6 +114,22 @@ class Device extends React.Component{
   }
 }
 
+class USBDevice extends React.Component{
+  render(){
+    return (
+      <View style={{flexDirection: 'row', marginBottom: 10}} >
+        <Button
+          title={'USB Device ' + this.props.count}
+          titleStyle={{textAlign: 'left', fontSize: 15, fontWeight: 'normal', color: '#2089dc', marginRight: 10}}
+          onPress={this.props.onPress}
+          type="clear"
+        />
+      </View>
+    )
+  }
+}
+
+
 function mapStateToProps(state){
 	return {
 		settingsPrinter: state.settingsPrinter,
@@ -110,7 +138,8 @@ function mapStateToProps(state){
 
 function mapDispatchToProps(dispatch){
   return {
-    connectPrinter: (value) => { dispatch(connectPrinter(value)) }
+    connectPrinter: (value) => { dispatch(connectPrinter(value)) },
+    connectUSBPrinter: (value) => { dispatch(connectUSBPrinter(value)) }
   }
 }
 
@@ -162,10 +191,14 @@ const styles = StyleSheet.create({
 		color: '#333'
   },
   container: {
+    flex: 1,
+  },
+  containerBox: {
+    flex: 1,
     backgroundColor: 'white',
-    margin: 10,
-    padding: 10,
-    paddingBottom: 50 
+    marginHorizontal: 10,
+    marginTop: 10,
+    padding: 10
   }
 })
 

@@ -41,23 +41,21 @@ const PayModal = (props) => {
 							</View>
 							<View style={{flex: 1, flexDirection: 'row'}}>
 								<View style={{flex: 1, margin: 10, justifyContent: 'space-between'}}>
-                  <View>
-                    <View style={{borderBottomColor: '#EEE', borderBottomWidth: 1, paddingVertical: 10, alignItems: 'center', marginBottom: 20 }}>
-                      <Text style={{color: '#333', fontSize: 12}}>PAYMENT</Text>
-                      <Text style={{color: '#2CB200', fontSize: 40 }}>
-                        <NumberFormat renderText={value => <Text>{value}</Text>} fixedDecimalScale={true} decimalScale={2} value={payment} displayType={'text'} thousandSeparator={true} prefix={currency} />
-                      </Text>
-                    </View>
-                    <View style={{borderBottomColor: '#EEE', borderBottomWidth: 1, paddingVertical: 10, alignItems: 'center'}}>
-                      <Text style={{color: '#333', fontSize: 12, }}>TOTAL</Text>
-                      <Text style={{color: '#333', fontSize: 40}}>
-                        <NumberFormat renderText={value => <Text>{value}</Text>} fixedDecimalScale={true} decimalScale={2} value={total} displayType={'text'} thousandSeparator={true} prefix={currency} />
-                      </Text>
-                    </View>
-                    <View>
-                    </View>
+                  <View style={{flex: 1,  paddingVertical: 10, alignItems: 'center' }}>
+                    <Text style={{color: '#333', fontSize: 12}}>PAYMENT</Text>
+                    <Text style={{color: '#2CB200', fontSize: 40 }}>
+                      <NumberFormat renderText={value => <Text>{value}</Text>} fixedDecimalScale={true} decimalScale={2} value={payment} displayType={'text'} thousandSeparator={true} prefix={currency} />
+                    </Text>
                   </View>
-                  <View>
+                  <HorizontalLine />
+                  <View style={{flex: 1, paddingVertical: 10, alignItems: 'center'}}>
+                    <Text style={{color: '#333', fontSize: 12, }}>TOTAL</Text>
+                    <Text style={{color: '#333', fontSize: 40}}>
+                      <NumberFormat renderText={value => <Text>{value}</Text>} fixedDecimalScale={true} decimalScale={2} value={total} displayType={'text'} thousandSeparator={true} prefix={currency} />
+                    </Text>
+                  </View>
+                  <HorizontalLine />
+                  <View style={{flex: 1}}>
                     <Button
                       containerStyle={{width: 100, marginBottom: 10}}
                       icon={
@@ -92,6 +90,16 @@ const PayModal = (props) => {
       </Modal>
 		</View>
   );
+}
+
+const HorizontalLine = () => {
+  return (
+    <View style={{ 
+      height: 1, 
+      borderBottomColor: '#EEE', 
+      borderBottomWidth: 1, 
+      marginHorizontal: 10}} ></View>
+  )
 }
 
 function mapStateToProps(state) {

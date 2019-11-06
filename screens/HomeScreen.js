@@ -31,6 +31,8 @@ const HomeScreen = props => {
   const { total } = props.punched
   const { shelves, activeShelve } = props.shelves
   const { activeContent } = props.home
+  const { connectedDevice } = props.settingsPrinter
+
   searchText = '' 
   timeout = null
 
@@ -76,6 +78,7 @@ const HomeScreen = props => {
           </View>
         </View>
         <View style={styles.itemBoxContainer}>
+          <Text>usbPrinter: {JSON.stringify(connectedDevice)}</Text>
           {
             activeContent == CONTENT_SHELVES?<ShelveItemsList />:<ChargeList />
           }
@@ -143,7 +146,8 @@ function mapStateToProps(state) {
 	return {
     punched: state.punched,
     shelves: state.shelves,
-    home: state.home
+    home: state.home,
+    settingsPrinter: state.settingsPrinter
 	}
 }
 

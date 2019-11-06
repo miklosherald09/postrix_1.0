@@ -9,6 +9,7 @@ import { punch } from '../actions/punchedActions'
 import { updateItemModalVisible, setItemInput } from '../actions/itemActions'
 import { selectItem, showItemColorsModal } from '../actions/itemColorsActions'
 import { addShelveItemsVisible, getOptions, getShelveItems, getShelveItemsRefresh, refreshOptions } from '../actions/shelvesActions'
+import { playBeepSound } from '../functions'
 
 const  numColumns  = 4
 
@@ -120,7 +121,10 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    punch: (item) => dispatch(punch(item)),
+    punch: (item) => {
+      playBeepSound(),
+      dispatch(punch(item))
+    },
     selectItem: (item) => {
       dispatch(showItemColorsModal()),
       dispatch(selectItem(item))

@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-community/async-storage'
 import { USER_TYPE_STAFF, USER_TYPE_ADMIN, USER_TYPE_ROOT } from './constants/constants'
+import Sound from 'react-native-sound'
 
 export function dump(obj) {
 	var out = '';
@@ -257,3 +258,30 @@ export const getData = async (name) => {
   }
 }
 
+export const playBeepSound = () => {
+  Sound.setCategory('Playback');
+  soundEffect = new Sound('beep07.wav', Sound.MAIN_BUNDLE, (error) => {
+  if (error) {
+    console.log('failed to load the sound', error)
+    return
+  }
+    soundEffect.play()
+  })
+  soundEffect.release()
+}
+
+export function textDelimiter(text, maxLength, align){
+
+  if(text.length > maxLength)
+    return text.slice(0, maxLength)
+  else{
+    pad = maxLength - text.length
+    for(i=0; i < pad; i++){
+      if(align == 'LEFT')
+        text = text + ' '
+      if(align == 'RIGHT')
+        text = ' ' + text
+    }
+    return text
+  }
+}

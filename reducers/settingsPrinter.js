@@ -4,12 +4,11 @@ import {
   PRINTER_DISCONNECTED,
   CONNECT_PRINTER_BEGIN,
   CONNECT_USB_PRINTER,
-  SCAN_USB_DEVICES,
+  SCAN_USB_DEVICES_SUCCESS,
   CONNECT_USB_PRINTER_BEGIN,
   USB_PRINTER_CONNECTED,
-  ADD_USB_DEVICES,
   CONNECTION_TYPE_USB,
-  CONNECTION_TYPE_BT
+  CONNECTION_TYPE_BT,
 } from '../actions/settingsPrinterActions';
 
 const initialState = {
@@ -33,7 +32,7 @@ export default function settingsPrinterReducer(state = initialState, action) {
       }
     }
 
-    case ADD_USB_DEVICES: {
+    case SCAN_USB_DEVICES_SUCCESS: {
       return {
         ...state,
         usbDevices: action.usbDevices
@@ -70,13 +69,6 @@ export default function settingsPrinterReducer(state = initialState, action) {
         ...state,
         usbPrinter: action.printer,
         selected: action.selected
-      }
-    }
-    
-    case SCAN_USB_DEVICES: {
-      return {
-        ...state,
-        usbDevices: action.usbDevices,
       }
     }
 

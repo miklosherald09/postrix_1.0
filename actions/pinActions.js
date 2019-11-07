@@ -1,4 +1,4 @@
-import { ToastAndroid } from 'react-native';
+import { ToastAndroid } from 'react-native'
 
 export const SIGN_IN = 'SIGN_IN'
 export const SIGN_IN_BEGIN = 'SIGN_IN_BEGIN'

@@ -67,7 +67,7 @@ const settingsScreen = props => {
         <View style={styles.rightContent}>
           <View style={styles.container}>
             <Input
-              label={"SHOP NAME"}
+              label={"RECEIPT HEADER"}
               type={"default"}
               keyboardType={"default"}
               labelStyle={myStyles.header2}
@@ -77,7 +77,7 @@ const settingsScreen = props => {
               defaultValue={shopName}
             />
             <Input
-              label={"RECEIPT HEADER"}
+              label={"RECEIPT SUB HEADER"}
               type={"default"}
               keyboardType={"default"}
               labelStyle={myStyles.header2}

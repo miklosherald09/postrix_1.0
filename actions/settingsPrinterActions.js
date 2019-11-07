@@ -4,7 +4,7 @@ export const PRINTER_CONNECTED = 'PRINTER_CONNECTED'
 export const PRINTER_DISCONNECTED = 'PRINTER_DISCONNECTED'
 export const CONNECT_PRINTER_BEGIN = 'CONNECT_PRINTER_BEGIN'
 export const CONNECT_USB_PRINTER = 'CONNECT_USB_PRINTER'
-export const ADD_USB_DEVICES = 'SCAN_USB_DEVICES'
+export const SCAN_USB_DEVICES_SUCCESS = 'SCAN_USB_DEVICES_SUCCESS'
 export const CONNECT_USB_PRINTER_BEGIN = 'CONNECT_USB_PRINTER_BEGIN'
 export const USB_PRINTER_CONNECTED = 'USB_PRINTER_CONNECTED'
 export const CONNECTION_TYPE_USB = 'CONNECTION_TYPE_USB'
@@ -13,6 +13,7 @@ export const CONNECTION_TYPE_BT = 'CONNECTION_TYPE_BT'
 import { BluetoothManager, BluetoothEscposPrinter } from 'react-native-bluetooth-escpos-printer'
 import { USBPrinter, NetPrinter, BLEPrinter } from 'react-native-printer'
 
+import { ToastAndroid } from 'react-native';
 
 export function initPrinter() {
 
@@ -64,7 +65,7 @@ export function initPrinter() {
         .then(printers => {
           console.log('printers: ')
           console.log(printers),
-          dispatch({type: ADD_USB_DEVICES, usbDevices: printers})
+          dispatch({type: SCAN_USB_DEVICES_SUCCESS, usbDevices: printers})
 
           //connect printer
           printers.forEach((device) => {
@@ -80,31 +81,36 @@ export function initPrinter() {
               },
               error => alert(error))
           });
-            
-
-
+          },
+          error => {
+            console.log('errors getting usb devices!')
           })
         },
         error => {
           console.log('errors in printing!')
-          alert(error)
     });
   }
 }
 
-export function scanUSBPrinters() {
-  USBPrinter.init().then(()=> {
-    //list printers
-    USBPrinter.getDeviceList()
-      .then(printers => {
-        console.log('printer stress!')
-        dispatch({type: SCAN_USB_DEVICES, usbDevices: printers})
-      })
-  },
-  error => {
-    console.log('errors in printing!')
-    console.log(error)
-  });
+export function scanUSBDevices() {
+  return (dispatch, getState) => {
+    
+    ToastAndroid.show('Scanning devices...',  ToastAndroid.LONG)
+    USBPrinter.init().then(()=> {
+      //list printers
+      USBPrinter.getDeviceList()
+        .then(devices => {
+          console.log('printer stress!')
+          dispatch({type: SCAN_USB_DEVICES_SUCCESS, usbDevices: devices})
+        },
+        error => {
+          ToastAndroid.show(error,  ToastAndroid.LONG)
+        })
+    },
+    error => {
+      ToastAndroid.show(error,  ToastAndroid.LONG)
+    });
+  }
 }
 
 export function scanBTPrinters() {
@@ -146,14 +152,17 @@ export function connectUSBPrinter(device) {
 
   return (dispatch, getState) => {
 
-    vendorID = device.vendor_id
-    productId = device.product_id
-    USBPrinter.connectPrinter(vendorID, productId).then(
-      (printer) => {
-        console.log(printer)
-        console.log('printers: ')
-        dispatch({type: CONNECT_USB_PRINTER, connectedDevice: printer})
-      },
-      error => alert(error))
-    }
+    dispatch({type: CONNECT_USB_PRINTER_BEGIN})
+    USBPrinter.init().then(()=> {
+      vendorID = device.vendor_id
+      productId = device.product_id
+      USBPrinter.connectPrinter(vendorID, productId).then(
+        (printer) => {
+          console.log(printer)
+          console.log('printers: ')
+          dispatch({type: USB_PRINTER_CONNECTED, connectedDevice: device})
+        },
+        error => alert(error))
+      })
+  }
 }

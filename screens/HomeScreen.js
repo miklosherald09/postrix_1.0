@@ -78,7 +78,6 @@ const HomeScreen = props => {
           </View>
         </View>
         <View style={styles.itemBoxContainer}>
-          <Text>usbPrinter: {JSON.stringify(connectedDevice)}</Text>
           {
             activeContent == CONTENT_SHELVES?<ShelveItemsList />:<ChargeList />
           }
@@ -108,8 +107,6 @@ const HomeScreen = props => {
           </View>
         </View>
         <View style={{flex: 1, padding: 10}}>
-          
-           
           <PunchedItemList />
         </View>
         <View style={styles.rightBottomBar}>

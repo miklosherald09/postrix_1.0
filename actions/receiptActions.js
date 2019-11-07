@@ -76,15 +76,10 @@ export function printReceipt({payment, total, punched, datetime}){
 
     if(settingsPrinter.connectionType == CONNECTION_TYPE_USB){
 
-      // USBPrinter.printText('<C>1這是一個測試列印</C>\n')
-      // USBPrinter.printText('<C>2這是一個測試列印</C>\n')
-      // USBPrinter.printBill("<C>3這是一段列印測試文字</C>")
-      // USBPrinter.printBill("<C>4這是一段列印測試文字</C>\n")
-      // USBPrinter.printBill("<C>5這是一段列印測試文字</C>\n")
       printReceiptUSB(settings, punched, datetime, total)
-     
       dispatch({ type: PRINT_RECEIPT_SUCCESS })
     }
+    
     if(settingsPrinter.connectionType == null){
       alert('Printer Not Connected!')
       dispatch({ type: PRINT_RECEIPT_ERROR })

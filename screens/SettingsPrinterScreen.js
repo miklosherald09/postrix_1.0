@@ -2,8 +2,8 @@ import React from 'react'
 import { StyleSheet, View, Text, ScrollView, TouchableOpacity } from 'react-native'
 import { connect } from 'react-redux'
 import { MenuButton } from '../components/MenuButton'
-import { connectPrinter, connectUSBPrinter } from '../actions/settingsPrinterActions'
-import Icon from 'react-native-vector-icons/FontAwesome'
+import { connectPrinter, connectUSBPrinter, scanUSBDevices } from '../actions/settingsPrinterActions'
+import Icon from 'react-native-vector-icons/FontAwesome5'
 import SettingsNav from '../navigation/SettingsNav'
 import myStyles from '../constants/styles'
 import { Button, ListItem } from 'react-native-elements'
@@ -59,14 +59,25 @@ const SettingsPrinterScreen = props => {
           </View>
           <View style={styles.container}>
             <View style={styles.containerBox} >
-              <View style={{height: 30}}>
-                <ListItem 
-                  title={'USB DEVICES'} 
-                  titleStyle={myStyles.header2}
-                  leftIcon={<Icon 
-                    name='usb'
-                    size={25}
-                  />}/>
+              <View style={{height: 30, flexDirection: 'row'}}>
+                <View style={{flex: 1}}>
+                  <ListItem 
+                    title={'USB DEVICES'} 
+                    titleStyle={myStyles.header2}
+                    leftIcon={<Icon 
+                      name='usb'
+                      size={25}
+                    />}/>
+                </View>
+                <View style={{flex: 1, flexDirection: 'row', justifyContent: 'flex-end'}}>
+                  <Button
+                    type="clear"
+                    icon={<Icon 
+                      name='sync'
+                      size={25} />}
+                    onPress={() => props.scanUSBDevices()}
+                  />
+                </View>
               </View>
               <View style={{flex: 1, marginVertical: 20}}>
                 <ScrollView>
@@ -139,7 +150,8 @@ function mapStateToProps(state){
 function mapDispatchToProps(dispatch){
   return {
     connectPrinter: (value) => { dispatch(connectPrinter(value)) },
-    connectUSBPrinter: (value) => { dispatch(connectUSBPrinter(value)) }
+    connectUSBPrinter: (value) => { dispatch(connectUSBPrinter(value)) },
+    scanUSBDevices: ()  => { dispatch(scanUSBDevices()) }
   }
 }
 

@@ -43,10 +43,10 @@ const ChargeList = (props) => {
               onLongPress={() => { props.saveChargeModalVisible(true), props.selectCharge(item)}} >
               <View style={{flex: 1, alignItems: 'center', justifyContent: 'center', flexDirection: 'column'}}>
                 <View style={{flex: 1 }}>
-                  <Text style={{ textAlign: 'center', fontSize: 20, }}>{item.name}</Text>
+                  <Text style={{ textAlign: 'center', fontSize: 25, paddingTop: 10 }}>{item.name}</Text>
                 </View>
                 <View style={{flex: 1, justifyContent: 'center'}}>
-                  <Text style={{ textAlign: 'center', fontSize: 20,  color: '#333'}}>{currency}{item.price}</Text>
+                  <Text style={{ textAlign: 'center', fontSize: 25,  color: '#333'}}>{currency}{item.price}</Text>
                 </View>
               </View>
             </TouchableOpacity>

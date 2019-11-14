@@ -5,8 +5,9 @@ import {
   CONNECT_PRINTER_BEGIN,
   CONNECT_USB_PRINTER,
   SCAN_USB_DEVICES_SUCCESS,
+  CONNECT_USB_PRINTER_SUCCESS,
   CONNECT_USB_PRINTER_BEGIN,
-  USB_PRINTER_CONNECTED,
+  CONNECT_USB_PRINTER_ERROR,
   CONNECTION_TYPE_USB,
   CONNECTION_TYPE_BT,
 } from '../actions/settingsPrinterActions';
@@ -79,13 +80,21 @@ export default function settingsPrinterReducer(state = initialState, action) {
       }
     }
 
-    case USB_PRINTER_CONNECTED: {
+    case CONNECT_USB_PRINTER_SUCCESS: {
       return {
         ...state,
         usbDeviceConnected: true,
         usbDeviceConnecting: false,
         connectedDevice: action.connectedDevice,
         connectionType: CONNECTION_TYPE_USB
+      }
+    }
+
+    case CONNECT_USB_PRINTER_ERROR: {
+      return {
+        ...state,
+        usbDeviceConnected: false,
+        usbDeviceConnecting: false,
       }
     }
 

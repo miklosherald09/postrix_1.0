@@ -183,7 +183,7 @@ const styles = StyleSheet.create({
   },
   num: {
     textAlign: 'center',
-    fontSize: 25,
+    fontSize: 40,
     color: '#333'
   },
   to: {

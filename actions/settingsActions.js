@@ -34,8 +34,6 @@ export function initSettings(val) {
 
         console.log('settings successfully fetch..');
 
-        console.log(settings)
-
         dispatch({
           type: UPDATE_GOOGLE_SHEET_URL,
           googleSheetUrl: settings[GOOGLE_SHEET_URL]
@@ -192,17 +190,17 @@ export function updateReceiptHeader(text){
 
     database.db.transaction(function(txn){
       // UPDATE ITEM
-      console.log('saving receipt header..');
+      console.log('saving receipt header..')
       txn.executeSql(`UPDATE settings set value = ? WHERE name = "RECEIPT_HEADER"`,
       [text],
       function(tx, res){
         // UDPATE STORE
         dispatch({type: UPDATE_RECEIPT_HEADER_SUCCESS})
-        console.log('update receipt header done!');
+        console.log('update receipt header done!')
       });
     },
     function(err){
-      console.log('update receipt header error' + err.message);
+      console.log('update receipt header error' + err.message)
     });
   }
 
@@ -222,7 +220,7 @@ export function updateReceiptFooter(text){
       function(tx, res){
         // UDPATE STORE
         dispatch({type: UPDATE_RECEIPT_FOOTER_SUCCESS})
-        console.log('update receipt footer done!');
+        console.log('update receipt footer done!')
       });
     },
     function(err){

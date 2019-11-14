@@ -26,7 +26,7 @@ const ItemBox = (props) => {
           <View style={styles.imagePan}>
           <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
               {/* <Image style={{width: 45, height: 45}} source={require('../assets/alfonso.fw.png')}  /> */}
-              <Text style={{fontSize: 15, color: txcolor}}>{curr}{props.item.sellPrice}</Text>
+              <Text style={{fontSize: 22, color: txcolor}}>{curr}{props.item.sellPrice}</Text>
             </View>
             {/* <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
               <Image style={{width: 45, height: 45}} source={require('../assets/alfonso.fw.png')}  />
@@ -89,11 +89,11 @@ const styles = StyleSheet.create(
     },
     name: {
       textAlign: 'center',
-      fontSize: 12,
+      fontSize: 17,
     },
     barcode: {
       textAlign: 'center',
-      fontSize: 10,
+      fontSize: 15,
       color: '#999999',
       marginTop: 5,
     }

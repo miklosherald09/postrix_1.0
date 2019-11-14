@@ -45,7 +45,7 @@ const ShelveItemsList = (props) => {
               </View>
               <View style={styles.imagePan}>
                 <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-                  <Text style={{fontSize: 15, color: txcolor}}>
+                  <Text style={{fontSize: 20, color: txcolor}}>
                     <NumberFormat renderText={value => <Text>{value}</Text>} fixedDecimalScale={true} decimalScale={2} value={item.sellPrice} displayType={'text'} thousandSeparator={true} prefix={curr} />
                   </Text>
                 </View>
@@ -195,11 +195,11 @@ const styles = StyleSheet.create({
   },
   name: {
     textAlign: 'center',
-    fontSize: 12,
+    fontSize: 20,
   },
   barcode: {
     textAlign: 'center',
-    fontSize: 10,
+    fontSize: 15,
     color: '#999999',
     marginTop: 5,
   }

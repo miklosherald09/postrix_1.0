@@ -30,11 +30,11 @@ const styles = StyleSheet.create(
         },
         itemName: {
             color: 'black',
-            fontSize: 14,
+            fontSize: 20,
         },
         itemPrice: {
             color: '#666666',
-            fontSize: 12,
+            fontSize: 15,
         },
         itemPriceTotal: {
             textAlign: 'right',

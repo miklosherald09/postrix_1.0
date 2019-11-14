@@ -130,7 +130,7 @@ export function printReport(){
     }
     
     if(settingsPrinter.connectionType == null){
-      ToastAndroid('Printer not connected', ToastAndroid.LONG)
+      ToastAndroid.show('Printer not connected', ToastAndroid.LONG)
     }
   }
 }

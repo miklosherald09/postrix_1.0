@@ -143,7 +143,7 @@ class AddItemBUtton extends React.Component{
         <TouchableOpacity onPress={() => this.props.openModal()}>
           <Icon
             name="plus-circle"
-            size={40}
+            size={60}
             color="#2B78FE"
           />
         </TouchableOpacity>
@@ -210,6 +210,12 @@ const styles = StyleSheet.create({
   bottomLinks: {
     marginVertical: 20,
     marginHorizontal: 10
+  },
+  link: {
+    fontSize: 25,
+    color: '#333',
+    marginTop: 10,
+    fontWeight: 'bold'
   }
 });
 

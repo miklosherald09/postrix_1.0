@@ -49,6 +49,7 @@ const ShelveModal = (props) => {
                       labelStyle={styles.label}
                       onChangeText={text => props.updateModalShelve(text)}
                       defaultValue={modalShelve.name}
+                      inputStyle={{fontSize: 20}}
                     />
                   </View>
                   <View style={{ height: 50, flexDirection: 'row'}}>
@@ -91,7 +92,7 @@ export class SaveButton extends React.Component{
         title="Save"
         containerStyle={{marginHorizontal: 5}}
         type="clear"
-        titleStyle={{color: '#2089dc'}}
+        titleStyle={{color: '#2089dc', fontSize: 20}}
       />
     )
   }
@@ -107,7 +108,7 @@ export class DeleteButton extends React.Component{
         title="Delete"
         containerStyle={{marginHorizontal: 5}}
         type="clear"
-        titleStyle={{color: 'red'}}
+        titleStyle={{color: 'red', fontSize: 20}}
       />:null
     )
   }
@@ -147,7 +148,7 @@ const styles = StyleSheet.create({
   },
   label: {
     fontWeight: 'normal', 
-    fontSize: 12, 
+    fontSize: 20, 
     color: '#999'
   },
   button: {
@@ -181,12 +182,12 @@ const styles = StyleSheet.create({
   invalid: {
     marginLeft: 10,
     color: 'red',
-    fontSize: 12,
+    fontSize: 20,
   },
   warning: {
     marginLeft: 10,
     color: 'red',
-    fontSize: 12,
+    fontSize: 20,
   },
   submitPan: {
     flex: 1,

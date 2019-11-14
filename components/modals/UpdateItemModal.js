@@ -149,7 +149,7 @@ export class UselessField extends React.Component{
   render(){
     return (
       <View style={{borderColor: '#CCC', borderBottomWidth: 1}}>
-        <Text style={myStyles.label1}>{this.props.label}</Text>
+        <Text style={styles.label}>{this.props.label}</Text>
         <TextInput 
           style={this.props.style}
           defaultValue={this.props.defaultValue} 
@@ -166,8 +166,10 @@ export class SaveButton extends React.Component{
     return (
       <Button 
         onPress={this.props.onPress} style={styles.opacity}
-        title="Save"
+        title="SAVE"
         containerStyle={{marginHorizontal: 5}}
+        titleStyle={{color: '#2089dc', marginLeft: 5, fontSize: 20}}
+        type="clear"
       />
     )
   }
@@ -179,17 +181,17 @@ export class DeleteButton extends React.Component{
     return (
       <Button
         onPress={this.props.onPress} style={styles.opacity}
-        title="Delete"
+        title="- Delete"
         containerStyle={{}}
         type="clear"
-        titleStyle={{color: '#666', marginLeft: 5}}
-        icon={
-          <Icon 
-            name="minus"
-            size={15}
-            color="#666"
-          />
-        }
+        titleStyle={{color: 'red', marginLeft: 5, fontSize: 20}}
+        // icon={
+        //   <Icon 
+        //     name="minus"
+        //     size={15}
+        //     color="#666"
+        //   />
+        // }
       />
     )
   }
@@ -229,7 +231,7 @@ const styles = StyleSheet.create({
   },
   label: {
     fontWeight: 'normal', 
-    fontSize: 12, 
+    fontSize: 18, 
     color: '#999'
   },
   button: {
@@ -263,12 +265,12 @@ const styles = StyleSheet.create({
   invalid: {
     marginLeft: 10,
     color: 'red',
-    fontSize: 12,
+    fontSize: 20,
   },
   warning: {
     marginLeft: 10,
     color: 'red',
-    fontSize: 12,
+    fontSize: 20,
   },
   submitPan: {
     flex: 1,

@@ -45,7 +45,7 @@ const SettingsItemsScreen = props => {
                   <Text style={{...myStyles.header3, margin: 10}}>GOOGLE SHEET CSV</Text>
                   <View style={{flexDirection: 'column'}}>
                     <TextInput
-                      style={{flex: 5, marginTop: 5, borderBottomWidth: 1, borderColor: '#999'}}
+                      style={{fontSize: 20, flex: 5, marginTop: 5, borderBottomWidth: 1, borderColor: '#999'}}
                       placeholder="enter published google sheet csv link"
                       onChangeText={(text) => props.updateGoogleSheetUrlCsv(text)}
                       defaultValue={googleSheetUrlCsv} 
@@ -172,7 +172,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 10
   },
   link: {
-		fontSize: 15,
+		fontSize: 20,
 		color: '#333'
   },
   buttonPanLeft: {

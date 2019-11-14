@@ -15,7 +15,7 @@ const MenuDrawer = (props) => {
 			<Button
 				onPress={() => props.navigation.navigate(nav)}
 				type="clear"
-				titleStyle={{ marginLeft: 10, fontSize: 15, color: 'white'}}
+				titleStyle={{ marginLeft: 10, fontSize: 22, color: 'white'}}
 				iconContainerStyle={{paddingTop: 3}}
 				buttonStyle={{justifyContent: 'flex-start', marginBottom: 10}}
 				icon={
@@ -55,7 +55,7 @@ const MenuDrawer = (props) => {
 			</View>
 			<View style={{flex: 1, flexDirection: 'column', justifyContent: 'flex-start'}}>
 				{signOutButton(props)}
-				<Text style={{marginLeft: 8, fontSize: 10}}>{userType} @Postrix v1.0</Text>
+				<Text style={{marginLeft: 8, fontSize: 16}}>{userType} @Postrix v1.0</Text>
 			</View>
 			</TouchableOpacity>
 		</TouchableOpacity>
@@ -79,7 +79,7 @@ const signOutButton = (props) => {
 	return (
     <Button
 			type="clear"
-			titleStyle={{ marginLeft: 10, fontSize: 14, color: 'white'}}
+			titleStyle={{ marginLeft: 10, fontSize: 22, color: 'white'}}
 			iconContainerStyle={{}}
 			buttonStyle={{justifyContent: 'flex-start'}}
 			icon={
@@ -155,7 +155,7 @@ const styles = StyleSheet.create({
 	links: {
 		flex: 1,
 		// backgroundColor: 'yellow',
-		marginTop: 25,
+		marginTop: 35,
 		paddingTop: 10,
 		paddingBottom: 450,
 	},

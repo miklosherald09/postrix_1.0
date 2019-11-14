@@ -13,7 +13,7 @@ const ShelveButton = (props) => {
         title={props.shelve.name}
         color="#333"
         type="clear"
-        titleStyle={{fontSize: 14}}
+        titleStyle={{fontSize: 22}}
       />
     </View>
   )

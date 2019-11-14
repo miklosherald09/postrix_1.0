@@ -41,6 +41,7 @@ const PunchItemModal = (props) => {
 										containerStyle={{marginHorizontal: 10}}
 										title="OK"
 										type='clear'
+										titleStyle={{fontSize: 20}}
 									/>
 									{/* <SaveButton onPress={() => props.punchItemInvisible()}/> */}
 								</View>
@@ -53,11 +54,11 @@ const PunchItemModal = (props) => {
 								</View> */}
 							</View>
 							<View style={styles.content}>
-								<View style={{flex: 1, flexDirection: 'row', marginTop: 20}}>
+								<View style={{flex: 1, flexDirection: 'row', marginTop: 25}}>
 									<View style={{flex: 2, marginHorizontal: 10}}>
-										<Text style={{fontSize: 15, color: '#666'}}>{selectedItem.name}</Text>
+										<Text style={{fontSize: 25, color: '#666'}}>{selectedItem.name}</Text>
 										<NumberFormat 
-											renderText={value => <Text style={{fontSize: 18, fontWeight: 'bold', color: '#333'}}>{value}</Text>}
+											renderText={value => <Text style={{fontSize: 22, fontWeight: 'bold', color: '#333'}}>{value}</Text>}
 											fixedDecimalScale={true} decimalScale={2}
 											value={selectedItem.sellPrice * selectedItem.count} 
 											displayType={'text'} 
@@ -73,18 +74,18 @@ const PunchItemModal = (props) => {
 												buttonStyle={{  width: 40, height: 40}}
 												icon={<Icon
 													name="minus"
-													size={20}
+													size={25}
 													color="white"
 												/>}>
 											</Button>
-											<Text style={{flex: 1, color: '#333', fontSize: 18, textAlign: 'center', marginTop: 3}}>{selectedItem.count}</Text>
+											<Text style={{flex: 1, color: '#333', fontSize: 30, textAlign: 'center', marginTop: 0}}>{selectedItem.count}</Text>
 											<Button
 												type="solid"
 												onPress={() => props.punchedItemCount(1)}
 												buttonStyle={{ width: 40, height: 40}}
 												icon={<Icon
 													name="plus"
-													size={20}
+													size={25}
 													color="white"
 												/>}>
 											</Button>
@@ -98,8 +99,8 @@ const PunchItemModal = (props) => {
 								<Button
                   onPress={ () => props.deletePunchItem() }
 									containerStyle={{margin: 10}}
-									titleStyle={{color: '#C0504D', fontSize: 15}}
-									title="DELETE"
+									titleStyle={{color: 'red', fontSize: 20}}
+									title="- Delete"
 									type='clear'
 								/>
 							</View>

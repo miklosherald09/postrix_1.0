@@ -1,4 +1,5 @@
 import { BluetoothEscposPrinter } from 'react-native-bluetooth-escpos-printer'
+import { ToastAndroid } from 'react-native'
  
 import { accounting } from '../accounting.min.js'
 import { formatDate, textDelimiter } from '../functions'
@@ -81,7 +82,7 @@ export function printReceipt({payment, total, punched, datetime}){
     }
     
     if(settingsPrinter.connectionType == null){
-      alert('Printer Not Connected!')
+      ToastAndroid.show('Printer Not Connected!', ToastAndroid.LONG)
       dispatch({ type: PRINT_RECEIPT_ERROR })
     }
   }

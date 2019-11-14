@@ -150,7 +150,7 @@ const styles = StyleSheet.create({
     margin: 10,
   },
   itemName: {
-    fontSize: 12,
+    fontSize: 18,
     color: 'black'
   },
   titleStyle: {
@@ -162,7 +162,7 @@ const styles = StyleSheet.create({
     color: '#333'
   },
   totalProfit: {
-    fontSize: 15,
+    fontSize: 18,
     color: '#333'
   },
   itemsField: {

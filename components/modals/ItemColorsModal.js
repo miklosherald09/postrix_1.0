@@ -59,7 +59,7 @@ const ItemColorsModal = (props) => {
                       hideSliders={true}
                     />
                     <View style={{borderRadius: 5, flex: 1, height: 50,  backgroundColor: selectedColor}}>
-                      <Text style={{margin: 10, fontSize: 10, color: 'white'}}>COLOR</Text>
+                      <Text style={{margin: 10, fontSize: 20, color: 'white'}}>COLOR</Text>
                     </View>
                   </View>
                   <View style={{flex: 1, paddingLeft: 10 }}>
@@ -191,7 +191,7 @@ const styles = StyleSheet.create({
   },
   label: {
     fontWeight: 'normal', 
-    fontSize: 12, 
+    fontSize: 20, 
     color: '#999'
   },
   button: {
@@ -225,12 +225,12 @@ const styles = StyleSheet.create({
   invalid: {
     marginLeft: 10,
     color: 'red',
-    fontSize: 12,
+    fontSize: 20,
   },
   warning: {
     marginLeft: 10,
     color: 'red',
-    fontSize: 12,
+    fontSize: 20,
   },
   submitPan: {
     flex: 1,

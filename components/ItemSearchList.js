@@ -34,10 +34,10 @@ const TransactionList = (props) => {
         <TouchableHighlight style={{flex: 1}} onPress={() => props.punch(item)}>
           <View style={{flex: 1, flexDirection: 'column'}}>
             <View style={{flex: 1, }}>
-              <Text style={{fontSize: 15, color: '#333', textAlign: 'center'}}>{item.name}</Text>
+              <Text style={{fontSize: 20, color: '#333', textAlign: 'center'}}>{item.name}</Text>
             </View>
             <View style={{flex: 1, justifyContent: 'center'}}>
-              <Text style={{fontSize: 16,  color: '#333', textAlign: 'center'}}>{currency+' '+item.sellPrice}</Text>
+              <Text style={{fontSize: 20,  color: '#333', textAlign: 'center'}}>{currency+' '+item.sellPrice}</Text>
             </View>
           </View>
         </TouchableHighlight>
@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
     // justifyContent: 'center',
     flex: 1,
     margin: 5,
-    padding: 5,
+    padding: 10,
     height: Dimensions.get('window').height / numColumns + 20, // approximate a square
     borderRadius: 5,
     borderColor: '#CCC',

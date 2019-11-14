@@ -115,7 +115,7 @@ const HomeScreen = props => {
             </View>
             <View style={styles.punchedButtonPan}>
               <Text style={styles.total}>
-                <NumberFormat renderText={value => <Text>{value}</Text>} fixedDecimalScale={true} decimalScale={2} value={total} displayType={'text'} thousandSeparator={true} prefix={currency} />
+                <NumberFormat renderText={value => <Text style={{fontSize: 30}}>{value}</Text>} fixedDecimalScale={true} decimalScale={2} value={total} displayType={'text'} thousandSeparator={true} prefix={currency} />
               </Text>
             </View>
           </View>
@@ -230,7 +230,7 @@ const styles = StyleSheet.create({
   total: {
     marginTop: 10,
     marginRight: 10,
-    fontSize: 20,
+    fontSize: 30,
     color: '#333',
     fontWeight: 'bold'
   },

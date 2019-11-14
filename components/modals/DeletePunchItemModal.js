@@ -29,7 +29,7 @@ const PunchItemModal = (props) => {
 						<View style={styles.wrap}>
 							<View style={styles.modalTopMenu}>
 								<View style={{ flex: 2 }}>
-									<Text style={{fontSize: 18, margin: 10, color: '#CCC'}}>Change Punch Item</Text>
+									<Text style={{fontSize: 20, margin: 10, color: '#CCC'}}>Change Punch Item</Text>
 								</View>
 								<View style={{ flex: 1 }}>
 									<CloseButton onPress={ () => props.punchItemInvisible() }/>
@@ -37,8 +37,8 @@ const PunchItemModal = (props) => {
 							</View>
 							<View style={{...styles.content, }}>
 								<View style={{ flex: 2 }}>
-									<Text style={{fontSize: 18, margin: 10}}>{selectedItem.name}</Text>
-									<Text style={{fontSize: 18, margin: 10}}>{selectedItem.sellPrice} x {selectedItem.count}</Text>
+									<Text style={{fontSize: 20, margin: 10}}>{selectedItem.name}</Text>
+									<Text style={{fontSize: 20, margin: 10}}>{selectedItem.sellPrice} x {selectedItem.count}</Text>
 								</View>
 								<View style={{  flex: 1 }}>
 									<Text style={{textAlign: 'right', color: '#333', fontSize: 25, margin: 10}}>{curr} {selectedItem.sellPrice * selectedItem.count}</Text>

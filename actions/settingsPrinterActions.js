@@ -6,13 +6,13 @@ export const CONNECT_PRINTER_BEGIN = 'CONNECT_PRINTER_BEGIN'
 export const CONNECT_USB_PRINTER = 'CONNECT_USB_PRINTER'
 export const SCAN_USB_DEVICES_SUCCESS = 'SCAN_USB_DEVICES_SUCCESS'
 export const CONNECT_USB_PRINTER_BEGIN = 'CONNECT_USB_PRINTER_BEGIN'
-export const USB_PRINTER_CONNECTED = 'USB_PRINTER_CONNECTED'
+export const CONNECT_USB_PRINTER_SUCCESS = 'CONNECT_USB_PRINTER_SUCCESS'
+export const CONNECT_USB_PRINTER_ERROR = 'CONNECT_USB_PRINTER_ERROR'
 export const CONNECTION_TYPE_USB = 'CONNECTION_TYPE_USB'
 export const CONNECTION_TYPE_BT = 'CONNECTION_TYPE_BT'
 
 import { BluetoothManager, BluetoothEscposPrinter } from 'react-native-bluetooth-escpos-printer'
 import { USBPrinter, NetPrinter, BLEPrinter } from 'react-native-printer'
-
 import { ToastAndroid } from 'react-native';
 
 export function initPrinter() {
@@ -51,11 +51,11 @@ export function initPrinter() {
           // })
         }
         catch(e){
-          alert(e)
+          console.log(e)
         }
       }
     },(err)=>{
-      alert(err)
+      console.log(err)
     });
 
     console.log('initializing usb printer...')
@@ -63,8 +63,7 @@ export function initPrinter() {
       //list printers
       USBPrinter.getDeviceList()
         .then(printers => {
-          console.log('printers: ')
-          console.log(printers),
+
           dispatch({type: SCAN_USB_DEVICES_SUCCESS, usbDevices: printers})
 
           //connect printer
@@ -75,19 +74,26 @@ export function initPrinter() {
             productId = device.product_id
             USBPrinter.connectPrinter(vendorID, productId).then(
               (printer) => {
-                alert(printer)
-                console.log('printers: ')
-                dispatch({type: USB_PRINTER_CONNECTED, connectedDevice: device})
+                // if(device.hasOwnProperty('vendor_id')){
+                  dispatch({type: CONNECT_USB_PRINTER_SUCCESS, connectedDevice: device})
+                // }
               },
               error => alert(error))
           });
-          },
-          error => {
-            console.log('errors getting usb devices!')
-          })
+
+          // delay, trick to wait promise to execute first
+          // setTimeout(() => {
+          //   if(settingsPrinter.usbDeviceConnected == false)
+          //     dispatch({type: CONNECT_USB_PRINTER_ERROR, message: 'no plugged usb device '})
+          // }, 1000)
+
         },
         error => {
-          console.log('errors in printing!')
+          console.log('errors getting usb devices!')
+        })
+      },
+      error => {
+        console.log('errors in printing!')
     });
   }
 }
@@ -137,12 +143,12 @@ export function connectPrinter(device) {
               dispatch({ type: PRINTER_DISCONNECTED })
             })
         }, (err) => {
-        alert(err + ' - '+ device.address)
+        ToastAndroid(err + ' - '+ device.address, ToastAndroid.LONG)
         console.log('error connecting: '+err)
       })
     }
     catch(e){
-      alert(e)
+      ToastAndroid(e, ToastAndroid)
       dispatch({ type: PRINTER_DISCONNECTED })
     }
   }
@@ -151,18 +157,20 @@ export function connectPrinter(device) {
 export function connectUSBPrinter(device) {
 
   return (dispatch, getState) => {
-
     dispatch({type: CONNECT_USB_PRINTER_BEGIN})
-    USBPrinter.init().then(()=> {
-      vendorID = device.vendor_id
-      productId = device.product_id
-      USBPrinter.connectPrinter(vendorID, productId).then(
-        (printer) => {
-          console.log(printer)
-          console.log('printers: ')
-          dispatch({type: USB_PRINTER_CONNECTED, connectedDevice: device})
-        },
-        error => alert(error))
+    if(device.hasOwnProperty('vendor_id')){
+      USBPrinter.init().then(()=> {
+        vendorID = device.vendor_id
+        productId = device.product_id
+        USBPrinter.connectPrinter(vendorID, productId).then(
+          (printer) => {
+            dispatch({type: CONNECT_USB_PRINTER_SUCCESS, connectedDevice: device})
+          },
+          error => ToastAndroid(error, ToastAndroid.LONG))
       })
+    }
+    else{
+      dispatch({type: CONNECT_USB_PRINTER_ERROR})
+    }
   }
 }

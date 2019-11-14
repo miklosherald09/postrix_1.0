@@ -183,7 +183,6 @@ export function syncGoogleSheet() {
     })
     .catch((error) => {
       dispatch({type: SYNC_GOOGLE_SHEET_FAIL});
-      alert(error)
     });
 
   }

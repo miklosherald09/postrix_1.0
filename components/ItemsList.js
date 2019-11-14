@@ -16,19 +16,19 @@ const ItemsList = (props) => {
         onPress={ () => props.openModal(item) }
         key={String(item.id)}
         title={String(item.name)}
-        titleStyle={{ fontSize: 12, color: '#333' }}
+        titleStyle={{ fontSize: 20, color: '#333' }}
         // subtitle={String(item.price)}
         containerStyle={{padding: 10, marginBottom: 5, borderRadius: 4}}
         rightTitle={
           <NumberFormat
-            renderText={value => <Text style={{fontSize: 12, color: '#333'}}>{value}</Text>} 
+            renderText={value => <Text style={{fontSize: 20, color: '#333'}}>{value}</Text>} 
             fixedDecimalScale={true} 
             decimalScale={2} 
             value={item.sellPrice} 
             displayType={'text'} 
             thousandSeparator={true} 
             prefix={currency} />}
-        rightTitleStyle={{fontSize: 12}}
+        rightTitleStyle={{fontSize: 20}}
       />
     );
   };

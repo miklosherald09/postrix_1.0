@@ -43,11 +43,11 @@ export function searchItem(){
           for (i = 0; i < res.rows.length; ++i) {
             itemsList.push({
               barcode: res.rows.item(i).barcode,
-              buyPrice: res.rows.item(i).buy_price,
+              buyPrice: parseInt(res.rows.item(i).buy_price),
               datetime: res.rows.item(i).datetime,
               id: res.rows.item(i).item_id,
               name: res.rows.item(i).name,
-              sellPrice: res.rows.item(i).sell_price
+              sellPrice: parseInt(res.rows.item(i).sell_price)
             })
           }
         

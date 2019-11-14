@@ -11,7 +11,7 @@ const SettingsNav = (props) => {
 
   const navLink = (nav, text) => {
 		return(
-			<TouchableOpacity style={{height: 50}} onPress={() => NavigationService.navigate(nav)}>
+			<TouchableOpacity style={{padding: 15}} onPress={() => NavigationService.navigate(nav)}>
 				<Text style={styles.link}>{text}</Text>
 			</TouchableOpacity>
 		)
@@ -20,7 +20,7 @@ const SettingsNav = (props) => {
   return(
     <ScrollView>
       <View style={styles.navLinks}>
-        {linkPermission('Settings_Basic', userType)?navLink('Settings', 'Basic'):null}
+        {linkPermission('Settings_Basic', userType)?navLink('Settings', 'Receipt'):null}
         {linkPermission('Settings_Items', userType)?navLink('SettingsItems', 'Items'):null}
         {linkPermission('SettingsPrinter', userType)?navLink('SettingsPrinter', 'Printer'):null}
         {linkPermission('SettingsPin', userType)?navLink('SettingsPin', 'Pin'):null}
@@ -35,9 +35,9 @@ const styles = StyleSheet.create({
     marginHorizontal: 10
   },
   link: {
-		fontSize: 15,
+		fontSize: 22,
     color: '#333',
-    fontWeight: 'bold'
+    fontWeight: 'bold',
 	}
 })
 

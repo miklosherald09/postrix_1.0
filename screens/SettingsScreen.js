@@ -70,7 +70,7 @@ const settingsScreen = props => {
               label={"RECEIPT HEADER"}
               type={"default"}
               keyboardType={"default"}
-              labelStyle={myStyles.header2}
+              labelStyle={styles.label}
               containerStyle={{marginTop: 15, marginBottom: 50}}
               inputStyle={{}}
               onChangeText={(text) => {updateShopName(text)}} 
@@ -80,7 +80,7 @@ const settingsScreen = props => {
               label={"RECEIPT SUB HEADER"}
               type={"default"}
               keyboardType={"default"}
-              labelStyle={myStyles.header2}
+              labelStyle={styles.label}
               containerStyle={{marginTop: 15, marginBottom: 50}}
               inputStyle={{}}
               onChangeText={(text) => {updateReceiptHeader(text)}}
@@ -90,7 +90,7 @@ const settingsScreen = props => {
               label={"RECEIPT FOOTER"}
               type={"default"}
               keyboardType={"default"}
-              labelStyle={myStyles.header2}
+              labelStyle={styles.label}
               containerStyle={{marginTop: 15}}
               inputStyle={{}}
               onChangeText={(text) => {updateReceiptFooter(text)}}
@@ -164,7 +164,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 10
   },
   link: {
-		fontSize: 15,
+		fontSize: 20,
 		color: '#333'
   },
   container: {
@@ -177,7 +177,7 @@ const styles = StyleSheet.create({
   },
   label: {
     fontWeight: 'normal', 
-    fontSize: 12, 
+    fontSize: 20, 
     color: '#999'
   },
 });

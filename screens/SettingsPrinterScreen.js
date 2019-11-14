@@ -14,7 +14,7 @@ const SettingsPrinterScreen = props => {
 		props.navigation.openDrawer();
 	}
   
-  const { devices, connected, connecting, usbDevices, usbDeviceConnecting, usbDeviceConnected } = props.settingsPrinter;
+  const { devices, connected, connecting, usbDevices, usbDeviceConnecting, usbDeviceConnected, connectedDevice } = props.settingsPrinter;
 
   return (
     <View style={styles.wrapper}>
@@ -51,9 +51,9 @@ const SettingsPrinterScreen = props => {
                 </ScrollView>
               </View>
               <View style={{marginLeft: 10, height: 20}}>
-                {(connected == true && connecting == false)?<Text style={{color: 'green'}}>Connected</Text>:null}
-                {(connected == false && connecting == false)?<Text>Open bluetooth and connect printer</Text>:null}
-                {(connecting == true)?<Text style={{color: 'green'}}>connecting...</Text>:null}
+                {(connected == true && connecting == false)?<Text style={styles.activeText}>Connected</Text>:null}
+                {(connected == false && connecting == false)?<Text style={styles.inActiveText}>Open bluetooth and connect printer</Text>:null}
+                {(connecting == true)?<Text style={styles.activeText}>connecting...</Text>:null}
               </View>
             </View>
           </View>
@@ -83,15 +83,15 @@ const SettingsPrinterScreen = props => {
                 <ScrollView>
                   {
                     usbDevices.map( (v, i)=> {
-                      return <USBDevice key={i} device={v} count={i} onPress={() => props.connectUSBPrinter(v)}/>
+                      return <USBDevice key={i} connectedDevice={connectedDevice} device={v} count={i} onPress={() => props.connectUSBPrinter(v)}/>
                     })
                   }
                 </ScrollView>
               </View>
               <View style={{height: 20, marginLeft: 10}}>
-                {(usbDeviceConnected == true && usbDeviceConnecting == false)?<Text style={{color: 'green'}}>Connected</Text>:null}
-                {(usbDeviceConnected == false && usbDeviceConnecting == false)?<Text>Connect USB printer</Text>:null}
-                {(usbDeviceConnecting == true)?<Text style={{color: 'green'}}>connecting...</Text>:null}
+                {(usbDeviceConnected == true && usbDeviceConnecting == false)?<Text style={styles.activeText}>Connected</Text>:null}
+                {(usbDeviceConnected == false && usbDeviceConnecting == false)?<Text style={styles.inActiveText}>Connect USB printer</Text>:null}
+                {(usbDeviceConnecting == true)?<Text style={styles.activeText}>connecting...</Text>:null}
               </View>
             </View>
           </View>
@@ -108,7 +108,7 @@ class Device extends React.Component{
       <View style={{flexDirection: 'row', marginBottom: 10}} >
         <Button
           title={this.props.device.name}
-          titleStyle={{textAlign: 'left', fontSize: 15, fontWeight: 'normal', color: '#2089dc', marginRight: 10}}
+          titleStyle={{textAlign: 'left', fontSize: 20, fontWeight: 'normal', color: '#2089dc', marginRight: 10}}
           onPress={this.props.onPress}
           type="clear"
           iconRight
@@ -126,12 +126,14 @@ class Device extends React.Component{
 }
 
 class USBDevice extends React.Component{
+
   render(){
     return (
-      <View style={{flexDirection: 'row', marginBottom: 10}} >
+      <View style={{flexDirection: 'row', marginBottom: 3}} >
         <Button
-          title={'USB Device ' + this.props.count}
-          titleStyle={{textAlign: 'left', fontSize: 15, fontWeight: 'normal', color: '#2089dc', marginRight: 10}}
+          title={'USB: ' + this.props.device.device_name.slice(-3)}
+          // title={this.props.connectedDevice.device_id + ' xxx ' + this.props.device.device_id}
+          titleStyle={this.props.device.device_id === this.props.connectedDevice.device_id?styles.usbDeviceActive:styles.usbDevice}
           onPress={this.props.onPress}
           type="clear"
         />
@@ -156,6 +158,14 @@ function mapDispatchToProps(dispatch){
 }
 
 const styles = StyleSheet.create({
+  activeText: {
+    color: 'green', 
+    fontSize: 20
+  },
+  inActiveText: {
+    color: '#666', 
+    fontSize: 20
+  },
   wrapper: {
     flex: 1,
     backgroundColor: 'white',
@@ -211,6 +221,20 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
     marginTop: 10,
     padding: 10
+  },
+  usbDevice: {
+    textAlign: 'left', 
+    fontSize: 20, 
+    fontWeight: 'normal', 
+    color: '#2089dc', 
+    marginRight: 10
+  },
+  usbDeviceActive: {
+    textAlign: 'left', 
+    fontSize: 20, 
+    fontWeight: 'normal', 
+    color: '#666', 
+    marginRight: 10
   }
 })
 

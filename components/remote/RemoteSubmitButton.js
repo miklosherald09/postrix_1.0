@@ -9,7 +9,9 @@ const RemoteSubmitButton = ({ dispatch }) => {
     <Button 
       onPress={ () => dispatch(submit('ADD_ITEM_FORM')) } 
       style={styles.opacity} 
-      title="Save" 
+      title="SAVE"
+      titleStyle={{fontSize: 20}}
+      type="clear"
     />
   );
 };
@@ -20,7 +22,7 @@ const styles = StyleSheet.create({
   text: {
     backgroundColor: 'steelblue', 
     color: 'white', 
-    fontSize: 16,
+    fontSize: 20,
     width: 200, 
     textAlign: 'center', 
     padding: 10

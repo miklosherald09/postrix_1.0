@@ -21,9 +21,10 @@ const PinScreen = (props) => {
           keyboardType={'number-pad'}
           clearTextOnFocus={true}
           secureTextEntry={true}
+          style={{fontSize: 20}}
           onSubmitEditing={({nativeEvent})=> props.signIn(nativeEvent.text)}
         />
-        <Text style={{color: '#E67C73'}}>{invalidPin?'invalid pin':''}</Text>
+        <Text style={{color: '#E67C73', fontSize: 20}}>{invalidPin?'invalid pin':''}</Text>
 			</View>
 		</View>
 	);

@@ -11,7 +11,7 @@ const PayButton = ({ dispatch }) => {
         } 
         style={{ margin: 10, alignItems: 'center' }} >
         <Text style={{
-            backgroundColor: 'steelblue', color: 'white', fontSize: 16,
+            backgroundColor: 'steelblue', color: 'white', fontSize: 20,
             height: 50, width: 200, textAlign: 'center', padding: 10
         }}>Pay</Text>
       </TouchableOpacity>

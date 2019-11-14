@@ -41,15 +41,15 @@ const PayModal = (props) => {
 							</View>
 							<View style={{flex: 1, flexDirection: 'row'}}>
 								<View style={{flex: 1, margin: 10, justifyContent: 'space-between'}}>
-                  <View style={{flex: 1,  paddingVertical: 10, alignItems: 'center' }}>
-                    <Text style={{color: '#333', fontSize: 12}}>PAYMENT</Text>
+                  <View style={{flex: 1, justifyContent: 'center',  paddingVertical: 10, alignItems: 'center' }}>
+                    <Text style={{color: '#333', fontSize: 20}}>PAYMENT</Text>
                     <Text style={{color: '#2CB200', fontSize: 40 }}>
                       <NumberFormat renderText={value => <Text>{value}</Text>} fixedDecimalScale={true} decimalScale={2} value={payment} displayType={'text'} thousandSeparator={true} prefix={currency} />
                     </Text>
                   </View>
                   <HorizontalLine />
-                  <View style={{flex: 1, paddingVertical: 10, alignItems: 'center'}}>
-                    <Text style={{color: '#333', fontSize: 12, }}>TOTAL</Text>
+                  <View style={{flex: 1, paddingVertical: 10, justifyContent: 'center', alignItems: 'center'}}>
+                    <Text style={{color: '#333', fontSize: 20, }}>TOTAL</Text>
                     <Text style={{color: '#333', fontSize: 40}}>
                       <NumberFormat renderText={value => <Text>{value}</Text>} fixedDecimalScale={true} decimalScale={2} value={total} displayType={'text'} thousandSeparator={true} prefix={currency} />
                     </Text>
@@ -57,7 +57,7 @@ const PayModal = (props) => {
                   <HorizontalLine />
                   <View style={{flex: 1}}>
                     <Button
-                      containerStyle={{width: 100, marginBottom: 10}}
+                      containerStyle={{width: 100, marginBottom: 10, marginLeft: 5}}
                       icon={
                         <Icon
                           name={printReceipt?'check':'minus-circle'}
@@ -66,16 +66,14 @@ const PayModal = (props) => {
                         />
                       }
                       iconContainerStyle={{marginTop: 2, paddingTop: 5}}
-                      // type={printReceipt?'solid':'clear'}
                       type={'clear'}
                       onPress={props.togglePrintButton}
                       title={printReceipt?'print':'unprint'}
-                      // titleStyle={printReceipt?{}:'no print'}
-                      titleStyle={{fontSize: 14, fontWeight: 'normal', color: '#666', marginLeft: 5, marginTop: -3}}
+                      titleStyle={{fontSize: 20, fontWeight: 'normal', color: '#666', marginLeft: 10, marginVertical: 5}}
                     />
                     <TouchableOpacity onPress={ () => props.submit({payment, total, punched, printReceipt}) } title="PAY">
-                      <View style={{height: 60, backgroundColor: '#2089dc', borderRadius: 5, justifyContent: 'center', alignItems: 'center'}}>
-                        <Text style={{color: 'white', fontSize: 20, textAlign: 'center'}}>PAY</Text>
+                      <View style={{marginHorizontal: 15, height: 80, backgroundColor: '#2089dc', borderRadius: 5, justifyContent: 'center', alignItems: 'center'}}>
+                        <Text style={{color: 'white', fontSize: 30, fontWeight: 'bold', textAlign: 'center'}}>PAY</Text>
                       </View>
                     </TouchableOpacity>
                   </View>

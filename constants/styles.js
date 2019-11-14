@@ -43,7 +43,7 @@ export default StyleSheet.create({
 			borderBottomWidth: 2,
 		},
 		header: {
-			fontSize: 14, 
+			fontSize: 20, 
 			fontWeight: 'bold',
 			marginVertical: 10,
 			marginHorizontal: 5,
@@ -54,25 +54,25 @@ export default StyleSheet.create({
 		// modal header styles
 
 		header1: {
-			fontSize: 14, 
+			fontSize: 22, 
 			fontWeight: 'bold',
 			color: '#666',
 			fontFamily: 'sans-serif-condensed'
 		},
 		header2: {
-			fontSize: 16, 
+			fontSize: 25, 
 			fontWeight: 'bold',
 			color: '#333',
 			fontFamily: 'sans-serif-condensed'
 		},
 		header3: {
-			fontSize: 22, 
+			fontSize: 30, 
 			fontWeight: 'bold',
 			color: '#333',
 			fontFamily: 'sans-serif-condensed'
 		},
 		headerModal: {
-			fontSize: 18,
+			fontSize: 20,
 			fontWeight: 'bold',
 			color: '#333',
 			fontFamily: 'sans-serif-condensed',
@@ -109,7 +109,7 @@ export default StyleSheet.create({
 		// input styles
 		label1: {
 			fontWeight: 'normal', 
-			fontSize: 12, 
+			fontSize: 20, 
 			color: '#999',
 			fontFamily: 'sans-serif-condensed'
 		},

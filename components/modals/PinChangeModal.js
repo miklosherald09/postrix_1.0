@@ -111,8 +111,10 @@ export class SaveButton extends React.Component{
     return (
       <Button 
         onPress={this.props.onPress} style={styles.opacity}
-        title="Save"
+        title="SAVE"
+        titleStyle={{fontSize: 20, color: '#2089dc'}}
         containerStyle={{marginHorizontal: 5}}
+        type="clear"
       />
     )
   }
@@ -174,7 +176,7 @@ const styles = StyleSheet.create({
   },
   label: {
     fontWeight: 'normal', 
-    fontSize: 12, 
+    fontSize: 20, 
     color: '#999'
   },
   button: {
@@ -208,12 +210,12 @@ const styles = StyleSheet.create({
   invalid: {
     marginLeft: 10,
     color: 'red',
-    fontSize: 12,
+    fontSize: 20,
   },
   warning: {
     marginLeft: 10,
     color: 'red',
-    fontSize: 12,
+    fontSize: 20,
   },
   submitPan: {
     flex: 1,

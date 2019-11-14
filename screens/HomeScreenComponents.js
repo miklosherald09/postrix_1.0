@@ -9,11 +9,11 @@ export class AddShelveButton extends React.Component{
     return (
       <Button
         onPress={this.props.onPress}
-        buttonStyle={{margin: 10}}
+        buttonStyle={{margin: 6}}
         type="clear"
         icon={<Icon
           name= "plus"
-          size= {16}
+          size= {20}
           color = '#4388D6'
         />}
       />
@@ -30,7 +30,7 @@ export class ShelveAllButton extends React.Component{
           title="All"
           color="#333"
           type="clear"
-          titleStyle={{fontSize: 14}}
+          titleStyle={{fontSize: 20}}
         />
       </View>
     )
@@ -63,7 +63,7 @@ export class ShelveButton extends React.Component{
           onLongPress={this.props.onLongPress}
           title={this.props.shelve.name}
           type="clear"
-          titleStyle={{fontSize: 14}}
+          titleStyle={{fontSize: 20}}
         />
       </View>
     )
@@ -76,11 +76,11 @@ export class ItemSearchButton extends React.Component {
       <Button
         onPress={this.props.onPress}
         containerStyle={{height: 60, paddingTop: 5}}
-        titleStyle={{color: 'black', fontWeight: 'normal', marginLeft: 10, color: '#666'}}
+        titleStyle={{color: 'black', fontWeight: 'normal', marginLeft: 10, color: '#666', fontSize: 20}}
         icon={
           <Icon
             name="search"
-            size={25}
+            size={28}
             color="#666"
           />
         }
@@ -100,7 +100,7 @@ export class PayButton extends React.Component {
           buttonStyle={{borderRadius: 0, flex: 1}}
           containerStyle={{borderRadius: 0, flex: 1}}
           onPress={this.props.onPress}
-          titleStyle={{fontSize: 15}}
+          titleStyle={{fontSize: 20}}
           title="CHARGE"
         />
       </View>

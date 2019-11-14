@@ -34,13 +34,17 @@ const SettingsPinScreen = props => {
         </View>
         <View style={styles.rightContent}>
           
-          <Card title="USERS">
+          <Card 
+            title="USERS"
+            titleStyle={{fontSize: 20}}
+          >
             {
               users.map((u, i) => {
                 return (
                   <ListItem
                     key={i}
                     title={u.type}
+                    titleStyle={{fontSize: 20}}
                     onPress={() => props.selectUserPin(u)}
                     leftAvatar = {
                       <Avatar
@@ -132,7 +136,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 10
   },
   link: {
-		fontSize: 15,
+		fontSize: 20,
 		color: '#333'
   },
   buttonPanLeft: {

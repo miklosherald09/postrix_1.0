@@ -8,9 +8,9 @@ import { punchItemVisible, setSelectedItem } from '../actions/punchedActions'
 
 const PunchedItemList = (props) => {
 
-  const { punched } = props.punched;
+  const { punched } = props.punched
 
-  keyExtractor = (item, index) => index.toString();
+  keyExtractor = (item, index) => index.toString()
 
   renderItem = ({item}) => (
     <View>
@@ -76,15 +76,15 @@ const styles = StyleSheet.create(
     },
     itemName: {
         color: 'black',
-        fontSize: 14,
+        fontSize: 20,
     },
     itemPrice: {
         color: '#666666',
-        fontSize: 12,
+        fontSize: 18,
     },
     itemPriceTotal: {
         textAlign: 'right',
-        fontSize: 20,
+        fontSize: 25,
         marginTop: 2,
         color: '#333'
     }

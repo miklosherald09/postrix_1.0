@@ -134,6 +134,9 @@ export class SaveButton extends React.Component{
         onPress={this.props.onPress} style={styles.opacity}
         title="Save"
         containerStyle={{marginHorizontal: 5}}
+        type="clear"
+        inputStyle={{fontSize: 20}}
+        titleStyle={{color: '#666', marginLeft: 5, fontSize: 20}}
       />:null
     )
   }
@@ -146,17 +149,17 @@ export class DeleteButton extends React.Component{
       (this.props.userType == 'ROOT' || this.props.userType == 'ADMIN')?
       <Button
         onPress={this.props.onPress} style={styles.opacity}
-        title="Delete"
+        title="- Delete"
         containerStyle={{}}
         type="clear"
-        titleStyle={{color: '#666', marginLeft: 5}}
-        icon={
-          <Icon 
-            name="minus"
-            size={15}
-            color="#666"
-          />
-        }
+        titleStyle={{color: 'red', marginLeft: 5, fontSize: 20}}
+        // icon={
+        //   <Icon
+        //     name="minus"
+        //     size={15}
+        //     color="#666"
+        //   />
+        // }
       />:null
     )
   }
@@ -196,7 +199,7 @@ const styles = StyleSheet.create({
   },
   label: {
     fontWeight: 'normal', 
-    fontSize: 12, 
+    fontSize: 20, 
     color: '#999'
   },
   button: {
@@ -230,12 +233,12 @@ const styles = StyleSheet.create({
   invalid: {
     marginLeft: 10,
     color: 'red',
-    fontSize: 12,
+    fontSize: 20,
   },
   warning: {
     marginLeft: 10,
     color: 'red',
-    fontSize: 12,
+    fontSize: 20,
   },
   submitPan: {
     flex: 1,

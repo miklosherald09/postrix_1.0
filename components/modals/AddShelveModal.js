@@ -22,7 +22,7 @@ const { addMovalVisible } = props.shelves;
         <View style={styles.container}>
           <View style={styles.modalTopMenu}>
             <View style={styles.modalTitle}>
-              <Text style={{color: 'white', fontSize: 18}}>Create Shelves</Text>
+              <Text style={{color: 'white', fontSize: 20}}>Create Shelves</Text>
             </View>
             <View style={styles.closeButtonPan}>
               <TouchableHighlight

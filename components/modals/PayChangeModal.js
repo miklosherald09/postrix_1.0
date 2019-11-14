@@ -32,15 +32,15 @@ const PayModal = (props) => {
           <TouchableOpacity activeOpacity={1} style={styles.container} onPress={() => props.payChangeModalInvisible()} >
             <View style={{flex: 1, flexDirection: 'column', justifyContent: 'space-between' }}>
               <View style={{flex: 1}}>
-                <Text style={{fontSize: 20, color: '#666', textAlign: 'center'}}>Change</Text>
-                <Text style={{fontSize: 40, color: '#333', textAlign: 'center'}}>
+                <Text style={{fontSize: 30, color: '#666', textAlign: 'center'}}>CHANGE</Text>
+                <Text style={{fontSize: 50, color: '#333', textAlign: 'center'}}>
                   <NumberFormat renderText={value => <Text>{value}</Text>} fixedDecimalScale={true} decimalScale={2} value={payChange} displayType={'text'} thousandSeparator={true} prefix={currency} />
                 </Text>
               </View>
               <View style={{flex: 1, textAlign: 'center', justifyContent: 'center', alignItems: 'center'}}>
                 <Icon
                   name="check-circle"
-                  size={80}
+                  size={150}
                   color="#039BE5"
                 />
               </View>

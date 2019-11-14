@@ -26,11 +26,11 @@ const ReceiptModal = (props) => {
         key={index}
         containerStyle={{padding: 5}}
         title={item.name}
-        titleStyle={{fontSize: 12}}
+        titleStyle={{fontSize: 20}}
         subtitle={'x' + item.count}
-        subtitleStyle={{fontSize: 12}}
+        subtitleStyle={{fontSize: 20}}
         rightTitle={<NumberFormat 
-          renderText={value => <Text style={{fontSize: 15, color: '#333'}}>{value}</Text>} 
+          renderText={value => <Text style={{fontSize: 20, color: '#333'}}>{value}</Text>} 
           fixedDecimalScale={true} 
           decimalScale={2} 
           value={item.accruePrice} 
@@ -81,9 +81,21 @@ const ReceiptModal = (props) => {
                     />
                   </View>
                 </View>
-                <Text style={{fontSize: 20}}>
-                  Total: <NumberFormat renderText={value => <Text>{value}</Text>} fixedDecimalScale={true} decimalScale={2} value={selected.total} displayType={'text'} thousandSeparator={true} prefix={currency} />
-                </Text>
+                <View style={{height: 50, flexDirection: 'row', alignItems: 'flex-end'}}>
+                  <View style={{flex: 1}}>
+                    <Text style={{fontSize: 22}}> TOTAL:</Text>
+                  </View>
+                  <View style={{flex: 1, flexDirection: 'column', alignItems: 'flex-end'}}>
+                    <NumberFormat 
+                      renderText={value => <Text style={{fontSize: 22}}>{value}</Text>} 
+                      fixedDecimalScale={true} 
+                      decimalScale={2} 
+                      value={selected.total} 
+                      displayType={'text'} 
+                      thousandSeparator={true} 
+                      prefix={currency} />
+                  </View>
+                </View>
               </View>
             </View>
           </TouchableOpacity>
@@ -205,7 +217,7 @@ const styles = StyleSheet.create({
   },
   label: {
     fontWeight: 'normal', 
-    fontSize: 12, 
+    fontSize: 20, 
     color: '#999'
   },
   button: {
@@ -239,12 +251,12 @@ const styles = StyleSheet.create({
   invalid: {
     marginLeft: 10,
     color: 'red',
-    fontSize: 12,
+    fontSize: 20,
   },
   warning: {
     marginLeft: 10,
     color: 'red',
-    fontSize: 12,
+    fontSize: 20,
   },
   submitPan: {
     flex: 1,

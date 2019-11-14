@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
   text: {
     backgroundColor: 'steelblue', 
     color: 'white', 
-    fontSize: 16,
+    fontSize: 20,
     width: 200, 
     textAlign: 'center', 
     padding: 10

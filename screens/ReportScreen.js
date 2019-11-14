@@ -17,7 +17,7 @@ const ReportScreen = (props) => {
 	
 	const navLink = (nav, text) => {
 		return(
-			<TouchableOpacity style={{height: 50}} onPress={() => props.navigation.navigate(nav)}>
+			<TouchableOpacity style={{padding: 15}} onPress={() => props.navigation.navigate(nav)}>
 				<Text style={styles.link}>{text}</Text>
 			</TouchableOpacity>
 		)
@@ -154,7 +154,7 @@ class DatePicker extends React.Component{
 					onPress={ this.props.onPress }
 					containerStyle={{marginBottom: 5}}
 					title={this.props.title}
-					titleStyle={{marginLeft: 10, fontSize: 15, fontWeight: 'normal'}}
+					titleStyle={{marginLeft: 10, fontSize: 20, fontWeight: 'normal'}}
 					icon={
 						<Icon
 							name="calendar"
@@ -175,7 +175,7 @@ class TimePicker extends React.Component{
 					buttonStyle={{marginRight: 0}}
 					onPress={ this.props.onPress }
 					containerStyle={{}}
-					titleStyle={{color: 'black', marginLeft: 10, fontSize: 15, fontWeight: 'normal', marginLeft: -5, padding: 0}}
+					titleStyle={{color: 'black', marginLeft: 10, fontSize: 20, fontWeight: 'normal', marginLeft: -5, padding: 0}}
 					title={this.props.title}
 				/>
 		)
@@ -276,8 +276,9 @@ const styles = StyleSheet.create({
     marginHorizontal: 10
 	},
 	link: {
-		fontSize: 15,
-		color: '#333'
+		fontSize: 22,
+		color: '#333',
+		fontWeight: 'bold'
 	},
 	inputStyle: { 
 		height: 40,

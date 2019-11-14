@@ -20,24 +20,24 @@ const TransactionList = (props) => {
     }
     return (
       <View style={styles.item} >
-        <TouchableHighlight style={{flex: 1}} onPress={() => props.showReceipt(item)}>
+        <TouchableHighlight style={{flex: 1, padding: 10}} onPress={() => props.showReceipt(item)}>
           <View style={{flex: 1, flexDirection: 'column'}}>
             <View style={{alignItems: 'center', height: 45}}>
-              <Text style={{color: '#666', fontSize: 10, textAlign: 'left'}}>{formatDate(item.datetime)}</Text>
-              <Text style={{color: '#333', fontSize: 10}}>Trasaction ID: {item.id}</Text>
+              <Text style={{color: '#666', fontSize: 20, textAlign: 'left'}}>{formatDate(item.datetime)}</Text>
+              <Text style={{color: '#333', fontSize: 20}}>Trasaction ID: {item.id}</Text>
             </View>
             <View style={{justifyContent: 'center', alignItems: 'center', flex: 1, marginTop: 5}}>
-              <Text numberOfLines={5} style={{textAlign: 'center', color: '#333', fontSize: 10}}>
+              <Text numberOfLines={5} style={{textAlign: 'center', color: '#333', fontSize: 20}}>
                 {
                   item.punched.map((v, i) => {
                     return v.name.slice(0, 18)
                   })
                 } 
               </Text>
-              <Text style={{textAlign: 'center', color: '#333', fontSize: 12}}>{item.sellPrice}</Text>
+              <Text style={{textAlign: 'center', color: '#333', fontSize: 20}}>{item.sellPrice}</Text>
             </View>
             <View style={{alignItems: 'center', height: 20}}>
-              <Text style={{fontSize: 12, color: '#333', textAlign: 'left'}}>Total: {item.total}</Text>
+              <Text style={{fontSize: 20, color: '#333', textAlign: 'left'}}>Total: {item.total}</Text>
             </View>
           </View>
         </TouchableHighlight>

@@ -60,7 +60,7 @@ const addItemModal = (props) => {
 				<View style={styles.container}>
 					<View style={styles.modalTopMenu}>
 						<View style={styles.modalTitle}>
-							<Text style={{color: 'white', fontSize: 18}}>Save Item</Text>
+							<Text style={{color: 'white', fontSize: 22}}>Save Item</Text>
 						</View>
 						<View style={styles.closeButtonPan}>
 							<TouchableHighlight

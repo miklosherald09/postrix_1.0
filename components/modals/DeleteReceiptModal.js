@@ -27,11 +27,11 @@ const DeleteReceiptModal = (props) => {
         key={index}
         containerStyle={{padding: 5}}
         title={item.name}
-        titleStyle={{fontSize: 12}}
+        titleStyle={{fontSize: 20}}
         subtitle={'x' + item.count}
-        subtitleStyle={{fontSize: 12}}
+        subtitleStyle={{fontSize: 20}}
         rightTitle={String(item.accruePrice)}
-        rightTitleStyle={{fontSize: 12}}
+        rightTitleStyle={{fontSize: 20}}
       />
     )
   };
@@ -223,12 +223,12 @@ const styles = StyleSheet.create({
   invalid: {
     marginLeft: 10,
     color: 'red',
-    fontSize: 12,
+    fontSize: 20,
   },
   warning: {
     marginLeft: 10,
     color: 'red',
-    fontSize: 12,
+    fontSize: 20,
   },
   submitPan: {
     flex: 1,

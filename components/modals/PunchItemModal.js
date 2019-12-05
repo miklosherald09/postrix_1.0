@@ -2,7 +2,7 @@ import React from 'react'
 import { Dimensions, StyleSheet, Text, View, TouchableOpacity, Modal } from 'react-native'
 import { connect } from 'react-redux'
 import { Button, ListItem } from 'react-native-elements'
-import { CloseButton } from '../Common'
+import { CloseButton, CheckButton } from '../Common'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import { currency as curr } from '../../constants/constants'
 import { punchedItemCount, punchItemInvisible, deletePunchItem } from '../../actions/punchedActions'
@@ -36,29 +36,15 @@ const PunchItemModal = (props) => {
 									<Text style={myStyles.headerModal}>CHANGE PUNCH ITEM</Text>
 								</View>
 								<View style={myStyles.headerRight}>
-									<Button
-										onPress={ () => props.punchItemInvisible() }
-										containerStyle={{marginHorizontal: 10}}
-										title="OK"
-										type='clear'
-										titleStyle={{fontSize: 20}}
-									/>
-									{/* <SaveButton onPress={() => props.punchItemInvisible()}/> */}
+									<CheckButton onPress={() => props.punchItemInvisible()} />
 								</View>
-
-								{/* <View style={{ flex: 2 }}>
-									<Text style={{fontSize: 18, margin: 10, color: '#CCC'}}>Change Punch Item</Text>
-								</View>
-								<View style={{ flex: 1 }}>
-									<CloseButton onPress={ () => props.punchItemInvisible() }/>
-								</View> */}
 							</View>
 							<View style={styles.content}>
-								<View style={{flex: 1, flexDirection: 'row', marginTop: 25}}>
-									<View style={{flex: 2, marginHorizontal: 10}}>
+								<View style={{flex: 1, flexDirection: 'row', marginTop: 35}}>
+									<View style={{flex: 2, marginHorizontal: 20}}>
 										<Text style={{fontSize: 25, color: '#666'}}>{selectedItem.name}</Text>
 										<NumberFormat 
-											renderText={value => <Text style={{fontSize: 22, fontWeight: 'bold', color: '#333'}}>{value}</Text>}
+											renderText={value => <Text style={{fontSize: 22, color: '#333'}}>{value}</Text>}
 											fixedDecimalScale={true} decimalScale={2}
 											value={selectedItem.sellPrice * selectedItem.count} 
 											displayType={'text'} 
@@ -69,24 +55,24 @@ const PunchItemModal = (props) => {
 									<View style={{flex: 1}}>
 										<View style={{flex: 1, flexDirection: 'row', marginHorizontal: 20, justifyContent: 'space-between'}}>
 										<Button
-												type="solid"
+												type="clear"
 												onPress={() => props.punchedItemCount(-1)}
 												buttonStyle={{  width: 40, height: 40}}
 												icon={<Icon
 													name="minus"
-													size={25}
-													color="white"
+													size={30}
+													color="#2089DC"
 												/>}>
 											</Button>
 											<Text style={{flex: 1, color: '#333', fontSize: 30, textAlign: 'center', marginTop: 0}}>{selectedItem.count}</Text>
 											<Button
-												type="solid"
+												type="clear"
 												onPress={() => props.punchedItemCount(1)}
 												buttonStyle={{ width: 40, height: 40}}
 												icon={<Icon
 													name="plus"
-													size={25}
-													color="white"
+													size={30}
+													color="#2089DC"
 												/>}>
 											</Button>
 										</View>
@@ -98,9 +84,9 @@ const PunchItemModal = (props) => {
 							<View style={{ flexDirection: 'row', height: 60, borderTopColor: '#EEE', borderTopWidth: 1, }}>
 								<Button
                   onPress={ () => props.deletePunchItem() }
-									containerStyle={{margin: 10}}
+									containerStyle={{paddingVertical: 5, paddingHorizontal: 10}}
 									titleStyle={{color: 'red', fontSize: 20}}
-									title="- Delete"
+									title="Delete"
 									type='clear'
 								/>
 							</View>
@@ -130,11 +116,9 @@ function mapDispatchToProps(dispatch) {
 }
 
 const styles = StyleSheet.create({
-
 	content: {
 		flex: 1,
 	},
-
   wrapper: {
     position: 'absolute',
     width: screenWidth,

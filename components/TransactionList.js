@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, ScrollView, FlatList, Text, Dimensions, TouchableHighlight } from 'react-native'
+import { StyleSheet, View, ScrollView, FlatList, Text, Dimensions, TouchableOpacity } from 'react-native'
 import { connect } from 'react-redux'
 import { receiptModalVisible, selectReceipt } from '../actions/receiptActions'
 import { formatDate,  } from '../functions'
@@ -20,7 +20,7 @@ const TransactionList = (props) => {
     }
     return (
       <View style={styles.item} >
-        <TouchableHighlight style={{flex: 1, padding: 10}} onPress={() => props.showReceipt(item)}>
+        <TouchableOpacity style={{flex: 1, padding: 10}} onPress={() => props.showReceipt(item)}>
           <View style={{flex: 1, flexDirection: 'column'}}>
             <View style={{alignItems: 'center', height: 45}}>
               <Text style={{color: '#666', fontSize: 20, textAlign: 'left'}}>{formatDate(item.datetime)}</Text>
@@ -40,7 +40,7 @@ const TransactionList = (props) => {
               <Text style={{fontSize: 20, color: '#333', textAlign: 'left'}}>Total: {item.total}</Text>
             </View>
           </View>
-        </TouchableHighlight>
+        </TouchableOpacity>
       </View>
     )
   }

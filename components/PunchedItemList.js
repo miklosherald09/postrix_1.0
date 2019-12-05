@@ -18,7 +18,7 @@ const PunchedItemList = (props) => {
         <View style={{flexDirection: 'row', marginBottom: 10 }}>
           <View style={{flex: 2}}>
             <Text style={styles.itemName}>{item.name}</Text>
-            <Text style={styles.itemPrice}>{curr} {item.sellPrice} x {item.count}</Text>
+            <Text style={styles.itemPrice}>{curr}{item.sellPrice} x {item.count}</Text>
           </View>
           <View style={{flex: 1}}>
             <Text style={styles.itemPriceTotal}>
@@ -79,8 +79,8 @@ const styles = StyleSheet.create(
         fontSize: 20,
     },
     itemPrice: {
-        color: '#666666',
-        fontSize: 18,
+        color: '#2089dc',
+        fontSize: 19,
     },
     itemPriceTotal: {
         textAlign: 'right',

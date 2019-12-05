@@ -111,15 +111,15 @@ const HomeScreen = props => {
         </View>
         <View style={styles.rightBottomBar}>
           <View style={styles.customButtonContainer}>
-            <View style={{flex: 1}}>
-            </View>
+            {/* <View style={{flex: 1}}>
+            </View> */}
             <View style={styles.punchedButtonPan}>
               <Text style={styles.total}>
-                <NumberFormat renderText={value => <Text style={{fontSize: 30}}>{value}</Text>} fixedDecimalScale={true} decimalScale={2} value={total} displayType={'text'} thousandSeparator={true} prefix={currency} />
+                <NumberFormat renderText={value => <Text style={{fontSize: 40}}>{value}</Text>} fixedDecimalScale={true} decimalScale={2} value={total} displayType={'text'} thousandSeparator={true} prefix={currency} />
               </Text>
             </View>
           </View>
-          <View style={{height: 50}}>
+          <View style={{height: 85}}>
             <PayButton onPress={() => props.payModalVisible()} />
           </View>
         </View>
@@ -217,12 +217,11 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: '#CCCCCC',
     backgroundColor: 'white',
-    height: 50,
+    height: 60,
   },
   rightBottomBar: {
     backgroundColor: 'white',
-    height: 100,
-
+    height: 150,
   },
   text: {
     fontSize: 30
@@ -230,7 +229,7 @@ const styles = StyleSheet.create({
   total: {
     marginTop: 10,
     marginRight: 10,
-    fontSize: 30,
+    fontSize: 40,
     color: '#333',
     fontWeight: 'bold'
   },

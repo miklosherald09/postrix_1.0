@@ -13,7 +13,7 @@ export class AddShelveButton extends React.Component{
         type="clear"
         icon={<Icon
           name= "plus"
-          size= {20}
+          size= {27}
           color = '#4388D6'
         />}
       />
@@ -97,8 +97,8 @@ export class PayButton extends React.Component {
     return (
       <View style={{flex: 1}}>
         <Button
-          buttonStyle={{borderRadius: 0, flex: 1}}
-          containerStyle={{borderRadius: 0, flex: 1}}
+          buttonStyle={{borderRadius: 10,  flex: 1}}
+          containerStyle={{flex: 1, padding: 10}}
           onPress={this.props.onPress}
           titleStyle={{fontSize: 20}}
           title="CHARGE"

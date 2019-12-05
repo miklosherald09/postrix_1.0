@@ -153,7 +153,7 @@ const styles = StyleSheet.create({
 
 	modalTopMenu: {
 		flexDirection: 'row',
-		height: 50,
+		height: 60,
 		alignItems: 'stretch',
 		borderBottomWidth: 1,
 		borderBottomColor: '#CCC'
@@ -197,7 +197,7 @@ const styles = StyleSheet.create({
     height: 0.5,
     width: "100%",
     backgroundColor:"rgba(255,255,255,0.5)"
-  },
+	},
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(AddShelveItemsModal)

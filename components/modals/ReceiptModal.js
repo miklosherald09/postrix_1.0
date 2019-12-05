@@ -54,14 +54,14 @@ const ReceiptModal = (props) => {
         <TouchableOpacity activeOpacity={1} style={styles.touchable} onPress={ () => {props.receiptModalInvisible()}}>
           <TouchableOpacity activeOpacity={1} style={styles.container} >
             <View style={styles.wrap} >
-              <View style={styles.headerPan}>
-                <View style={styles.headerLeft}>
+              <View style={myStyles.headerPan}>
+                <View style={myStyles.headerLeft}>
                   <CloseButton onPress={ () => props.receiptModalInvisible() }/>
                 </View>
-                <View style={styles.headerMiddle}>
+                <View style={myStyles.headerMiddle}>
                   <Text style={myStyles.headerModal}>RECEIPT - {selected.id}</Text>
                 </View>
-                <View style={styles.headerRight}>
+                <View style={myStyles.headerRight}>
                   {/* <SaveButton userType={userType} onPress={() => props.saveCharge()}/> */}
                 </View>
               </View>
@@ -261,30 +261,6 @@ const styles = StyleSheet.create({
   submitPan: {
     flex: 1,
     backgroundColor: 'blue'
-  },
-  headerPan: {
-		flexDirection: 'row',
-		height: 50,
-    alignItems: 'center',
-    justifyContent: 'space-between',
-		borderBottomWidth: 1,
-    borderBottomColor: '#CCC',
-    borderRadius: 10,
-  },
-  headerLeft: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    justifyContent: 'flex-start',
-  },
-  headerMiddle: {
-    flex: 2,
-    alignItems: 'center'
-  },
-  headerRight: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'flex-end'
   },
   touchable: {
     flex: 1, 

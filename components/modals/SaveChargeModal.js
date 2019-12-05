@@ -5,7 +5,7 @@ import { Field, reduxForm } from 'redux-form'
 import { submit } from 'redux-form'
 import { Input, Button } from 'react-native-elements'
 import Icon from 'react-native-vector-icons/FontAwesome5'
-import { CloseButton } from '../../components/Common'
+import { CloseButton, CheckButton } from '../../components/Common'
 import validate from '../../validations'
 import myStyles from '../../constants/styles'
 import { saveChargeModalVisible, saveCharge, deleteCharge } from '../../actions/chargeActions'
@@ -64,15 +64,15 @@ const UpdateItemModal = (props) => {
 				<TouchableOpacity activeOpacity={1} style={styles.touchable} onPress={ () => {props.saveChargeModalVisible(false)}}>
 					<TouchableOpacity activeOpacity={1} style={styles.container} >
 						<View style={styles.wrap} >
-							<View style={styles.headerPan}>
-								<View style={styles.headerLeft}>
+							<View style={myStyles.headerPan}>
+								<View style={myStyles.headerLeft}>
 									<CloseButton onPress={ () => props.saveChargeModalVisible(false) }/>
 								</View>
-								<View style={styles.headerMiddle}>
+								<View style={myStyles.headerMiddle}>
 									<Text style={myStyles.headerModal}>CHARGE</Text>
 								</View>
-								<View style={styles.headerRight}>
-									<SaveButton userType={userType} onPress={() => props.saveCharge()}/>
+								<View style={myStyles.headerRight}>
+									<CheckButton userType={userType} onPress={() => props.saveCharge()}/>
 								</View>
 							</View>
 							<View style={styles.content}>
@@ -126,22 +126,6 @@ function mapDispatchToProps(dispatch) {
 	}
 }
 
-export class SaveButton extends React.Component{
-  render(){
-    return (
-      (this.props.userType == 'ROOT' || this.props.userType == 'ADMIN')?
-      <Button 
-        onPress={this.props.onPress} style={styles.opacity}
-        title="Save"
-        containerStyle={{marginHorizontal: 5}}
-        type="clear"
-        inputStyle={{fontSize: 20}}
-        titleStyle={{color: '#666', marginLeft: 5, fontSize: 20}}
-      />:null
-    )
-  }
-}
-
 export class DeleteButton extends React.Component{
 
   render(){
@@ -149,7 +133,7 @@ export class DeleteButton extends React.Component{
       (this.props.userType == 'ROOT' || this.props.userType == 'ADMIN')?
       <Button
         onPress={this.props.onPress} style={styles.opacity}
-        title="- Delete"
+        title="Delete"
         containerStyle={{}}
         type="clear"
         titleStyle={{color: 'red', marginLeft: 5, fontSize: 20}}
@@ -244,30 +228,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'blue'
   },
-  headerPan: {
-		flexDirection: 'row',
-		height: 50,
-    alignItems: 'center',
-    justifyContent: 'space-between',
-		borderBottomWidth: 1,
-    borderBottomColor: '#CCC',
-    borderRadius: 10,
-  },
-  headerLeft: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    justifyContent: 'flex-start',
-  },
-  headerMiddle: {
-    flex: 2,
-    alignItems: 'center'
-  },
-  headerRight: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'flex-end'
-  }
 });
 
 export default (connect(mapStateToProps, mapDispatchToProps)(reduxForm({

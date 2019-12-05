@@ -74,7 +74,7 @@ export default StyleSheet.create({
 		headerModal: {
 			fontSize: 20,
 			fontWeight: 'bold',
-			color: '#333',
+			color: '#999',
 			fontFamily: 'sans-serif-condensed',
 			margin: 9,
 			paddingLeft: 5,
@@ -83,7 +83,7 @@ export default StyleSheet.create({
 		// modal header styles
 		headerPan: {
 			flexDirection: 'row',
-			height: 50,
+			height: 60,
 			alignItems: 'center',
 			justifyContent: 'space-between',
 			borderBottomWidth: 1,

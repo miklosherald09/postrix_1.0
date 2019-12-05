@@ -103,7 +103,7 @@ class AddShelveItemsButton extends React.Component{
           type="clear"
           icon={<Icon
             name= "plus"
-            size= {30}
+            size= {50}
             color = '#CACAD9'
           />}
         />

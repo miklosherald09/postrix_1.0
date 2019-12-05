@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, TouchableOpacity, Modal, Dimensions, Alert } fr
 import { connect } from 'react-redux'
 import { Button, Input } from 'react-native-elements'
 import Icon from 'react-native-vector-icons/FontAwesome5'
-import { CloseButton } from '../../components/Common'
+import { CloseButton, CheckButton } from '../../components/Common'
 import myStyles from '../../constants/styles'
 import { hideItemColorsModal, setItemColor, selectColor } from '../../actions/itemColorsActions'
 import { shelveModalInvisible, updateModalShelve, saveShelve, deleteShelve } from '../../actions/shelvesActions'
@@ -37,7 +37,7 @@ const ShelveModal = (props) => {
 									<Text style={myStyles.headerModal}>SHELVE</Text>
 								</View>
 								<View style={styles.headerRight}>
-									<SaveButton onPress={() => props.saveShelve()} />
+									<CheckButton onPress={() => props.saveShelve()} />
 								</View>
 							</View>
 							<View style={styles.content}>
@@ -195,7 +195,7 @@ const styles = StyleSheet.create({
   },
   headerPan: {
 		flexDirection: 'row',
-		height: 50,
+		height: 60,
     alignItems: 'center',
     justifyContent: 'space-between',
 		borderBottomWidth: 1,

@@ -5,7 +5,7 @@ import { Field, reduxForm } from 'redux-form'
 import { submit } from 'redux-form'
 import { Input, Button } from 'react-native-elements'
 import Icon from 'react-native-vector-icons/FontAwesome5'
-import { CloseButton } from '../../components/Common'
+import { CloseButton, CheckButton } from '../../components/Common'
 import validate from '../../validations'
 import myStyles from '../../constants/styles'
 import { getItems, saveItem, deleteItem, saveField,	updateItemModalVisible as openModal, updateItemModalInvisible as closeModal } from '../../actions/itemActions'
@@ -67,15 +67,15 @@ const UpdateItemModal = (props) => {
 				<TouchableOpacity activeOpacity={1} style={styles.touchable} onPress={ () => {props.setModalInvisible()}}>
 					<TouchableOpacity activeOpacity={1} style={styles.container} >
 						<View style={styles.wrap} >
-							<View style={styles.headerPan}>
-								<View style={styles.headerLeft}>
+							<View style={myStyles.headerPan}>
+								<View style={myStyles.headerLeft}>
 									<CloseButton onPress={ () => props.setModalInvisible() }/>
 								</View>
-								<View style={styles.headerMiddle}>
+								<View style={myStyles.headerMiddle}>
 									<Text style={myStyles.headerModal}>EDIT ITEM</Text>
 								</View>
-								<View style={styles.headerRight}>
-									<SaveButton onPress={() => props.saveItem(input)}/>
+								<View style={myStyles.headerRight}>
+									<CheckButton onPress={() => props.saveItem(input)}/>
 								</View>
 							</View>
 							<View style={styles.content}>
@@ -156,21 +156,6 @@ export class UselessField extends React.Component{
           onSubmitEditing={this.props.onSubmitEditing} 
           keyboardType={this.props.keyboardType}/>
       </View>
-    )
-  }
-}
-
-export class SaveButton extends React.Component{
-
-  render(){
-    return (
-      <Button 
-        onPress={this.props.onPress} style={styles.opacity}
-        title="SAVE"
-        containerStyle={{marginHorizontal: 5}}
-        titleStyle={{color: '#2089dc', marginLeft: 5, fontSize: 20}}
-        type="clear"
-      />
     )
   }
 }
@@ -276,30 +261,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'blue'
   },
-  headerPan: {
-		flexDirection: 'row',
-		height: 50,
-    alignItems: 'center',
-    justifyContent: 'space-between',
-		borderBottomWidth: 1,
-    borderBottomColor: '#CCC',
-    borderRadius: 10,
-  },
-  headerLeft: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    justifyContent: 'flex-start',
-  },
-  headerMiddle: {
-    flex: 2,
-    alignItems: 'center'
-  },
-  headerRight: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'flex-end'
-  }
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(UpdateItemModal)

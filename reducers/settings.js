@@ -6,16 +6,16 @@ import {
   UPDATE_SHOP_NAME_SUCCESS,
   UPDATE_RECEIPT_HEADER_SUCCESS,
   UPDATE_RECEIPT_FOOTER_SUCCESS,
-  UPDATE_SETTINGS
 } from '../actions/settingsActions'
 
 const initialState = {
-  googleSheetUrl: '',
-  googleSheetUrlCsv: '',
-  reportEmail: '',
-  shopName: '',
-  receiptHeader: '',
-  receiptFooter: ''
+  GOOGLE_SHEET_URL: "",
+  GOOGLE_SHEET_URL_CSV: "",
+  RECEIPT_FOOTER: "",
+  RECEIPT_HEADER: "",
+  REPORT_EMAIL: "",
+  SETTINGS_PRINTER: {},
+  SHOP_NAME: "",
 }
 
 export default function settingsReducer(state = initialState, action) {
@@ -23,10 +23,10 @@ export default function settingsReducer(state = initialState, action) {
 
     case INIT_SETTINGS: {
       return {
-        ...state,
+        ...action.settings
       }
     }
-
+    
     case UPDATE_GOOGLE_SHEET_URL: {
       return {
         ...state,
@@ -66,12 +66,6 @@ export default function settingsReducer(state = initialState, action) {
       }
     }
 
-    case UPDATE_SETTINGS: {
-      return {
-        ...state,
-        [action.settings]: action.value
-      }
-    }
 
     default:
       // ALWAYS have a default case in a reducer

@@ -1,75 +1,22 @@
-export const items = [
-  {
-    name: 'PALMOLIVE SH INTENSE MOISTURE 15ml',
-    price: 875,
-    image: require('../assets/alfonso.fw.png')
-  },
-  {
-    name: 'XPALMOLIVE SH INTENSE MOISTURE 15ml',
-    price: 636,
-    image: require('../assets/alfonso.fw.png')
-  },
-  {
-    name: 'XXPALMOLIVE SH INTENSE MOISTURE 15ml',
-    price: 87,
-    image: require('../assets/alfonso.fw.png')
-  },
-  {
-    name: 'X4343XPALMOLIVE SH INTENSE MOISTURE 15ml',
-    price: 87,
-    image: require('../assets/alfonso.fw.png')
-  },
-  {
-    name: 'X4343XPALMOLIVE SH INTENSE MOISTURE 15ml',
-    price: 87,
-    image: require('../assets/alfonso.fw.png')
-  },
-  {
-    name: 'X4343XPALMOLIVE SH INTENSE MOISTURE 15ml',
-    price: 87,
-    image: require('../assets/alfonso.fw.png')
-  },
-  {
-    name: 'X4343XPALMOLIVE SH INTENSE MOISTURE 15ml',
-    price: 87,
-    image: require('../assets/alfonso.fw.png')
-  },
-  {
-    name: 'PUSHEE X4343XPALMOLIVE SH INTENSE MOISTURE 15ml',
-    price: 87,
-    image: require('../assets/alfonso.fw.png')
-  }
-];
-
-export const punchedItems = [
-  {
-    name: 'Alfonso Light 1L',
-    price: 84,
-    count: 0,
-    totalPrice: 887 
-  },
-  {
-    name: 'Alfonso Light 1L',
-    price: 84,
-    count: 0,
-    totalPrice: 887 
-  },
-  {
-    name: 'Alfonso Light 1L',
-    price: 84,
-    count: 0,
-    totalPrice: 887 
-  },
-  {
-    name: 'Alfonso Light 1L',
-    price: 84,
-    count: 0,
-    totalPrice: 887 
-  },
-];
-
+export const items = []
+export const punchedItems = []
 export const currency = '₱'
 export const USER_TYPE_MANAGER = 'MANAGER'
 export const USER_TYPE_STAFF = 'STAFF'
 export const USER_TYPE_ADMIN = 'ADMIN'
 export const USER_TYPE_ROOT = 'ROOT'
+export const SUPPORTED_PRINTERS = [
+  { 
+    name: 'Xprinter-58',
+    vendorId: 1155,
+    productId: 1803,
+    printerSize: 58
+  },
+  {
+    name: 'Cordova-58',
+    verdorId: 1110,
+    productId: 2056,
+    printerSize: 58
+  }
+
+]

@@ -15,7 +15,7 @@ const SettingsItemsScreen = props => {
 		props.navigation.openDrawer()
 	}
 
-  const { googleSheetUrlCsv } = props.settings
+  const { GOOGLE_SHEET_URL_CSV } = props.settings
   const { syncingGoogleSheet, syncedItem, removingUnusedItem } = props.items
 
   return (
@@ -48,7 +48,7 @@ const SettingsItemsScreen = props => {
                       style={{fontSize: 20, flex: 5, marginTop: 5, borderBottomWidth: 1, borderColor: '#999'}}
                       placeholder="enter published google sheet csv link"
                       onChangeText={(text) => props.updateGoogleSheetUrlCsv(text)}
-                      defaultValue={googleSheetUrlCsv} 
+                      defaultValue={GOOGLE_SHEET_URL_CSV} 
                     />
                     <View style={{flex: 1, flexDirection: 'row', justifyContent: 'flex-start'}}>
                       { SyncItemButton(props) }

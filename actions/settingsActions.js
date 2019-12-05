@@ -3,6 +3,7 @@ export const UPDATE_GOOGLE_SHEET_URL_CSV = 'UPDATE_GOOGLE_SHEET_URL_CSV'
 export const INIT_SETTINGS = 'INIT_SETTINGS'
 export const GOOGLE_SHEET_URL = 'GOOGLE_SHEET_URL'
 export const GOOGLE_SHEET_URL_CSV = 'GOOGLE_SHEET_URL_CSV'
+export const SETTINGS_PRINTER = 'SETTINGS_PRINTER'
 export const SHOP_NAME = 'SHOP_NAME'
 export const UPDATE_REPORT_EMAIL_SUCCESS = 'UPDATE_REPORT_EMAIL_SUCCESS'
 export const UPDATE_REPORT_EMAIL = 'UPDATE_REPORT_EMAIL'
@@ -14,7 +15,7 @@ export const UPDATE_SETTINGS = 'UPDATE_SETTINGS'
 export const RECEIPT_HEADER = 'RECEIPT_HEADER'
 export const RECEIPT_FOOTER = 'RECEIPT_FOOTER'
 
-export function initSettings(val) {
+export function initSettings() {
 
   return (dispatch, getState) => {
 
@@ -27,41 +28,11 @@ export function initSettings(val) {
       txn.executeSql(`SELECT * FROM settings`,
       [],
       function(tx, res){
-        var settings = [];
+        var settings = {};
         for (let i = 0; i < res.rows.length; ++i) {
           settings[res.rows.item(i).name] = res.rows.item(i).value;
         }
-
-        console.log('settings successfully fetch..');
-
-        dispatch({
-          type: UPDATE_GOOGLE_SHEET_URL,
-          googleSheetUrl: settings[GOOGLE_SHEET_URL]
-        })
-
-        dispatch({
-          type: UPDATE_GOOGLE_SHEET_URL_CSV,
-          googleSheetUrlCsv: settings[GOOGLE_SHEET_URL_CSV]
-        })
-
-        dispatch({
-          type: UPDATE_SETTINGS,
-          settings: 'receiptHeader',
-          value: settings[RECEIPT_HEADER]
-        })
-
-        dispatch({
-          type: UPDATE_SETTINGS,
-          settings: 'receiptFooter',
-          value: settings[RECEIPT_FOOTER]
-        })
-
-        dispatch({
-          type: UPDATE_SETTINGS,
-          settings: 'shopName',
-          value: settings[SHOP_NAME]
-        })
-
+        dispatch({ type: INIT_SETTINGS, settings: settings })
       });
     },
     function(err){

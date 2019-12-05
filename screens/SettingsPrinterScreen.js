@@ -14,7 +14,7 @@ const SettingsPrinterScreen = props => {
 		props.navigation.openDrawer();
 	}
   
-  const { devices, connected, connecting, usbDevices, usbDeviceConnecting, usbDeviceConnected, connectedDevice } = props.settingsPrinter;
+  const { btDevices, connected, connecting, usbDevices, usbDeviceConnecting, usbDeviceConnected, connectedDevice } = props.settingsPrinter;
 
   return (
     <View style={styles.wrapper}>
@@ -44,8 +44,8 @@ const SettingsPrinterScreen = props => {
               <View style={{marginVertical: 20, flex: 1}}>
                 <ScrollView>
                   {
-                    devices.map( (v, i)=> {
-                      return <Device key={i} device={v} onPress={() => props.connectPrinter(v)}/>
+                    btDevices.map( (v, i)=> {
+                      return <BTDevice key={i} device={v} onPress={() => props.connectPrinter(v)}/>
                     })
                   }
                 </ScrollView>
@@ -102,7 +102,7 @@ const SettingsPrinterScreen = props => {
   );
 }
 
-class Device extends React.Component{
+class BTDevice extends React.Component{
   render(){
     return (
       <View style={{flexDirection: 'row', marginBottom: 10}} >
@@ -131,8 +131,7 @@ class USBDevice extends React.Component{
     return (
       <View style={{flexDirection: 'row', marginBottom: 3}} >
         <Button
-          title={'USB: ' + this.props.device.device_name.slice(-3)}
-          // title={this.props.connectedDevice.device_id + ' xxx ' + this.props.device.device_id}
+          title={this.props.device.name}
           titleStyle={this.props.device.device_id === this.props.connectedDevice.device_id?styles.usbDeviceActive:styles.usbDevice}
           onPress={this.props.onPress}
           type="clear"
@@ -153,7 +152,7 @@ function mapDispatchToProps(dispatch){
   return {
     connectPrinter: (value) => { dispatch(connectPrinter(value)) },
     connectUSBPrinter: (value) => { dispatch(connectUSBPrinter(value)) },
-    scanUSBDevices: ()  => { dispatch(scanUSBDevices()) }
+    scanUSBDevices: ()  => { dispatch(scanUSBDevices(true)) }
   }
 }
 

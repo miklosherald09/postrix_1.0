@@ -1,9 +1,9 @@
 import {
-  ADD_BLUETOOTH_DEVICES,
   PRINTER_CONNECTED,
   PRINTER_DISCONNECTED,
   CONNECT_PRINTER_BEGIN,
   CONNECT_USB_PRINTER,
+  SCAN_BT_DEVICES_SUCCESS,
   SCAN_USB_DEVICES_SUCCESS,
   CONNECT_USB_PRINTER_SUCCESS,
   CONNECT_USB_PRINTER_BEGIN,
@@ -13,7 +13,7 @@ import {
 } from '../actions/settingsPrinterActions';
 
 const initialState = {
-  devices: [],
+  btDevices: [],
   connected: false,
   connecting: false,
   usbDevices: [],
@@ -26,10 +26,10 @@ const initialState = {
 export default function settingsPrinterReducer(state = initialState, action) {
   switch(action.type) {
 
-    case ADD_BLUETOOTH_DEVICES: {
+    case SCAN_BT_DEVICES_SUCCESS: {
       return {
         ...state,
-        devices: [...state.devices, action.device]
+        btDevices: action.devices
       }
     }
 

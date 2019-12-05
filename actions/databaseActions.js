@@ -15,6 +15,32 @@ export function initDatabase() {
   }
 }
 
+export function insertSettingsPrinter(){
+
+  return (dispatch, getState) => {
+    
+    // insert settings table
+    const { database } = getState()
+
+    database.db.transaction(function(txn){
+      txn.executeSql(
+        `INSERT INTO settings(name) 
+          SELECT ?
+          WHERE NOT EXISTS(
+            SELECT 1
+            FROM settings 
+            WHERE name = ?);`,
+      ['SETTINGS_PRINTER', 'SETTINGS_PRINTER'],
+      function(tx, res){
+        console.log(res)
+      });
+    },
+    function(err){
+      console.log(err)
+    });
+  }
+}
+
 export const initItemsTable = () => {
   console.log('initializing tables...')
   return (dispatch, getState) => {

@@ -3,7 +3,7 @@ import { StyleSheet } from 'react-native'
 import { Provider } from 'react-redux'
 import { getTransactions } from './actions/transactionActions'
 import { initPrinter } from './actions/settingsPrinterActions'
-import { initDatabase } from './actions/databaseActions'
+import { initDatabase, insertSettingsPrinter } from './actions/databaseActions'
 import { initSettings } from './actions/settingsActions'
 import { getItems } from './actions/itemActions'
 import SignInGuard from './components/signInGuard'
@@ -30,6 +30,7 @@ class App extends Component{
 
   componentDidMount(){
     store.dispatch(initDatabase())
+    store.dispatch(insertSettingsPrinter())
     store.dispatch(initSettings())
     store.dispatch(initPrinter())
     store.dispatch(getItems())

@@ -14,6 +14,7 @@ import { currency } from '../../constants/constants'
 import { CloseButton } from '../../components/Common'
 import NumberFormat from 'react-number-format'
 import Icon from 'react-native-vector-icons/FontAwesome5'
+import myStyles from '../../constants/styles'
 
 
 const screenWidth = Math.round(Dimensions.get('window').width);
@@ -36,9 +37,11 @@ const PayModal = (props) => {
         <TouchableOpacity activeOpacity={1} style={styles.touchable} onPress={ () => {props.payModalInvisible()}}>
           <TouchableOpacity activeOpacity={1} style={styles.container} >
             <View style={{flex: 1, flexDirection: 'column', }}>
-							<View style={{height: 50, marginBottom: 10}}>
-                <CloseButton onPress={ () => props.payModalInvisible() } />
-							</View>
+              <View style={styles.headerPan}>
+                <View style={myStyles.headerLeft}>
+                  <CloseButton onPress={ () => props.payModalInvisible() } />
+                </View>
+              </View>
 							<View style={{flex: 1, flexDirection: 'row'}}>
 								<View style={{flex: 1, margin: 10, justifyContent: 'space-between'}}>
                   <View style={{flex: 1, justifyContent: 'center',  paddingVertical: 10, alignItems: 'center' }}>
@@ -158,9 +161,6 @@ const styles = StyleSheet.create({
     width: 250
   },
   container: {
-    // width: screenWidth/2,
-    // height: screenHeight/2,
-
     borderRadius: 10,
     backgroundColor: 'white',
     height: screenHeight - (screenHeight * 0.10 * 2),
@@ -174,6 +174,13 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     height: 37,
     width: 250
+  },
+  headerPan: {
+    flexDirection: 'row',
+    height: 60,
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    borderRadius: 10,
   },
 });
 

@@ -3,7 +3,7 @@ import { Dimensions, StyleSheet, Text, View, TouchableOpacity, Modal, FlatList, 
 import { connect } from 'react-redux'
 import { ListItem, Icon } from 'react-native-elements'
 import { setSelected, addShelveItemsInvisible, selectShelveItem, saveShelveItems, searchOptions, getOptions, refreshOptions, shitOptions } from '../../actions/shelvesActions'
-import { CloseButton } from '../../components/Common'
+import { CloseButton, CheckButton } from '../../components/Common'
 import { Input, Button, Avatar } from 'react-native-elements'
 import myStyles from '../../constants/styles'
 
@@ -80,7 +80,7 @@ const AddShelveItemsModal = (props) => {
 									<Text style={myStyles.headerModal}>ADD SHELVES ITEM</Text>
 								</View>
 								<View style={myStyles.headerRight}>
-									{/* <SaveButton onPress={() => props.saveItem(input)}/> */}
+									<CheckButton onPress={() => props.addShelveItemsInvisible()}/>
 								</View>
 							</View>
 							<View>
@@ -112,19 +112,6 @@ const AddShelveItemsModal = (props) => {
       </Modal>
 		</View>
 	);
-}
-
-export class SaveButton extends React.Component{
-
-  render(){
-    return (
-      <Button 
-        onPress={this.props.onPress} style={styles.opacity}
-        title="Save"
-        containerStyle={{marginHorizontal: 5}}
-      />
-    )
-  }
 }
 
 function mapStateToProps(state) {

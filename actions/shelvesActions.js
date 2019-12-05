@@ -280,8 +280,8 @@ export function getOptions(){
         options = []
         for (i = 0; i < res.rows.length; ++i) {
           item = res.rows.item(i)
-          item.sellPrice = res.rows.item(i).sell_price
-          item.buyPrice = res.rows.item(i).buy_price
+          item.sellPrice = parseInt(res.rows.item(i).sell_price)
+          item.buyPrice = parseInt(res.rows.item(i).buy_price)
           delete item.sell_price
           delete item.buy_price
           options.push(item)

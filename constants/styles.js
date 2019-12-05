@@ -87,7 +87,7 @@ export default StyleSheet.create({
 			alignItems: 'center',
 			justifyContent: 'space-between',
 			borderBottomWidth: 1,
-			borderBottomColor: '#CCC',
+			borderBottomColor: '#EEE',
 			borderRadius: 10,
 		},
 		headerLeft: {

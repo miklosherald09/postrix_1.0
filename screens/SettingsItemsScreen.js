@@ -56,8 +56,8 @@ const SettingsItemsScreen = props => {
                     </View>
                   </View>
                   <View>
-                    <Text style={{marginTop: 10, marginLeft: 5, color: 'green'}}>{syncingGoogleSheet?'synching...'+syncedItem.Name : ''}</Text>
-                    <Text style={{marginTop: 10, marginLeft: 5, color: 'green'}}>{removingUnusedItem?'removing unused item...': ''}</Text>
+                    <Text style={{marginTop: 10, fontSize: 20, marginLeft: 5, color: 'green'}}>{syncingGoogleSheet?'synching...'+syncedItem.Name : ''}</Text>
+                    <Text style={{marginTop: 10, fontSize: 20, marginLeft: 5, color: 'green'}}>{removingUnusedItem?'removing unused item...': ''}</Text>
                   </View>
                 </View>
               </View>

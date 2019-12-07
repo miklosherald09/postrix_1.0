@@ -26,7 +26,7 @@ export function initPrinter() {
 
     setTimeout(() => {
       dispatch(reconnectPrinter())
-    }, 5000)
+    }, 3500)
 
   }
 }
@@ -36,11 +36,16 @@ export function reconnectPrinter(){
 
     const { settings } = getState()
 
-    if(settings.SETTINGS_PRINTER){
-      if(settings.SETTINGS_PRINTER.connectionType == CONNECTION_TYPE_BT)
-        dispatch(connectBTPrinter(settings.SETTINGS_PRINTER.device))
-      if(settings.SETTINGS_PRINTER.connectionType == CONNECTION_TYPE_USB)
-        dispatch(connectUSBPrinter(settings.SETTINGS_PRINTER.device))
+    settingsPrinter = JSON.parse(settings.SETTINGS_PRINTER)
+    alert('reconn...!')
+    alert(JSON.stringify(settings))
+    console.warn(settingsPrinter)
+
+    if(settings){
+      if(settingsPrinter.connectionType == CONNECTION_TYPE_BT)
+        dispatch(connectBTPrinter(settingsPrinter))
+      if(settingsPrinter.connectionType == CONNECTION_TYPE_USB)
+        dispatch(connectUSBPrinter(settingsPrinter))
     }
   }
 }
@@ -74,38 +79,49 @@ export function scanBTPrinters(notify) {
 
 export function scanUSBDevices(notify) {
   return (dispatch, getState) => {
-    if(notify)
-      ToastAndroid.show('Scanning usb devices...',  ToastAndroid.LONG)
-    
-    USBPrinter.init().then(()=> {
-      //list printers
-      USBPrinter.getDeviceList()
-        .then(devices => {
 
-          // check if printer is supported
-          supportedPrinters = []
-          SUPPORTED_PRINTERS.forEach(v => {
-            supported = false
-            devices.forEach(d => {
-              if(v.vendorId == d.vendor_id && v.productId == d.product_id)
-                supported = true
+    try{
+    
+      if(notify)
+        ToastAndroid.show('Scanning usb devices...',  ToastAndroid.LONG)
+      
+      USBPrinter.init().then(()=> {
+        //list printers
+        USBPrinter.getDeviceList()
+          .then(devices => {
+
+            alert(JSON.stringify(devices))
+            alert(JSON.stringify(SUPPORTED_PRINTERS))
+            // check if printer is supported
+            supportedPrinters = []
+            SUPPORTED_PRINTERS.forEach(v => {
+              supported = false
+              devices.forEach(d => {
+                if(v.vendorId == d.vendor_id && v.productId == d.product_id)
+                  supported = true
+              })
+
+              if(supported)
+                supportedPrinters.push(v)
             })
 
-            if(supported)
-              supportedPrinters.push(v)
+            alert(JSON.stringify(supportedPrinters))
+
+            dispatch({type: SCAN_USB_DEVICES_SUCCESS, usbDevices: supportedPrinters})
+          },
+          error => {
+            if(notify)
+              ToastAndroid.show(error,  ToastAndroid.LONG)
           })
-          
-          dispatch({type: SCAN_USB_DEVICES_SUCCESS, usbDevices: supportedPrinters})
-        },
-        error => {
-          if(notify)
-            ToastAndroid.show(error,  ToastAndroid.LONG)
-        })
-    },
-    error => {
-      if(notify)
-        ToastAndroid.show(error,  ToastAndroid.LONG)
-    });
+      },
+      error => {
+        if(notify)
+          ToastAndroid.show(error,  ToastAndroid.LONG)
+      })
+    }
+    catch(e){
+      alert(e.message)
+    }
   }
 }
 
@@ -147,17 +163,15 @@ export function connectUSBPrinter(device, notify) {
   return (dispatch, getState) => {
 
     if(notify)
-      ToastAndroid.show('trying to connect usb printer: ', ToastAndroid.LONG)
+      ToastAndroid.show('trying to connect usb printer: '+device.name, ToastAndroid.LONG)
 
     dispatch({type: CONNECT_USB_PRINTER_BEGIN})
-    if(device.hasOwnProperty('vendor_id')){
+    if(device.hasOwnProperty('vendorId')){
       USBPrinter.init().then(()=> {
-        vendorID = device.vendor_id
-        productId = device.product_id
-        USBPrinter.connectPrinter(vendorID, productId).then(
+        USBPrinter.connectPrinter(device.vendorId, device.productId).then(
           (printer) => {
             if(notify)
-              ToastAndroid.show('connect usb printer done!: ', ToastAndroid.LONG)
+              ToastAndroid.show('connect usb printer done! ', ToastAndroid.LONG)
 
             dispatch({type: CONNECT_USB_PRINTER_SUCCESS, connectedDevice: device})
             dispatch(saveConnectedPrinter(device, CONNECTION_TYPE_USB))
@@ -184,11 +198,13 @@ export function saveConnectedPrinter(device, connectionType){
     database.db.transaction(function(txn){
       // UPDATE ITEM
       device.connectionType = connectionType
-      txn.executeSql(`UPDATE settings SET value = ? WHERE SETTINGS_PRINTER = ? `,
-      [JSON.stringify(device), SETTINGS_PRINTER],
+      alert('db saving!: '+JSON.stringify(device))
+      txn.executeSql(`UPDATE settings SET value = ? WHERE name = ? `,
+      [JSON.stringify(device), "SETTINGS_PRINTER"],
       function(tx, res){
         // UDPATE STORE
-        console.log('success updating settings printer...');
+        alert('db saved!: '+JSON.stringify(res))
+        console.log('success updating settings printer...')
       });
     },
     function(err){

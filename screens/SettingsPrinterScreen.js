@@ -2,7 +2,7 @@ import React from 'react'
 import { StyleSheet, View, Text, ScrollView, TouchableOpacity } from 'react-native'
 import { connect } from 'react-redux'
 import { MenuButton } from '../components/MenuButton'
-import { connectPrinter, connectUSBPrinter, scanUSBDevices } from '../actions/settingsPrinterActions'
+import { connectBTPrinter, connectUSBPrinter, scanUSBDevices } from '../actions/settingsPrinterActions'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import SettingsNav from '../navigation/SettingsNav'
 import myStyles from '../constants/styles'
@@ -45,7 +45,7 @@ const SettingsPrinterScreen = props => {
                 <ScrollView>
                   {
                     btDevices.map( (v, i)=> {
-                      return <BTDevice key={i} device={v} onPress={() => props.connectPrinter(v)}/>
+                      return <BTDevice key={i} device={v} onPress={() => props.connectBTPrinter(v)}/>
                     })
                   }
                 </ScrollView>
@@ -132,7 +132,7 @@ class USBDevice extends React.Component{
       <View style={{flexDirection: 'row', marginBottom: 3}} >
         <Button
           title={this.props.device.name}
-          titleStyle={this.props.device.device_id === this.props.connectedDevice.device_id?styles.usbDeviceActive:styles.usbDevice}
+          titleStyle={this.props.device.productId === this.props.connectedDevice.productId?styles.usbDeviceActive:styles.usbDevice}
           onPress={this.props.onPress}
           type="clear"
         />
@@ -150,8 +150,8 @@ function mapStateToProps(state){
 
 function mapDispatchToProps(dispatch){
   return {
-    connectPrinter: (value) => { dispatch(connectPrinter(value)) },
-    connectUSBPrinter: (value) => { dispatch(connectUSBPrinter(value)) },
+    connectBTPrinter: (value) => { dispatch(connectBTPrinter(value, true)) },
+    connectUSBPrinter: (value) => { dispatch(connectUSBPrinter(value, true)) },
     scanUSBDevices: ()  => { dispatch(scanUSBDevices(true)) }
   }
 }

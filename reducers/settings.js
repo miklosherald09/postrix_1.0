@@ -31,7 +31,7 @@ export default function settingsReducer(state = initialState, action) {
       return {
         ...state,
         googleSheetUrl: action.googleSheetUrl
-      }
+      }      
     }
 
     case UPDATE_GOOGLE_SHEET_URL_CSV: {

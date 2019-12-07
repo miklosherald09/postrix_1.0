@@ -150,7 +150,7 @@ export function syncGoogleSheet() {
       })
     }
 
-    fetch(settings.googleSheetUrlCsv, {
+    fetch(settings.GOOGLE_SHEET_URL_CSV, {
       method: 'GET',
       headers: {
         Accept: 'application/json',

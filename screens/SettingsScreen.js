@@ -16,7 +16,7 @@ const settingsScreen = props => {
 		props.navigation.openDrawer()
 	}
 
-  const { shopName, receiptHeader, receiptFooter } = props.settings
+  const { SHOP_NAME, RECEIPT_HEADER, RECEIPT_FOOTER } = props.settings
 
   timeout = null
 
@@ -74,7 +74,7 @@ const settingsScreen = props => {
               containerStyle={{marginTop: 15, marginBottom: 50}}
               inputStyle={{}}
               onChangeText={(text) => {updateShopName(text)}} 
-              defaultValue={shopName}
+              defaultValue={SHOP_NAME}
             />
             <Input
               label={"RECEIPT SUB HEADER"}
@@ -84,7 +84,7 @@ const settingsScreen = props => {
               containerStyle={{marginTop: 15, marginBottom: 50}}
               inputStyle={{}}
               onChangeText={(text) => {updateReceiptHeader(text)}}
-              defaultValue={receiptHeader}
+              defaultValue={RECEIPT_HEADER}
             />
             <Input
               label={"RECEIPT FOOTER"}
@@ -94,7 +94,7 @@ const settingsScreen = props => {
               containerStyle={{marginTop: 15}}
               inputStyle={{}}
               onChangeText={(text) => {updateReceiptFooter(text)}}
-              defaultValue={receiptFooter}
+              defaultValue={RECEIPT_FOOTER}
             />
           </View>
         </View>

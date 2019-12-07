@@ -20,7 +20,7 @@ const initialState = {
   usbDeviceConnected: false,
   usbDeviceConnecting: false,
   connectionType: null,
-  connectedDevice: null
+  connectedDevice: {}
 }
 
 export default function settingsPrinterReducer(state = initialState, action) {

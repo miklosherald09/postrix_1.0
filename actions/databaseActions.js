@@ -5,13 +5,15 @@ function successCB() { console.log("SQL executed fine"); };
 export const INIT_DATABASE = 'INIT_DATABASE'
 
 export function initDatabase() {
- 
-  const db = openDatabase({name : "test.db" , createFromLocation: '~postrix.db.sqlite'}, successCB, errorCB);
-  console.log('iniitilzing db: '+db)
 
-  return {
-    type: INIT_DATABASE,
-    db: db
+  return (dispatch, getState) => {
+ 
+    const db = openDatabase({name : "test.db" , createFromLocation: '~postrix.db.sqlite'}, successCB, errorCB);
+    console.log('iniitilzing db: '+db)
+
+    dispatch({ type: INIT_DATABASE, db: db })
+    dispatch(insertSettingsPrinter())
+    dispatch(addReceiptNoField())
   }
 }
 
@@ -31,6 +33,28 @@ export function insertSettingsPrinter(){
             FROM settings 
             WHERE name = ?);`,
       ['SETTINGS_PRINTER', 'SETTINGS_PRINTER'],
+      function(tx, res){
+        console.log(res)
+      });
+    },
+    function(err){
+      console.log(err)
+    });
+  }
+}
+
+export function addReceiptNoField(){
+
+  return (dispatch, getState) => {
+    
+    // insert settings table
+    const { database } = getState()
+
+    database.db.transaction(function(txn){
+      txn.executeSql(
+        `ALTER TABLE transactions
+        ADD receipt_no TEXT;`,
+      [],
       function(tx, res){
         console.log(res)
       });

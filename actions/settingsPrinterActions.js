@@ -37,11 +37,11 @@ export function reconnectPrinter(){
     const { settings } = getState()
 
     settingsPrinter = JSON.parse(settings.SETTINGS_PRINTER)
-    alert('reconn...!')
-    alert(JSON.stringify(settings))
-    console.warn(settingsPrinter)
+    // alert('reconn...!')
+    // alert(JSON.stringify(settings))
+    // console.warn(settingsPrinter)
 
-    if(settings){
+    if(settingsPrinter){
       if(settingsPrinter.connectionType == CONNECTION_TYPE_BT)
         dispatch(connectBTPrinter(settingsPrinter))
       if(settingsPrinter.connectionType == CONNECTION_TYPE_USB)
@@ -105,7 +105,7 @@ export function scanUSBDevices(notify) {
                 supportedPrinters.push(v)
             })
 
-            alert(JSON.stringify(supportedPrinters))
+            // alert(JSON.stringify(supportedPrinters))
 
             dispatch({type: SCAN_USB_DEVICES_SUCCESS, usbDevices: supportedPrinters})
           },
@@ -198,12 +198,12 @@ export function saveConnectedPrinter(device, connectionType){
     database.db.transaction(function(txn){
       // UPDATE ITEM
       device.connectionType = connectionType
-      alert('db saving!: '+JSON.stringify(device))
+      // alert('db saving!: '+JSON.stringify(device))
       txn.executeSql(`UPDATE settings SET value = ? WHERE name = ? `,
       [JSON.stringify(device), "SETTINGS_PRINTER"],
       function(tx, res){
         // UDPATE STORE
-        alert('db saved!: '+JSON.stringify(res))
+        // alert('db saved!: '+JSON.stringify(res))
         console.log('success updating settings printer...')
       });
     },

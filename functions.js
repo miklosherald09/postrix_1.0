@@ -285,3 +285,7 @@ export function textDelimiter(text, maxLength, align){
     return text
   }
 }
+
+export function generateReceiptNo(no){
+  return String(no % 999999).padStart(6, '0')
+}

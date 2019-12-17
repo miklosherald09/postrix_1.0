@@ -45,7 +45,7 @@ export function searchItem(){
               barcode: res.rows.item(i).barcode,
               buyPrice: parseInt(res.rows.item(i).buy_price),
               datetime: res.rows.item(i).datetime,
-              id: res.rows.item(i).item_id,
+              id: res.rows.item(i).id,
               name: res.rows.item(i).name,
               sellPrice: parseInt(res.rows.item(i).sell_price)
             })

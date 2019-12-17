@@ -27,13 +27,13 @@ const ReceiptModal = (props) => {
         containerStyle={{padding: 5}}
         title={item.name}
         titleStyle={{fontSize: 20}}
-        subtitle={'x' + item.count}
-        subtitleStyle={{fontSize: 20}}
+        subtitle={currency + item.sellPrice + ' x ' + item.count}
+        subtitleStyle={{fontSize: 20, color: '#2089dc'}}
         rightTitle={<NumberFormat 
           renderText={value => <Text style={{fontSize: 20, color: '#333'}}>{value}</Text>} 
           fixedDecimalScale={true} 
           decimalScale={2} 
-          value={item.accruePrice} 
+          value={item.sellPrice * item.count} 
           displayType={'text'} 
           thousandSeparator={true} 
           prefix={currency} />}

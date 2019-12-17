@@ -42,9 +42,9 @@ const PunchItemModal = (props) => {
 							<View style={styles.content}>
 								<View style={{flex: 1, flexDirection: 'row', marginTop: 35}}>
 									<View style={{flex: 2, marginHorizontal: 20}}>
-										<Text style={{fontSize: 25, color: '#666'}}>{selectedItem.name}</Text>
+										<Text style={{fontSize: 24, color: '#666'}}>{selectedItem.name}</Text>
 										<NumberFormat 
-											renderText={value => <Text style={{fontSize: 22, color: '#333'}}>{value}</Text>}
+											renderText={value => <Text style={{fontSize: 24, color: '#2089dc'}}>{value}</Text>}
 											fixedDecimalScale={true} decimalScale={2}
 											value={selectedItem.sellPrice * selectedItem.count} 
 											displayType={'text'} 

@@ -18,7 +18,7 @@ export const DELETE_RECEIPT_MODAL_VISIBLE = 'DELETE_RECEIPT_MODAL_VISIBLE'
 export const DELETE_RECEIPT_SUCCESS = 'DELETE_RECEIPT_SUCCESS'
 export const DELETE_RECEIPT_ERROR = 'DELETE_RECEIPT_ERROR'
 
-export function printReceipt({payment, total, punched, datetime}){
+export function printReceipt({id, payment, total, punched, datetime}){
 
   return  (dispatch, getState) => {
 
@@ -26,57 +26,11 @@ export function printReceipt({payment, total, punched, datetime}){
 
 
     if(settingsPrinter.connectionType == CONNECTION_TYPE_BT){
-
-      columnWidths = [12, 4, 8, 8];
-  
-      console.log('printing receipt...')
-      // console.log(punched)
-      BluetoothEscposPrinter.printerAlign(BluetoothEscposPrinter.ALIGN.CENTER);
-      BluetoothEscposPrinter.setBlob(0);
-      BluetoothEscposPrinter.printText(settings.shopName,{
-        encoding:'GBK',
-        codepage:0,
-        widthtimes:2,
-        heigthtimes:1,
-        fonttype:1
-      });
-      BluetoothEscposPrinter.printText("\n\r",{});
-      BluetoothEscposPrinter.printText("\n\r",{});
-      BluetoothEscposPrinter.printText(settings.receiptHeader,{});
-      BluetoothEscposPrinter.printText("\n\r",{});
-      BluetoothEscposPrinter.printText("Date："+moment(datetime).format('LLL')+"\n\r",{});
-      BluetoothEscposPrinter.printText("\n\r",{});
-      BluetoothEscposPrinter.printText("--------------------------------\n\r",{});
-      
-      BluetoothEscposPrinter.printColumn(columnWidths, [BluetoothEscposPrinter.ALIGN.LEFT,BluetoothEscposPrinter.ALIGN.CENTER,BluetoothEscposPrinter.ALIGN.RIGHT,BluetoothEscposPrinter.ALIGN.RIGHT],
-        ["Item",'Qty','Price', 'Total'],{});
-      
-      // iterate punched items
-      punched.map((v, i) => {
-        BluetoothEscposPrinter.printColumn(columnWidths, [BluetoothEscposPrinter.ALIGN.LEFT,BluetoothEscposPrinter.ALIGN.CENTER,BluetoothEscposPrinter.ALIGN.RIGHT,BluetoothEscposPrinter.ALIGN.RIGHT],
-          [String(v.name.slice(0, 11)), 'x'+String(v.count), String(accounting.formatMoney(v.sellPrice, 'P')), String(accounting.formatMoney(v.accruePrice, 'P'))],{});
-      })
-      
-      BluetoothEscposPrinter.printText("\n\r",{});
-      columnWidths = [16, 16];
-      BluetoothEscposPrinter.printColumn(columnWidths, [BluetoothEscposPrinter.ALIGN.LEFT, BluetoothEscposPrinter.ALIGN.RIGHT],
-        ["Total", String(accounting.formatMoney(total, 'P'))],{});
-  
-      BluetoothEscposPrinter.printText("--------------------------------\n\r",{});
-      BluetoothEscposPrinter.printerAlign(BluetoothEscposPrinter.ALIGN.CENTER);
-      BluetoothEscposPrinter.setBlob(1);
-      BluetoothEscposPrinter.printText(settings.receiptFooter,{});
-      BluetoothEscposPrinter.printText("\n\r",{});
-      BluetoothEscposPrinter.printText("\n\r",{});
-      BluetoothEscposPrinter.printText("\n\r",{});
-      BluetoothEscposPrinter.printText("\n\r",{});
-     
-      dispatch({ type: PRINT_RECEIPT_SUCCESS })
+   printReceiptBT(id, settings,)}
     
-    }
+   
 
     if(settingsPrinter.connectionType == CONNECTION_TYPE_USB){
-
       printReceiptUSB(settings, punched, datetime, total)
       dispatch({ type: PRINT_RECEIPT_SUCCESS })
     }
@@ -88,23 +42,72 @@ export function printReceipt({payment, total, punched, datetime}){
   }
 }
 
+function printReceiptBT(id, settings, punched, datetime, total){
+
+  try{
+    columnWidths = [12, 4, 8, 8];
+    
+    console.log('printing receipt...')
+    // console.log(punched)
+    BluetoothEscposPrinter.printerAlign(BluetoothEscposPrinter.ALIGN.CENTER);
+    BluetoothEscposPrinter.setBlob(0);
+    settings.SHOP_NAME?
+    BluetoothEscposPrinter.printText(settings.SHOP_NAME,{
+      encoding:'GBK',
+      codepage:0,
+      widthtimes:2,
+      heigthtimes:1,
+      fonttype:1
+    }):null
+    BluetoothEscposPrinter.printText("\n\r",{});
+    BluetoothEscposPrinter.printText("\n\r",{});
+    settings.RECEIPT_HEADER?
+    BluetoothEscposPrinter.printText(settings.RECEIPT_HEADER,{}):null
+    BluetoothEscposPrinter.printText("\n\r",{});
+    BluetoothEscposPrinter.printText("Date："+moment(datetime).format('LLL')+"\n\r",{});
+    BluetoothEscposPrinter.printText("Receipt No.："+ String(id).padStart(6, '0') +"\n", {})
+    BluetoothEscposPrinter.printText("\n\r",{});
+    BluetoothEscposPrinter.printText("--------------------------------\n\r",{});
+    
+    BluetoothEscposPrinter.printColumn(columnWidths, [BluetoothEscposPrinter.ALIGN.LEFT,BluetoothEscposPrinter.ALIGN.CENTER,BluetoothEscposPrinter.ALIGN.RIGHT,BluetoothEscposPrinter.ALIGN.RIGHT],
+      ["Item",'Qty','Price', 'Total'],{});
+    
+    // iterate punched items
+    punched.map((v, i) => {
+      BluetoothEscposPrinter.printColumn(columnWidths, [BluetoothEscposPrinter.ALIGN.LEFT,BluetoothEscposPrinter.ALIGN.CENTER,BluetoothEscposPrinter.ALIGN.RIGHT,BluetoothEscposPrinter.ALIGN.RIGHT],
+        [String(v.name.slice(0, 11)), 'x'+String(v.count), String(accounting.formatMoney(v.sellPrice, 'P')), String(accounting.formatMoney(v.sellPrice * v.count, 'P'))],{});
+    })
+    
+    BluetoothEscposPrinter.printText("\n\r",{});
+    columnWidths = [16, 16];
+    BluetoothEscposPrinter.printColumn(columnWidths, [BluetoothEscposPrinter.ALIGN.LEFT, BluetoothEscposPrinter.ALIGN.RIGHT],
+      ["Total", String(accounting.formatMoney(total, 'P'))],{});
+
+    BluetoothEscposPrinter.printText("--------------------------------\n\r",{});
+    BluetoothEscposPrinter.printerAlign(BluetoothEscposPrinter.ALIGN.CENTER);
+    BluetoothEscposPrinter.setBlob(1);
+    settings.RECEIPT_FOOTER?
+    BluetoothEscposPrinter.printText(settings.RECEIPT_FOOTER,{}):null
+    BluetoothEscposPrinter.printText("\n\r",{});
+    BluetoothEscposPrinter.printText("\n\r",{});
+    BluetoothEscposPrinter.printText("\n\r",{});
+    BluetoothEscposPrinter.printText("\n\r",{});
+  }
+  catch(e){
+    console.log(e.message)
+  }
+}
+
 function printReceiptUSB(settings, punched, datetime, total) {
 
-  // USBPrinter.printText("<M>the quick brown fox</M>\n")
-  // USBPrinter.printText("<B>the quick brown fox</B>\n")
-  // USBPrinter.printText("<D>the quick brown fox</D>\n")
-  // USBPrinter.printText("<C>the quick brown fox</C>\n")
-  // USBPrinter.printText("<CM>the quick brown fox</CM>\n")
-  // USBPrinter.printText("<CD>the quick brown fox</CD>\n")
-  // USBPrinter.printText("<CB>the quick brown fox</CB>\n")
-
-  USBPrinter.printText("<C><B>"+settings.shopName+"</B></C>\n")
+  USBPrinter.printText("<C><B>"+settings.SHOP_NAME+"</B></C>\n")
   USBPrinter.printText("\n")
   USBPrinter.printText("\n")
-  USBPrinter.printText("<C>"+settings.receiptHeader+"<C>\n")
+  USBPrinter.printText("<C>"+settings.RECEIPT_HEADER+"<C>\n")
   USBPrinter.printText("\n")
   USBPrinter.printText("Date："+moment(datetime).format('LLL')+"\n")
   USBPrinter.printText("\n")
+  USBPrinter.printText("Receipt No.："+"5845"+"\n")
   USBPrinter.printText("--------------------------------\n")
   
   h1 = textDelimiter('Item', 12, 'LEFT')
@@ -119,7 +122,7 @@ function printReceiptUSB(settings, punched, datetime, total) {
     name = textDelimiter(String(v.name.slice(0, 10)), 12, 'LEFT')
     count = textDelimiter(String('x'+v.count), 4, 'LEFT')
     sellPrice = textDelimiter(String(accounting.formatMoney(v.sellPrice, 'P')), 8, 'RIGHT')
-    accruePrice = textDelimiter(String(accounting.formatMoney(v.accruePrice, 'P')), 8, 'RIGHT')
+    accruePrice = textDelimiter(String(accounting.formatMoney(v.sellPrice * v.count, 'P')), 8, 'RIGHT')
 
     USBPrinter.printText(name + count + sellPrice + accruePrice +'\n')
   })
@@ -131,7 +134,7 @@ function printReceiptUSB(settings, punched, datetime, total) {
 
   USBPrinter.printText(h5 + h6 + "\n")
   USBPrinter.printText("--------------------------------\n")
-  USBPrinter.printText("<C>"+settings.receiptFooter+"</C>\n")
+  USBPrinter.printText("<C>"+settings.RECEIPT_FOOTER+"</C>\n")
   USBPrinter.printText("\n")
   USBPrinter.printText("\n")
   USBPrinter.printText("\n")
@@ -204,5 +207,4 @@ export function deleteReceipt(pin) {
       reject(err.message);
       dispatch({type: DELETE_RECEIPT_ERROR})
     });
-  }
-}
+  }}

@@ -30,9 +30,9 @@ const SalesReport = (props) => {
             </View>
           </View>
         }
-        titleStyle={{fontSize: 12, color: '#333'}}
-        rightTitle={ <NumberFormat renderText={value => <Text style={{fontSize: 12, color: '#333'}}>{value}</Text>} fixedDecimalScale={true} decimalScale={2} value={item.accruePrice} displayType={'text'} thousandSeparator={true} prefix={currency} />}
-        rightTitleStyle={{fontSize: 12}}
+        titleStyle={{fontSize: 20, color: '#333'}}
+        rightTitle={ <NumberFormat renderText={value => <Text style={{fontSize: 20, color: '#333'}}>{value}</Text>} fixedDecimalScale={true} decimalScale={2} value={item.count * item.sellPrice} displayType={'text'} thousandSeparator={true} prefix={currency} />}
+        rightTitleStyle={{fontSize: 20}}
         containerStyle={{borderColor: 'black', borderWidth: 0, margin: 2, padding: 5}}
         contentContainerStyle={{flex: 2}}
       />
@@ -150,7 +150,7 @@ const styles = StyleSheet.create({
     margin: 10,
   },
   itemName: {
-    fontSize: 18,
+    fontSize: 20,
     color: 'black'
   },
   titleStyle: {

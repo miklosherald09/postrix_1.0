@@ -99,9 +99,10 @@ export default function reportsReducer(state = initialState, action) {
             if(!itemAdded)
               items.push(punched)
             
-            // computing total charges
-            totalSales += punched.accruePrice
-            totalProfit += punched.accruePrice - (punched.count * punched.buyPrice)
+            // computing total sales
+            itemSales = punched.sellPrice * punched.count
+            totalSales += itemSales
+            totalProfit += itemSales - (punched.count * punched.buyPrice)
           }
         })
       })

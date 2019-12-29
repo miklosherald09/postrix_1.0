@@ -2,7 +2,7 @@ import { printReceipt as printReceiptAction } from './receiptActions'
 
 export const ADD_TRANSACTION = 'ADD_TRANSACTION'
 export const ADD_TRANSACTION_SUCCESS = 'ADD_TRANSACTION_SUCCESS'
-export const GET_TRANSACTIONS_SUCCESS = 'GET_TRANSACTIONS_SUCCESS' 
+export const GET_TRANSACTIONS_SUCCESS = 'GET_TRANSACTIONS_SUCCESS'
 export const GET_TRANSACTIONS_BEGIN = 'GET_TRANSACTIONS_BEGIN'
 export const GET_TRANSACTIONS_ERROR = 'GET_TRANSACTIONS_ERROR'
 export const REFRESH_TRANSACTIONS = 'REFRESH_TRANSACTIONS'
@@ -24,10 +24,10 @@ export const addTransaction = ({payment, total, punched, printReceipt }) => {
           payment: payment,
           total: total,
           punched: punched,
-          receiptNo: generateReceiptNo(res.insertId),
           datetime: Date.now(),
         }
 
+        alert('ts to rhe resic: '+ JSON.stringify(transaction))
         if(printReceipt == true){
           console.log('trying to print recipt')
           dispatch(printReceiptAction(transaction))

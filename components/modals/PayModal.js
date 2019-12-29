@@ -126,15 +126,15 @@ function mapDispatchToProps(dispatch) {
       dispatch(computeChange(values))
       dispatch(resetPunched())
       
-      if(values.printReceipt == true){
-        console.log('trying to print recipt')
-        dispatch(printReceiptAction({
-          payment: values.payment, 
-          total: values.total, 
-          punched: values.punched,
-          datetime: Date.now()
-        }))
-      }
+      // if(values.printReceipt == true){
+      //   console.log('trying to print recipt')
+      //   dispatch(printReceiptAction({
+      //     payment: values.payment, 
+      //     total: values.total, 
+      //     punched: values.punched,
+      //     datetime: Date.now()
+      //   }))
+      // }
       
       dispatch(openCashDrawer())
     } 

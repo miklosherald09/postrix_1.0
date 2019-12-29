@@ -29,9 +29,10 @@ const TransactionList = (props) => {
             <View style={{justifyContent: 'center', alignItems: 'center', flex: 1, marginTop: 5}}>
               <Text numberOfLines={5} style={{textAlign: 'center', color: '#333', fontSize: 20}}>
                 {
+                  item.punched != null?
                   item.punched.map((v, i) => {
                     return v.name.slice(0, 18)
-                  })
+                  }):null
                 } 
               </Text>
               <Text style={{textAlign: 'center', color: '#333', fontSize: 20}}>{item.sellPrice}</Text>

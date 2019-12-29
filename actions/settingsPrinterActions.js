@@ -90,8 +90,8 @@ export function scanUSBDevices(notify) {
         USBPrinter.getDeviceList()
           .then(devices => {
 
-            alert(JSON.stringify(devices))
-            alert(JSON.stringify(SUPPORTED_PRINTERS))
+            alert('devices: '+JSON.stringify(devices))
+            alert('supproted printd: ' + JSON.stringify(SUPPORTED_PRINTERS))
             // check if printer is supported
             supportedPrinters = []
             SUPPORTED_PRINTERS.forEach(v => {
@@ -105,7 +105,7 @@ export function scanUSBDevices(notify) {
                 supportedPrinters.push(v)
             })
 
-            // alert(JSON.stringify(supportedPrinters))
+            alert('final supported: ' + JSON.stringify(supportedPrinters))
 
             dispatch({type: SCAN_USB_DEVICES_SUCCESS, usbDevices: supportedPrinters})
           },

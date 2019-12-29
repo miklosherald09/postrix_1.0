@@ -2,7 +2,7 @@ import { BluetoothEscposPrinter } from 'react-native-bluetooth-escpos-printer'
 import { ToastAndroid } from 'react-native'
  
 import { accounting } from '../accounting.min.js'
-import { formatDate, textDelimiter } from '../functions'
+import { formatDate, textDelimiter, sleep } from '../functions'
 import { currency } from '../constants/constants'
 import { DELETE_TRANSACTION_SUCCESS } from './transactionActions'
 import moment, { HTML5_FMT } from 'moment'
@@ -24,14 +24,13 @@ export function printReceipt({id, payment, total, punched, datetime}){
 
     const { settingsPrinter, settings } = getState()
 
-
     if(settingsPrinter.connectionType == CONNECTION_TYPE_BT){
-   printReceiptBT(id, settings,)}
-    
-   
+      printReceiptBT(id, settings, punched, datetime, total)
+      dispatch({ type: PRINT_RECEIPT_SUCCESS })
+    }
 
     if(settingsPrinter.connectionType == CONNECTION_TYPE_USB){
-      printReceiptUSB(settings, punched, datetime, total)
+      printReceiptUSB(id, settings, punched, datetime, total)
       dispatch({ type: PRINT_RECEIPT_SUCCESS })
     }
     
@@ -65,7 +64,7 @@ function printReceiptBT(id, settings, punched, datetime, total){
     BluetoothEscposPrinter.printText(settings.RECEIPT_HEADER,{}):null
     BluetoothEscposPrinter.printText("\n\r",{});
     BluetoothEscposPrinter.printText("Date："+moment(datetime).format('LLL')+"\n\r",{});
-    BluetoothEscposPrinter.printText("Receipt No.："+ String(id).padStart(6, '0') +"\n", {})
+    BluetoothEscposPrinter.printText("Receipt No. "+ String(id).padStart(6, '0') +"\n", {})
     BluetoothEscposPrinter.printText("\n\r",{});
     BluetoothEscposPrinter.printText("--------------------------------\n\r",{});
     
@@ -98,25 +97,34 @@ function printReceiptBT(id, settings, punched, datetime, total){
   }
 }
 
-function printReceiptUSB(settings, punched, datetime, total) {
+async function printReceiptUSB(id, settings, punched, datetime, total) {
 
   USBPrinter.printText("<C><B>"+settings.SHOP_NAME+"</B></C>\n")
+  await sleep(1000)
   USBPrinter.printText("\n")
+  await sleep(1000)
   USBPrinter.printText("\n")
+  await sleep(1000)
   USBPrinter.printText("<C>"+settings.RECEIPT_HEADER+"<C>\n")
+  await sleep(1000)
   USBPrinter.printText("\n")
-  USBPrinter.printText("Date："+moment(datetime).format('LLL')+"\n")
+  await sleep(1000)
+  USBPrinter.printText(moment(datetime).format('LLL')+"\n")
+  await sleep(1000)
   USBPrinter.printText("\n")
-  USBPrinter.printText("Receipt No.："+"5845"+"\n")
-  USBPrinter.printText("--------------------------------\n")
+  await sleep(1000)
+  USBPrinter.printText("Receipt No. " + String(id).padStart(6, '0') + "\n")
   
+  await sleep(1000)
+  USBPrinter.printText("--------------------------------\n")
+  await sleep(1000)
   h1 = textDelimiter('Item', 12, 'LEFT')
   h2 = textDelimiter('Qty', 4, 'LEFT')
   h3 = textDelimiter('Price', 8, 'RIGHT')
   h4 = textDelimiter('Total', 8, 'RIGHT')
 
   USBPrinter.printText(h1 + h2 + h3 + h4 +"\n")
-
+  await sleep(1000)
   // iterate punched items
   punched.map((v, i) => {
     name = textDelimiter(String(v.name.slice(0, 10)), 12, 'LEFT')
@@ -128,7 +136,7 @@ function printReceiptUSB(settings, punched, datetime, total) {
   })
   
   USBPrinter.printText("\n")
-
+  await sleep(1000)
   h5 = textDelimiter('Total', 16, 'LEFT')
   h6 = textDelimiter(String(accounting.formatMoney(total, 'P')), 16, 'RIGHT')
 
@@ -143,8 +151,6 @@ function printReceiptUSB(settings, punched, datetime, total) {
 
   return true
 }
-
-
 
 export function receiptModalVisible() {
   return {
@@ -207,4 +213,4 @@ export function deleteReceipt(pin) {
       reject(err.message);
       dispatch({type: DELETE_RECEIPT_ERROR})
     });
-  }}
+}}

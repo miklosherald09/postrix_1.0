@@ -14,7 +14,7 @@ export const SUPPORTED_PRINTERS = [
   },
   {
     name: 'Cordova-58',
-    verdorId: 1110,
+    vendorId: 1110,
     productId: 2056,
     printerSize: 58
   }

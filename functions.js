@@ -289,3 +289,7 @@ export function textDelimiter(text, maxLength, align){
 export function generateReceiptNo(no){
   return String(no % 999999).padStart(6, '0')
 }
+
+export function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}

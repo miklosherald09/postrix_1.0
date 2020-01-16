@@ -5,7 +5,6 @@ export const SIGN_IN_BEGIN = 'SIGN_IN_BEGIN'
 export const SIGN_IN_SUCCESS = 'SIGN_IN_SUCCESS'
 export const SIGN_IN_FAILED = 'SIGN_IN_FAILED'
 export const SIGN_OUT = 'SIGN_OUT'
-export const GET_USERS_SUCCESS = 'GET_USERS_SUCCESS'
 export const PIN_CHANGE_VISIBLE = 'PIN_CHANGE_VISIBLE'
 export const PIN_CHANGE_SAVE_FIELD = 'PIN_CHANGE_SAVE_FIELD'
 export const PIN_CHANGE_SUCCESS = 'PIN_CHANGE_SUCCESS'
@@ -50,31 +49,6 @@ export function signIn(text) {
 export function signOut() {
   return (dispatch, getState) => {
     dispatch({ type: SIGN_OUT })
-  }
-}
-
-export function getUsers() {
-
-  return ( dispatch, getState ) => {
-    
-    const { database, pin } = getState()
-    
-    database.db.transaction( function(txn){
-      txn.executeSql(`SELECT * FROM users WHERE type != ? ORDER BY type ASC`,
-      ['ROOT'],
-      function(_, res){
-        users = []
-        for (i = 0; i < res.rows.length; ++i) {
-          user = res.rows.item(i)
-          users.push(user)
-        }
-        dispatch({type: GET_USERS_SUCCESS, users: users})
-      });
-    },
-    function(err){
-      console.log(err)
-      alert(err)
-    });
   }
 }
 

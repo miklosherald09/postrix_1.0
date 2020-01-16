@@ -124,6 +124,7 @@ const ReportScreen = (props) => {
             <View style={styles.navLinks}>
 							{navLink('Reports', 'Reports')}
 							{/* {navLink('ReportSetup', 'Setup')} */}
+							<Button title="download" onPress={() => alert('shit')}/>
             </View>
           </ScrollView>
 				</View>

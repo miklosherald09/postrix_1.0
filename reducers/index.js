@@ -20,6 +20,7 @@ import pin from './pin'
 import shelves from './shelves'
 import charge from './charge'
 import itemColors from './itemColors'
+import users from './users'
 
 const rootReducer = combineReducers({
     home: home,
@@ -41,7 +42,8 @@ const rootReducer = combineReducers({
     pin: pin,
     shelves: shelves,
     charge: charge,
-    itemColors: itemColors
+    itemColors: itemColors,
+    users: users
 })
 
 export default rootReducer;

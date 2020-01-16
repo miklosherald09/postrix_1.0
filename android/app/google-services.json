@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "353265660190",
+    "firebase_url": "https://postrix-4b28c.firebaseio.com",
+    "project_id": "postrix-4b28c",
+    "storage_bucket": "postrix-4b28c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:353265660190:android:305ff6e1cd3397bedd190f",
+        "android_client_info": {
+          "package_name": "com.postrixinc.postrix"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "353265660190-rh4ifjtdbcumopcvvkapgfmjrlvu0rdu.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.postrixinc.postrix",
+            "certificate_hash": "7b000a3fb5ba7c6261c323ab5f9996f402323593"
+          }
+        },
+        {
+          "client_id": "353265660190-gaaeavueigpmaoavql1ocdq6lrq5hhkt.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDZ-b5HSB3fFrm9Sx8Efov8QIytfmDY6yQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "353265660190-gaaeavueigpmaoavql1ocdq6lrq5hhkt.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

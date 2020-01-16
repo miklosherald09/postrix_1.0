@@ -3,7 +3,6 @@ import {
   SIGN_IN_FAILED,
   SIGN_IN_SUCCESS,
   SIGN_OUT,
-  GET_USERS_SUCCESS,
   PIN_CHANGE_VISIBLE,
   PIN_CHANGE_SUCCESS,
   PIN_CHANGE_SAVE_FIELD,
@@ -60,13 +59,6 @@ export default function pinReducer(state = initialState, action) {
       return {
         ...state,
         signedIn: false,
-      }
-    }
-
-    case GET_USERS_SUCCESS: {
-      return {
-        ...state,
-        users: action.users
       }
     }
 

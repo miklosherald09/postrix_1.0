@@ -4,9 +4,8 @@ import { connect } from 'react-redux'
 import { MenuButton } from '../components/MenuButton'
 import { Input } from 'react-native-elements'
 import SettingsNav from '../navigation/SettingsNav'
-import { updateShopName, updateReceiptHeader, updateReceiptFooter } from '../actions/settingsActions';
+import { updateShopName, updateReceiptHeader, updateReceiptFooter } from '../actions/settingsActions'
 import { deleteAllItems } from '../actions/itemActions'
-import myStyles from '../constants/styles'
 
 const settingsScreen = props => {
 
@@ -67,7 +66,7 @@ const settingsScreen = props => {
         <View style={styles.rightContent}>
           <View style={styles.container}>
             <Input
-              label={"RECEIPT HEADER"}
+              label={"Shop name"}
               type={"default"}
               keyboardType={"default"}
               labelStyle={styles.label}
@@ -77,20 +76,24 @@ const settingsScreen = props => {
               defaultValue={SHOP_NAME}
             />
             <Input
-              label={"RECEIPT SUB HEADER"}
+              label={"Header"}
               type={"default"}
               keyboardType={"default"}
               labelStyle={styles.label}
-              containerStyle={{marginTop: 15, marginBottom: 50}}
+              numberOfLines={5}
+              multiline
+              containerStyle={{ marginBottom: 50, paddingTop: 0}}
               inputStyle={{}}
               onChangeText={(text) => {updateReceiptHeader(text)}}
               defaultValue={RECEIPT_HEADER}
             />
             <Input
-              label={"RECEIPT FOOTER"}
+              label={"Footer"}
               type={"default"}
               keyboardType={"default"}
               labelStyle={styles.label}
+              numberOfLines={5}
+              multiline
               containerStyle={{marginTop: 15}}
               inputStyle={{}}
               onChangeText={(text) => {updateReceiptFooter(text)}}
@@ -182,4 +185,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(settingsScreen);
+export default connect(mapStateToProps, mapDispatchToProps)(settingsScreen)

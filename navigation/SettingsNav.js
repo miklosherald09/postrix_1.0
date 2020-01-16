@@ -23,7 +23,8 @@ const SettingsNav = (props) => {
         {linkPermission('Settings_Basic', userType)?navLink('Settings', 'Receipt'):null}
         {linkPermission('Settings_Items', userType)?navLink('SettingsItems', 'Items'):null}
         {linkPermission('SettingsPrinter', userType)?navLink('SettingsPrinter', 'Printer'):null}
-        {linkPermission('SettingsPin', userType)?navLink('SettingsPin', 'Pin'):null}
+        {linkPermission('SettingsUsers', userType)?navLink('SettingsUsers', 'Users'):null}
+        {linkPermission('SettingsBackup', userType)?navLink('SettingsBackup', 'Backup & Recovery'):null}
       </View>
     </ScrollView>
   )

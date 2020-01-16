@@ -7,6 +7,7 @@ export const GET_TRANSACTIONS_BEGIN = 'GET_TRANSACTIONS_BEGIN'
 export const GET_TRANSACTIONS_ERROR = 'GET_TRANSACTIONS_ERROR'
 export const REFRESH_TRANSACTIONS = 'REFRESH_TRANSACTIONS'
 export const DELETE_TRANSACTION_SUCCESS = 'DELETE_TRANSACTION_SUCCESS'
+export const UPDATE_TRANSACTION_BY_ID = 'UPDATE_STATUS_BY_ID'
 
 export const addTransaction = ({payment, total, punched, printReceipt }) => {
 
@@ -14,9 +15,11 @@ export const addTransaction = ({payment, total, punched, printReceipt }) => {
 
     const { database } = getState()
 
+    printed = printReceipt?1:0
+
     database.db.transaction(function(txn){
-      txn.executeSql('INSERT INTO transactions(payment, punched, total, datetime) VALUES(?, ?, ?, ?)',
-      [payment, JSON.stringify(punched), total, Date.now()],
+      txn.executeSql('INSERT INTO transactions(payment, punched, total, printed, datetime) VALUES(?, ?, ?, ?, ?)',
+      [payment, JSON.stringify(punched), total, printed, Date.now()],
       function(tx, res){
 
         transaction = {
@@ -24,10 +27,10 @@ export const addTransaction = ({payment, total, punched, printReceipt }) => {
           payment: payment,
           total: total,
           punched: punched,
+          printed: 0,
           datetime: Date.now(),
         }
 
-        alert('ts to rhe resic: '+ JSON.stringify(transaction))
         if(printReceipt == true){
           console.log('trying to print recipt')
           dispatch(printReceiptAction(transaction))
@@ -35,9 +38,6 @@ export const addTransaction = ({payment, total, punched, printReceipt }) => {
 
         dispatch({type: ADD_TRANSACTION_SUCCESS, transaction: transaction})
         console.log('success adding transaction');
-
-        //update transaction receipt no
-        tx.executeSql('UPDATE transactions SET receiptNo')
 
       });
     },
@@ -50,7 +50,7 @@ export const addTransaction = ({payment, total, punched, printReceipt }) => {
 
 export function getTransactions(){
   
-  console.log('trying to get transactions..');
+  console.log('trying to get transactions..')
 
   return (dispatch, getState) => {
 
@@ -91,5 +91,24 @@ export function getTransactions(){
 export function refreshTransactions() {
   return {
     type: REFRESH_TRANSACTIONS
+  }
+}
+
+export function updateTransactionByID(t){
+
+  return (dispatch, getState) => {
+
+    const { database  } = getState()
+    
+    database.db.transaction(function(txn) {
+      txn.executeSql('UPDATE transactions SET receipt_no = ?, punched = ?, total = ?, payment = ?, printed = ? WHERE id = ?',
+        [t.receipt_no, JSON.stringify(t.punched), t.total, t.payment, t.printed, t.id],
+        function(_, res){
+          console.log('update transactions successfully fetch..')
+        })
+    },
+    function(err){
+      console.log(err);
+    });
   }
 }

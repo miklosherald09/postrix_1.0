@@ -9,7 +9,7 @@ import { getItems } from './actions/itemActions'
 import SignInGuard from './components/signInGuard'
 import { initShelves } from './actions/shelvesActions'
 import { initReportDate } from './actions/reportsActions'
-import { getUsers } from './actions/pinActions'
+import { getUsers } from './actions/usersActions'
 import codePush from "react-native-code-push"
 
 /**

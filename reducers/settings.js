@@ -57,12 +57,14 @@ export default function settingsReducer(state = initialState, action) {
     case UPDATE_RECEIPT_HEADER_SUCCESS: {
       return {
         ...state,
+        RECEIPT_HEADER: action.text,
       }
     }
 
     case UPDATE_RECEIPT_FOOTER_SUCCESS: {
       return {
         ...state,
+        RECEIPT_FOOTER: action.text
       }
     }
 

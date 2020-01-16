@@ -1,6 +1,6 @@
 import React from 'react';
-import { StyleSheet, TouchableOpacity } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import { StyleSheet, TouchableOpacity } from 'react-native'
+import Icon from 'react-native-vector-icons/MaterialIcons'
 
 export const CloseButton = ({onPress, color}) =>  {
     return (
@@ -30,6 +30,19 @@ export const CheckButton = ({onPress, color}) =>  {
   );
 }
 
+export const AddButton = ({onPress, color}) =>  {
+  return (
+    <TouchableOpacity
+      style={{margin: 0, paddingHorizontal: 14, alignSelf: 'flex-end'}}
+      onPress={ onPress }>
+      <Icon 
+        name="add-circle" 
+        size={70}
+        color="#2089dc"
+      />
+    </TouchableOpacity>
+  );
+}
 
 
 const styles = StyleSheet.create({

@@ -2,22 +2,20 @@ import React from 'react'
 import { StyleSheet, View, Text, TouchableOpacity, FlatList, Image } from 'react-native'
 import { connect } from 'react-redux'
 import { MenuButton } from '../components/MenuButton'
-import { getUsers } from '../actions/pinActions'
-import Icon from 'react-native-vector-icons/FontAwesome5'
 import SettingsNav from '../navigation/SettingsNav'
-import { pinChangeVisible, selectUserPin } from '../actions/pinActions'
+import { pinChangeVisible, selectUserPin, getUsers } from '../actions/pinActions'
+import { userModalVisible, selectUser } from '../actions/usersActions'
 import { Card, Avatar, ListItem } from 'react-native-elements'
-import PinChangeModal from '../components/modals/PinChangeModal'
+import { AddButton } from '../components/Common'
+import UserModal from  '../components/modals/UserModal'
 
-
-
-const SettingsPinScreen = props => {
+const SettingsUsersScreen = props => {
 
 	const openMenu = () => {
 		props.navigation.openDrawer()
 	}
 
-  const { users } = props.pin
+  const { users } = props.users
 
   return (
     <View style={styles.wrapper}>
@@ -33,19 +31,16 @@ const SettingsPinScreen = props => {
           <SettingsNav />
         </View>
         <View style={styles.rightContent}>
-          
           <Card 
             title="USERS"
-            titleStyle={{fontSize: 20}}
-          >
+            titleStyle={{fontSize: 20}} >
             {
               users.map((u, i) => {
                 return (
+                  <TouchableOpacity key={'users-' + i} onPress={() => props.selectUserPin(u)}>
                   <ListItem
-                    key={i}
-                    title={u.type}
+                    title={u.name + ' - ' + u.type}
                     titleStyle={{fontSize: 20}}
-                    onPress={() => props.selectUserPin(u)}
                     leftAvatar = {
                       <Avatar
                         rounded
@@ -54,13 +49,17 @@ const SettingsPinScreen = props => {
                       />
                     }
                   />
+                  </TouchableOpacity>
                 );
               })
             }
           </Card>
+          <View style={{position: 'absolute', bottom: 0, right: 0, margin: 20}}>
+            <AddButton onPress={() => props.addUser(true)}/>
+          </View>
         </View>
       </View>
-      <PinChangeModal />
+      <UserModal />
     </View>
   );
 }
@@ -68,6 +67,7 @@ const SettingsPinScreen = props => {
 function mapStateToProps(state) {
 	return {
     pin: state.pin,
+    users: state.users
 	}
 }
 
@@ -75,9 +75,11 @@ function mapDispatchToProps(dispatch) {
   return {
     getUsers: () => dispatch(getUsers()),
     selectUserPin: (val) => {
-      dispatch(selectUserPin(val))
-      dispatch(pinChangeVisible(true))
-    } 
+      dispatch(selectUser(val))
+      dispatch(userModalVisible(true))
+    },
+    addUser: () => dispatch(pinChangeVisible(true)),
+    // userModalVisible: () => dispatch(userModalVisible(true))
   }
 }
 
@@ -86,13 +88,9 @@ const styles = StyleSheet.create({
     backgroundColor: 'red',
   },
   image:  {
-
   },
   name: {
-
   },
-
-
   wrapper: {
     flex: 1,
     backgroundColor: 'white',
@@ -147,4 +145,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(SettingsPinScreen);
+export default connect(mapStateToProps, mapDispatchToProps)(SettingsUsersScreen);

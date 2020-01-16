@@ -166,7 +166,7 @@ export function updateReceiptHeader(text){
       [text],
       function(tx, res){
         // UDPATE STORE
-        dispatch({type: UPDATE_RECEIPT_HEADER_SUCCESS})
+        dispatch({type: UPDATE_RECEIPT_HEADER_SUCCESS, text: text})
         console.log('update receipt header done!')
       });
     },
@@ -185,12 +185,12 @@ export function updateReceiptFooter(text){
 
     database.db.transaction(function(txn){
       // UPDATE ITEM
-      console.log('saving shop name..');
+      console.log('saving shop name..')
       txn.executeSql(`UPDATE settings set value = ? WHERE name = "RECEIPT_FOOTER"`,
       [text],
       function(tx, res){
         // UDPATE STORE
-        dispatch({type: UPDATE_RECEIPT_FOOTER_SUCCESS})
+        dispatch({type: UPDATE_RECEIPT_FOOTER_SUCCESS, text: text})
         console.log('update receipt footer done!')
       });
     },

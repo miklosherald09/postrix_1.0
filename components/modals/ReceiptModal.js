@@ -8,6 +8,7 @@ import Icon from 'react-native-vector-icons/FontAwesome5'
 import NumberFormat from 'react-number-format'
 import { currency } from '../../constants/constants'
 import { receiptModalInvisible, printReceipt, deleteReceiptModalVisible } from '../../actions/receiptActions'
+import { updateTransactionByID } from '../../actions/transactionActions'
 
 const screenWidth = Math.round(Dimensions.get('window').width);
 const screenHeight = Math.round(Dimensions.get('window').height);
@@ -59,7 +60,7 @@ const ReceiptModal = (props) => {
                   <CloseButton onPress={ () => props.receiptModalInvisible() }/>
                 </View>
                 <View style={myStyles.headerMiddle}>
-                  <Text style={myStyles.headerModal}>RECEIPT - {selected.id}</Text>
+      <Text style={myStyles.headerModal}>{selected.printed} - Receipt No. {String(selected.id).padStart(6, '0')}</Text>
                 </View>
                 <View style={myStyles.headerRight}>
                   {/* <SaveButton userType={userType} onPress={() => props.saveCharge()}/> */}
@@ -161,26 +162,14 @@ function mapDispatchToProps(dispatch) {
 	return {
     receiptModalInvisible: () => dispatch(receiptModalInvisible()),
     deleteReceiptModalVisible: (visible) => { 
-      // dispatch(receiptModalInvisible())
       dispatch(deleteReceiptModalVisible(visible))
     },
-    printReceipt: (transaction) => dispatch(printReceipt(transaction))
-	}
-}
-
-const closeModalButton = (props) => {
-  return (
-    <TouchableHighlight
-      style={{alignSelf: 'flex-end'}}
-      onPress={()=> {	props.receiptModalInvisible() }}>
-      <Icon
-        containerStyle={{padding: 10}}
-        name="close"
-        size={30}
-        color="#333"
-      />
-    </TouchableHighlight>
-  );
+    printReceipt: (transaction) => {
+      dispatch(printReceipt(transaction)),
+      transaction.printed = 1,
+      dispatch(updateTransactionByID(transaction))
+    }
+  }
 }
 
 const styles = StyleSheet.create({
@@ -289,7 +278,7 @@ const styles = StyleSheet.create({
     width: 250
   },
 
-});
+})
 
 export default connect(mapStateToProps, mapDispatchToProps)(ReceiptModal);
 

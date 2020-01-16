@@ -1,20 +1,29 @@
 import React from 'react'
 import { StyleSheet, Text, View, TouchableOpacity, Modal, Dimensions, Alert, TextInput, ToastAndroid } from 'react-native'
 import { connect } from 'react-redux'
-import { Button } from 'react-native-elements'
+import { Button, ButtonGroup } from 'react-native-elements'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import { CloseButton, CheckButton } from '../../components/Common'
 import myStyles from '../../constants/styles'
 import { pinChangeVisible, pinChangeSaveField, pinChange } from '../../actions/pinActions'
+import { userModalVisible, updateUserType, saveUserDetails } from '../../actions/usersActions'
+import { USER_TYPE_ADMIN, USER_TYPE_STAFF, USER_TYPE_MANAGER } from '../../constants/constants'
+import PinChangeModal from '../modals/PinChangeModal'
+import { capitalize } from '../../functions'
 
 const screenWidth = Math.round(Dimensions.get('window').width)
 const screenHeight = Math.round(Dimensions.get('window').height)
 
-const PinChangeModal = (props) => {
+const UserModal = (props) => {
  
   const { selected, pinChangeVisible } = props.pin
+  const { userModalVisible, selectedUser } = props.users
   
   const submitField = (field, value) => {
+    props.saveUserDetails(field, value)
+  }
+
+  const submitPin = (field, value) => {
     console.log('field: '+field)
     console.log('field: '+value)
   
@@ -33,50 +42,60 @@ const PinChangeModal = (props) => {
     }
   }
 
-	
 	return (
 		<View style={styles.wrapper}>
 			<Modal
 				animationType="none"
 				transparent={true}
-				visible={pinChangeVisible}
-				onRequestClose={() => {  props.pinChangeVisible(false) 	}}>
-				<TouchableOpacity activeOpacity={1} style={styles.touchable} onPress={ () => {props.pinChangeVisible(false)}}>
+				visible={userModalVisible}
+				onRequestClose={() => {  props.userModalVisible(false) 	}}>
+				<TouchableOpacity activeOpacity={1} style={styles.touchable} onPress={ () => {props.userModalVisible(false)}}>
 					<TouchableOpacity activeOpacity={1} style={styles.container} >
 						<View style={styles.wrap} >
 							<View style={myStyles.headerPan}>
 								<View style={myStyles.headerLeft}>
-									<CloseButton onPress={ () => props.pinChangeVisible(false) }/>
+									<CloseButton onPress={ () => props.userModalVisible(false) }/>
 								</View>
 								<View style={myStyles.headerMiddle}>
-									<Text style={myStyles.headerModal}>{selected.name} - {selected.type} - CHANGE PIN</Text>
+									<Text style={myStyles.headerModal}>{selectedUser.name} - {selectedUser.type} - CHANGE PIN</Text>
 								</View>
 								<View style={myStyles.headerRight}>
-									<CheckButton onPress={() => props.pinChange()}/>
+									<CheckButton onPress={() => props.userModalVisible(false)}/>
 								</View>
 							</View>
 							<View style={styles.content}>
-                <View style={{marginBottom: 20}}>
-                  <UselessField secureTextEntry={true} style={myStyles.input1} label={'Pin'} onSubmitEditing={(e) => submitField('pin1', e.nativeEvent.text)} keyboardType="numeric"/>
-								</View>
-                <View style={{marginBottom: 20}}>
-                  <UselessField secureTextEntry={true} style={myStyles.input1} label={'Confirm Pin'} onSubmitEditing={(e) => submitField('pin2', e.nativeEvent.text)} keyboardType="numeric" />
-								</View>
-                <View style={{width: 100}}>
-									{/* <DeleteButton onPress={() => props.deleteItem()}/> */}
+                <View style={{marginBottom: 20, flex: 1 }}>
+                  <UselessField style={myStyles.input1} defaultValue={selectedUser.name} label={'Name'} onSubmitEditing={(e) => submitField('name', e.nativeEvent.text)} keyboardType="default"/>
+                  <View style={{flexDirection: 'row'}}>
+                    <Button
+                      titleStyle={{fontSize: 20}}
+                      title="Change Pin"
+                      type="clear"
+                      onPress={() => props.pinChangeVisible(true)}
+                    />
+                  </View>
+                </View>
+                <View style={{marginBottom: 20, height: 50 }}>
+                  <View style={{flex: 1, flexDirection: 'row'}}>
+                    <UTypeButton onPress={() => props.updateUserType(USER_TYPE_ADMIN)} selectedUType={selectedUser.type} title={USER_TYPE_ADMIN} />
+                    <UTypeButton onPress={() => props.updateUserType(USER_TYPE_STAFF)} selectedUType={selectedUser.type} title={USER_TYPE_STAFF} />
+                    <UTypeButton onPress={() => props.updateUserType(USER_TYPE_MANAGER)} selectedUType={selectedUser.type} title={USER_TYPE_MANAGER} />
+                  </View>
                 </View>
 							</View>
 						</View>
 					</TouchableOpacity>
 				</TouchableOpacity>
 			</Modal>
+      <PinChangeModal />
 		</View>
 	);
 }
 
 function mapStateToProps(state) {
 	return {
-		pin: state.pin,
+    pin: state.pin,
+    users: state.users
 	}
 }
 
@@ -84,9 +103,24 @@ function mapDispatchToProps(dispatch) {
 	return {
     pinChangeVisible: (val) => dispatch(pinChangeVisible(val)),
     pinChange: () => dispatch(pinChange()),
-    pinChangeSaveField: (field, value) => dispatch(pinChangeSaveField(field, value))
+    pinChangeSaveField: (field, value) => dispatch(pinChangeSaveField(field, value)),
+    userModalVisible: (visible) => dispatch(userModalVisible(visible)),
+    updateUserType: (type) => dispatch(updateUserType(type)),
+    saveUserDetails: (field, name) => dispatch(saveUserDetails(field, name))
 	}
 }
+
+export const UTypeButton = (props) => {
+  return (
+    <Button
+      type={props.selectedUType == props.title?'solid':'outline'}
+      onPress={props.onPress}
+      title={capitalize(props.title)}
+      titleStyle={{fontSize: 20}}
+      containerStyle={{marginRight: 10, borderRadius: 20}}
+    />
+  )
+} 
 
 export class UselessField extends React.Component{
 
@@ -223,4 +257,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(PinChangeModal)
+export default connect(mapStateToProps, mapDispatchToProps)(UserModal)

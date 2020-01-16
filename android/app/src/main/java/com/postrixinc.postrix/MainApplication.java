@@ -1,4 +1,4 @@
-package com.postrix;
+package com.postrixinc.postrix;
 
 import android.app.Application;
 import android.util.Log;
@@ -12,6 +12,7 @@ import com.microsoft.codepush.react.CodePush;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.soloader.SoLoader;
+import co.apptailor.googlesignin.RNGoogleSigninPackage;
 
 import java.util.List;
 

@@ -158,6 +158,12 @@ export function linkPermission(link, userType){
       }
     }
 
+    case 'SettingsUsers':{
+      if(userType == USER_TYPE_STAFF){
+        return false
+      }
+    }
+
     default:
       return true
   }
@@ -292,4 +298,8 @@ export function generateReceiptNo(no){
 
 export function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+export function capitalize(text) {
+  return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase()
 }

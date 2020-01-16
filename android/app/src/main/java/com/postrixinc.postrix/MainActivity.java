@@ -1,4 +1,4 @@
-package com.postrix;
+package com.postrixinc.postrix;
 
 import com.facebook.react.ReactActivity;
 

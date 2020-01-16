@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, ScrollView, FlatList, Text, Dimensions, TouchableOpacity } from 'react-native'
+import { StyleSheet, View, FlatList, Text, Dimensions, TouchableOpacity } from 'react-native'
 import { connect } from 'react-redux'
 import { receiptModalVisible, selectReceipt } from '../actions/receiptActions'
 import { formatDate,  } from '../functions'
@@ -9,7 +9,7 @@ const numColumns = 4;
 
 const TransactionList = (props) => {
 
-  const { punched } = props.punched;
+  const { punched } = props.punched
   const { transactions, refreshing } = props.transactions
 
   keyExtractor = (trans, index) => index.toString();
@@ -24,10 +24,10 @@ const TransactionList = (props) => {
           <View style={{flex: 1, flexDirection: 'column'}}>
             <View style={{alignItems: 'center', height: 45}}>
               <Text style={{color: '#666', fontSize: 20, textAlign: 'left'}}>{formatDate(item.datetime)}</Text>
-              <Text style={{color: '#333', fontSize: 20}}>Trasaction ID: {item.id}</Text>
+              <Text style={{color: '#333', fontSize: 20}}>Receipt No: {String(item.id).padStart(6, '0')}</Text>
             </View>
             <View style={{justifyContent: 'center', alignItems: 'center', flex: 1, marginTop: 5}}>
-              <Text numberOfLines={5} style={{textAlign: 'center', color: '#333', fontSize: 20}}>
+              <Text numberOfLines={3} style={{textAlign: 'center', color: '#333', fontSize: 15}}>
                 {
                   item.punched != null?
                   item.punched.map((v, i) => {
@@ -85,7 +85,6 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(TransactionList);
-
 
 const styles = StyleSheet.create({
   wrapper: {

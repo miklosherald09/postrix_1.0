@@ -73,12 +73,6 @@ export default function punchedReducer(state = initialState, action) {
 
       // disregard if negative punch
       newCount = state.selectedItem.count + action.value
-
-      // if(newCount < 1 ){
-      //   return {
-      //     ...state
-      //   }
-      // }
       
       // update punched items count
       newPunch = []

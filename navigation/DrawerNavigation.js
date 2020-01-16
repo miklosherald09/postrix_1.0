@@ -9,7 +9,8 @@ import TransactionScreen from '../screens/TransactionScreen'
 import SettingsScreen from '../screens/SettingsScreen'
 import SettingsPrinterScreen from '../screens/SettingsPrinterScreen'
 import SettingsItemsScreen from '../screens/SettingsItemsScreen'
-import SettingsPinScreen from '../screens/SettingsPinScreen'
+import SettingsUsersScreen from '../screens/SettingsUsersScreen'
+import SettingsBackupScreen from '../screens/SettingsBackupScreen'
 import DebuggerScreen from '../screens/DebuggerScreen'
 import PinScreen from '../components/MenuDrawer'
 import MenuDrawer from '../components/MenuDrawer'
@@ -19,7 +20,7 @@ const DrawerConfig = {
     drawerPosition: 'left',
     drawerBackgroundColor: 'transparent',
     overlayColor: 'rgba(0, 0, 0, .8)',
-    initialRouteName: 'Home',
+    // initialRouteName: 'Home',
     // initialRouteName: 'Items',
     // initialRouteName: 'Settings',
     // initialRouteName: 'Transactions',
@@ -53,8 +54,14 @@ const SettingsStack = createStackNavigator({
       header: null
     },
   },
-  SettingsPin: {
-    screen: SettingsPinScreen,
+  SettingsUsers: {
+    screen: SettingsUsersScreen,
+    navigationOptions: {
+      header: null
+    },
+  },
+  SettingsBackup: {
+    screen: SettingsBackupScreen,
     navigationOptions: {
       header: null
     },

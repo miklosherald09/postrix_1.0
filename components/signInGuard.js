@@ -11,11 +11,11 @@ const SignInGuard = (props) => {
 
   const { signedIn } = props.pin
 
-  // return(
-  //   <DrawerNavigator ref={navigatorRef => {
-  //     NavigationService.setTopLevelNavigator(navigatorRef);
-  //   }} />
-  // )
+  return(
+    <DrawerNavigator ref={navigatorRef => {
+      NavigationService.setTopLevelNavigator(navigatorRef);
+    }} />
+  )
 
   if(signedIn){
     return(

@@ -1,4 +1,5 @@
 <resources>
-	<string moduleConfig="true" name="reactNativeCodePush_androidDeploymentKey">_S9Tvd7vyW3FbHj-wAx6TkLH831dS_c-5HO3E</string>
+	<!-- <string moduleConfig="true" name="reactNativeCodePush_androidDeploymentKey">_S9Tvd7vyW3FbHj-wAx6TkLH831dS_c-5HO3E</string> -->
+    <string moduleConfig="true" name="CodePushDeploymentKey">_S9Tvd7vyW3FbHj-wAx6TkLH831dS_c-5HO3E</string>
     <string name="app_name">postrix</string>
 </resources>

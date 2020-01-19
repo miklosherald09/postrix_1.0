@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect  } from 'react'
 import { StyleSheet, View, Text } from 'react-native'
 import { Button } from 'react-native-elements'
 import { connect } from 'react-redux'
@@ -6,23 +6,34 @@ import { MenuButton } from '../components/MenuButton'
 import SettingsNav from '../navigation/SettingsNav'
 import UserModal from  '../components/modals/UserModal'
 import { GoogleSignin, GoogleSigninButton, statusCodes } from '@react-native-community/google-signin'
-
-import Firebase from 'firebase';
-
-let config = {
-  apiKey: 'AIzaSyDIU0Ym92RmfViRRHr5wwT6YE1BXA5_R7M',
-  authDomain: 'postrixc137.firebaseapp.com',
-};
-let app = Firebase.initializeApp(config);
-
-
-console.log('shittifdkjf')
-GoogleSignin.configure({
-  webClientId: '353265660190-gaaeavueigpmaoavql1ocdq6lrq5hhkt.apps.googleusercontent.com', // client ID of type WEB for your server (needed to verify user ID and offline access)
-});
+// import firebase from 'firebase'
+// import auth from '@react-native-firebase/auth'
+import { firebase } from '@react-native-firebase/auth';
 
 const SettingsBackupScreen = props => {
 
+  useEffect(() => {
+
+    firebaseConfig = {
+      apiKey: 'AIzaSyCRDc0Yth2Q84TjWMX4mWlGShWvcWAJ0w0',
+      authDomain: 'postrixc137.firebaseapp.com',
+      databaseURL: 'https://postrix-4b28c.firebaseio.com/',
+      projectId: 'postrix-4b28c'
+    }
+    
+    // app = firebase.initializeApp(firebaseConfig)
+
+    
+    GoogleSignin.configure({
+      webClientId: '353265660190-gaaeavueigpmaoavql1ocdq6lrq5hhkt.apps.googleusercontent.com', // client ID of type WEB for your server (needed to verify user ID and offline access)
+    });
+    
+  })
+
+  const Todos = () => {
+    
+    return null;
+  }
 
 	const openMenu = () => {
 		props.navigation.openDrawer()
@@ -30,20 +41,30 @@ const SettingsBackupScreen = props => {
 
   const { users } = props.users
 
+  // const insertUser = () => {
+  //   firebase.database() .ref('user/0001').set({
+  //     name: 'mik',
+  //     age: 21
+  //   }).then(() => {
+  //     alert('inserted')
+  //   }).catch((error) => {
+  //     alert(JSON.stringify(error))
+  //   })
+  // }
+
   // Somewhere in your code
   const _signIn = async () => {
     alert('pos0')
     try {
-      alert('pos1')
       await GoogleSignin.hasPlayServices()
-      alert('pos2')
-      const userInfo = await GoogleSignin.signIn()
-      alert('pos3')
-      alert(userInfo)
+      userInfo = await GoogleSignin.signIn()
+      credential = firebase.auth.GoogleAuthProvider.credential(userInfo.idToken, userInfo.accessToken)
+      currentUser = await firebase.auth().signInWithCredential(credential);
+      
+      alert(JSON.stringify(currentUser));
+      alert(JSON.stringify(userInfo))
 
     } catch (error) {
-      alert("error signin google: ")
-      alert(error)
       if (error.code === statusCodes.SIGN_IN_CANCELLED) {
         alert(error)
         // user cancelled the login flow
@@ -75,20 +96,15 @@ const SettingsBackupScreen = props => {
         </View>
         <View style={styles.rightContent}>
           <View style={{flex: 1, backgroundColor: 'white', margin: 15, padding: 15}}>
+            <Text style={{fontSize: 22, marginBottom: 10}}>Bind postrix to Google account</Text>
             <View style={{flex: 1, flexDirection: 'row'}}>
-              <Button
-                title="shit"
-                onPress={() => signIn()}
-                titleStyle={{fontSize: 20}}
-              />
-
               <GoogleSigninButton
-                style={{ width: 192, height: 48 }}
+                style={{ width: 300, height: 60 }}
                 size={GoogleSigninButton.Size.Wide}
                 color={GoogleSigninButton.Color.Dark}
+                fontSize={30}
                 onPress={_signIn}
                 disabled={false} />
-              
             </View>
           </View>
         </View>

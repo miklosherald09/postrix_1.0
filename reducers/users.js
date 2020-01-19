@@ -10,7 +10,8 @@ const initialState = {
   users: [],
   selectedUser: {},
   userModalVisible: false,
-  input: {}
+  input: {},
+  loggedIn: ''
 }
 
 export default function usersReducer(state = initialState, action) {

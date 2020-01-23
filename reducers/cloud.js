@@ -2,7 +2,9 @@ import {
   BACKUP_SYSTEM_BEGIN,
   BACKUP_SYSTEM_SUCCESS,
   BACKUP_SYSTEM_ERROR,
-  SET_BACKUP_DATA
+  SET_BACKUP_DATA,
+  ADD_BACKUP_SUCCESS,
+  GET_BACKUP_LIST_SUCCESS
 } from '../actions/cloudActions'
 
 const initialState = {
@@ -14,8 +16,9 @@ const initialState = {
     shelve_items: [],
     shelves: [],
     transactions: [],
-    users: []
-  }
+    users: [],
+  },
+  backups: []
 }
 
 export default function usersReducer(state = initialState, action) {
@@ -35,6 +38,13 @@ export default function usersReducer(state = initialState, action) {
           ...state.backupData,
           [action.table]: action.data
         }
+      }
+    }
+
+    case GET_BACKUP_LIST_SUCCESS: {
+      return {
+        ...state,
+        backups: action.backups
       }
     }
 

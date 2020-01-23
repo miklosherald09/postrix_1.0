@@ -24,7 +24,7 @@ import NumberFormat from 'react-number-format'
 import KeyEvent from 'react-native-keyevent'
 import { barcodeSeachItem } from '../actions/barcodeSearchActions'
 import { getCharges } from '../actions/chargeActions'
-import { showFSTrans, enableFirestoreSync, disableFirestoreSync, uploadData, deleteUsers } from '../actions/cloudActions'
+import { showFSTrans, enableFirestoreSync, disableFirestoreSync, uploadData, deleteUsers, getBackupData } from '../actions/cloudActions'
 
 
 const HomeScreen = props => {
@@ -85,6 +85,7 @@ const HomeScreen = props => {
             <Button title={"no"} onPress={() => props.unsync()}></Button>
             <Button title={"uploadData"} onPress={() => props.uploadData()}></Button>
             <Button title={"deleteUsers"} onPress={() => props.deleteUsers()}></Button>
+            <Button title={"getBackupData"} onPress={() => props.getBackupData()}></Button>
           </View>
           {
             activeContent == CONTENT_SHELVES?<ShelveItemsList />:<ChargeList />
@@ -157,6 +158,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
+    getBackupData: () => dispatch(getBackupData()),
     deleteUsers: () => dispatch(deleteUsers()),
     uploadData: () => dispatch(uploadData()),
     sync: () => dispatch(enableFirestoreSync()),

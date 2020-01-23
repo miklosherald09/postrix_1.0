@@ -1,5 +1,6 @@
 import React, { useEffect  } from 'react'
-import { StyleSheet, View, Text } from 'react-native'
+import { StyleSheet, View, Text, FlatList } from 'react-native'
+import moment, { HTML5_FMT } from 'moment'
 import { Button, ListItem } from 'react-native-elements'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import { connect } from 'react-redux'
@@ -7,45 +8,41 @@ import { MenuButton } from '../components/MenuButton'
 import SettingsNav from '../navigation/SettingsNav'
 import UserModal from  '../components/modals/UserModal'
 import { GoogleSignin, GoogleSigninButton, statusCodes } from '@react-native-community/google-signin'
-import { authGoogleSignIn, bindGoogleAccount, unbindGoogleAccount, backupData } from '../actions/cloudActions'
-
+import { authGoogleSignIn, bindGoogleAccount, unbindGoogleAccount, backupData, restoreBackup } from '../actions/cloudActions'
 
 const SettingsBackupScreen = props => {
 
-  // useEffect(() => {
-
-  //   firebaseConfig = {
-  //     apiKey: 'AIzaSyCRDc0Yth2Q84TjWMX4mWlGShWvcWAJ0w0',
-  //     authDomain: 'postrixc137.firebaseapp.com',
-  //     databaseURL: 'https://postrix-4b28c.firebaseio.com/',
-  //     projectId: 'postrix-4b28c'
-  //   }
-
-  //   GoogleSignin.configure({
-  //     webClientId: '353265660190-gaaeavueigpmaoavql1ocdq6lrq5hhkt.apps.googleusercontent.com', // client ID of type WEB for your server (needed to verify user ID and offline access)
-  //   });
-  // })
-
-	const openMenu = () => {
+	openMenu = () => {
 		props.navigation.openDrawer()
-	}
+  }
+  
+  renderItem = ({ item, index }) => {
+    let name = moment(parseInt(item.name.substring(0, item.name.length-3))).format('LLL')
+    return (
+      <ListItem
+        key={String(item.name)}
+        title={name}
+        titleStyle={{ fontSize: 20, color: '#333' }}
+        containerStyle={{padding: 10, marginBottom: 5, borderRadius: 4}}
+        rightTitle={
+          <Button
+            onPress={() => props.restoreBackup(item.path)}
+            type="solid"
+            icon={
+              <Icon
+                color="white"
+                name="sync"
+                size={20}
+              />
+            }
+          />
+        }
+      />
+    );
+  }
 
   const { account } = props.users
-
-
-  const getUsers = async () => {
-    // Read the document for user 'Ada Lovelace':
-    const documentSnapshot = await firestore()
-      .collection('users')
-      .doc('1')
-      .collection('transactions')
-      .get()
-
-      documentSnapshot.forEach(function(doc) {
-        // doc.data() is never undefined for query doc snapshots
-        console.log(doc.id, " => ", doc.data())
-    });
-  }
+  const { backups } =  props.cloud
 
   return (
     <View style={styles.wrapper}>
@@ -70,11 +67,23 @@ const SettingsBackupScreen = props => {
                   <GoogleBindButton onPress={props.authGoogleSignIn} account={account}/>
               }
             </View>
-            <View style={{flex: 3, flexDirection: 'row'}}>
-              {
-                !account.user.email?
-                <BackupButton onPress={() => props.backupData()} />:null
-              }
+            
+            <View style={{flex: 3}}>
+              <View style={{height: 100}}>
+                <View style={{flex: 3, flexDirection: 'row', justifyContent: 'flex-end'}}>
+                  {
+                    account.user.email?
+                    <BackupButton onPress={() => props.backupData()} />:null
+                  }
+                </View>
+              </View>
+              <FlatList
+                keyExtractor={(x, i) => String(i)}
+                data={backups}
+                style={styles.container}
+                renderItem={this.renderItem}
+                numColumns={1}
+              />
             </View>
           </View>
           {/* <Text style={{fontSize: 22, marginBottom: 10}}>All data will be saved on google cloud service</Text> */}
@@ -96,7 +105,6 @@ const GoogleBindButton = (props) => {
         disabled={props.account.user.name?true:false} />
   )
 }
-
 
 const GoogleUnbindButton = (props) => {
   return (
@@ -136,7 +144,8 @@ const BackupButton = (props) => {
 function mapStateToProps(state) {
 	return {
     pin: state.pin,
-    users: state.users
+    users: state.users,
+    cloud: state.cloud
 	}
 }
 
@@ -146,7 +155,8 @@ function mapDispatchToProps(dispatch) {
     bindGoogleAccount: (account) => dispatch(bindGoogleAccount(account)),
     unbindGoogleAccount: () => dispatch(unbindGoogleAccount()),
     authGoogleSignIn: () => dispatch(authGoogleSignIn()),
-    backupData: () => dispatch(backupData())
+    backupData: () => dispatch(backupData()),
+    restoreBackup: (backup) => dispatch(restoreBackup(backup))
   }
 }
 

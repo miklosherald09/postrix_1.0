@@ -10,6 +10,9 @@ export const BACKUP_SYSTEM_BEGIN = 'BACKUP_SYSTEM_BEGIN'
 export const BACKUP_SYSTEM_SUCCESS = 'BACKUP_SYSTEM_SUCCESS'
 export const BACKUP_SYSTEM_ERROR = 'BACKUP_SYSTEM_ERROR'
 export const SET_BACKUP_DATA = 'SET_BACKUP_DATA'
+export const ADD_BACKUP_SUCCESS = 'ADD_BACKUP_SUCCESS'
+export const GET_BACKUP_LIST_SUCCESS = 'GET_BACKUP_LIST_SUCCESS'
+
 
 export function uploadData(){
   return () => {
@@ -34,10 +37,10 @@ export function initGoogleSignIn(){
 
         try{
           const userInfo = await GoogleSignin.signInSilently()
-          // alert(JSON.stringify(userInfo))
           if(userInfo){
             dispatch(signInFirebase(userInfo))
             dispatch({type: GOOGLE_SIGN_IN_SUCCESS, user: userInfo})
+            dispatch(getBackupList())
           }
           else{
             dispatch(signOutFirebase())
@@ -70,6 +73,7 @@ export function authGoogleSignIn(){
         if(userInfo){
           dispatch(signInFirebase(userInfo))
           dispatch({type: BIND_GOOGLE_ACCOUNT, user: userInfo})
+          dispatch(getBackupList())
         }
         else{
           dispatch(signOutFirebase(userInfo))
@@ -216,26 +220,23 @@ export function backupData(){
     
     // extract items data
     await new Promise((resolve, reject) => {
-      setTimeout(() => {
-        database.db.transaction( function(txn){
-          txn.executeSql(`SELECT * FROM items`,
-          [],
-          function(_, res){
-  
-            items = []
-            n = res.rows.length; i = 0;
-            while(n != 0){
-              items.push(res.rows.item(i))
-              n--; i++;
-            }
-  
-            dispatch({type: SET_BACKUP_DATA, data: items, table: 'items'})
-            resolve('done!')
-          })
-        },
-        function(err){ reject(err) })
-      }, 2000)
+      database.db.transaction( function(txn){
+        txn.executeSql(`SELECT * FROM items`,
+        [],
+        function(_, res){
 
+          items = []
+          n = res.rows.length; i = 0;
+          while(n != 0){
+            items.push(res.rows.item(i))
+            n--; i++;
+          }
+
+          dispatch({type: SET_BACKUP_DATA, data: items, table: 'items'})
+          resolve('done!')
+        })
+      },
+      function(err){ reject(err) })
     })
 
     // extract charges data
@@ -253,9 +254,7 @@ export function backupData(){
           }
 
           dispatch({type: SET_BACKUP_DATA, data: data, table: "charges"})
-          setTimeout(() => {
-            resolve('done!')
-          }, 2000)
+          resolve('done!')
         })
       },
       function(err){ reject(err) })
@@ -276,9 +275,7 @@ export function backupData(){
           }
 
           dispatch({type: SET_BACKUP_DATA, data: items, table: 'settings'})
-          setTimeout(() => {
-            resolve('done!')
-          }, 3000)
+          resolve('done!')
         })
       },
       function(err){ reject(err) })
@@ -370,9 +367,124 @@ export function backupData(){
 
     // extract users data
     await new Promise((resolve, reject) => {
-      console.log(cloud.backupData)
+      dispatch(systemUpload())
       resolve("done")
     })
+  }
+}
+
+export function systemUpload(){
+  return (dispatch, getState) => {
+
+    const { cloud, users } = getState()
+    
+    try{
+
+      console.log('storage shit')
+      firebase.app().storage('gs://postrix-4b28c.appspot.com')
+
+      cloud.backupData.date = Date.now()
+
+      let dateTime = Date.now()
+      let fname = users.account.user.email+'/'+dateTime+'.bk'
+      let data = JSON.stringify(cloud.backupData)
+
+      let folderRef = firebase.storage().ref(fname)
+      
+      folderRef.put(new Blob([data], {
+        type: 'text/plain'
+      }))
+
+      dispatch({type: BACKUP_SYSTEM_SUCCESS, name: dateTime})
+    }
+    catch(error){
+      console.log(error)
+    }
+  }
+}
+
+export function getBackupData(){
+  return (dispatch, getState) => {
+
+    const { cloud, users } = getState()
+    
+    try{
+
+      const refFromGsUrl = firebase.storage().refFromURL('gs://postrix-4b28c.appspot.com/'+users.account.user.email);
+
+      refFromGsUrl.listAll().then(function(res) {
+        res.prefixes.forEach(function(folderRef) {
+          // All the prefixes under listRef.
+          // You may call listAll() recursively on them.
+        });
+        res.items.forEach(function(itemRef) {
+          // All the items under listRef
+          itemRef.getDownloadURL().then(url => {
+            var xhr = new XMLHttpRequest()
+            xhr.responseType = 'blob'
+            xhr.onload = async function(event) {
+              var blob = xhr.response;
+              var text = await (new Response(blob)).text()
+              var json = JSON.parse(text)
+              console.log(json)
+            };
+            xhr.open('GET', url)
+            xhr.send()
+          }).catch((error) => {console.log(error)})
+
+        })
+      }).catch(function(error) {
+        // Uh-oh, an error occurred!
+      })
+
+    }
+    catch(error){
+      console.log(error)
+    }
+  }
+}
+
+export function getBackupList(){
+  
+  return (dispatch, getState) => {
+
+    const { users } = getState()
+
+    console.log('users.account.user.email: '+users.account.user.email)
+
+    if(users.account.user.email){
+    
+      const refFromGsUrl = firebase.storage().refFromURL('gs://postrix-4b28c.appspot.com/'+users.account.user.email)
+
+      refFromGsUrl.listAll().then(function(res) {
+        res.prefixes.forEach(function(folderRef) {
+          // All the prefixes under listRef.
+          // You may call listAll() recursively on them.
+        });
+        
+        backups = []
+        res.items.forEach(function(itemRef) {
+          // All the items under listRef
+          backups.push({
+            name: itemRef.name,
+            path: itemRef.fullPath
+          })
+        })
+
+        dispatch({type: GET_BACKUP_LIST_SUCCESS, backups: backups})
+
+      }).catch(function(error) {
+        // Uh-oh, an error occurred!
+      })
+    }
+  }
+}
+
+export function restoreBackup(backup){
+  return (dispatch, getState) => {
+
+    // restore settings backup
+    
 
   }
 }

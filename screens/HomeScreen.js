@@ -24,6 +24,7 @@ import NumberFormat from 'react-number-format'
 import KeyEvent from 'react-native-keyevent'
 import { barcodeSeachItem } from '../actions/barcodeSearchActions'
 import { getCharges } from '../actions/chargeActions'
+import { showFSTrans, enableFirestoreSync, disableFirestoreSync, uploadData, deleteUsers } from '../actions/cloudActions'
 
 
 const HomeScreen = props => {
@@ -78,6 +79,13 @@ const HomeScreen = props => {
           </View>
         </View>
         <View style={styles.itemBoxContainer}>
+          <View style={{flexDirection: 'row'}}>
+            <Button title={"helo"} onPress={() => props.showFSTrans()}></Button>
+            <Button title={"yes"} onPress={() => props.sync()}></Button>
+            <Button title={"no"} onPress={() => props.unsync()}></Button>
+            <Button title={"uploadData"} onPress={() => props.uploadData()}></Button>
+            <Button title={"deleteUsers"} onPress={() => props.deleteUsers()}></Button>
+          </View>
           {
             activeContent == CONTENT_SHELVES?<ShelveItemsList />:<ChargeList />
           }
@@ -111,8 +119,7 @@ const HomeScreen = props => {
         </View>
         <View style={styles.rightBottomBar}>
           <View style={styles.customButtonContainer}>
-            {/* <View style={{flex: 1}}>
-            </View> */}
+            
             <View style={styles.punchedButtonPan}>
               <Text style={styles.total}>
                 <NumberFormat renderText={value => <Text style={{fontSize: 40}}>{value}</Text>} fixedDecimalScale={true} decimalScale={2} value={total} displayType={'text'} thousandSeparator={true} prefix={currency} />
@@ -150,6 +157,11 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
+    deleteUsers: () => dispatch(deleteUsers()),
+    uploadData: () => dispatch(uploadData()),
+    sync: () => dispatch(enableFirestoreSync()),
+    unsync: () => dispatch(disableFirestoreSync()),
+    showFSTrans: () => dispatch(showFSTrans()),
     barcodeSeachItem: (text) => { dispatch(barcodeSeachItem(text)) },
     addModalVisible: (e) => dispatch(addModalVisible()),
     getShelves: () => dispatch(getShelves()),

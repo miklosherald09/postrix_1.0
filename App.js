@@ -9,8 +9,10 @@ import { getItems } from './actions/itemActions'
 import SignInGuard from './components/signInGuard'
 import { initShelves } from './actions/shelvesActions'
 import { initReportDate } from './actions/reportsActions'
-import { getUsers } from './actions/usersActions'
+import { getUsers, initBindAccount } from './actions/usersActions'
 import codePush from "react-native-code-push"
+import { initGoogleSignIn, initFirebase, enableFirestoreSync } from './actions/cloudActions'
+
 
 /**
  * Store - holds our state - THERE IS ONLY ONE STATE 
@@ -38,8 +40,8 @@ class App extends Component{
     store.dispatch(getUsers())
     store.dispatch(initShelves())
     store.dispatch(initReportDate())
-    // store.dispatch(initCharges())
-    // store.dispatch(getShelveItems())
+    store.dispatch(initGoogleSignIn())
+    
   }
 
   state = store.getState();

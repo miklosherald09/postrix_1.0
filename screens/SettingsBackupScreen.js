@@ -1,85 +1,51 @@
 import React, { useEffect  } from 'react'
 import { StyleSheet, View, Text } from 'react-native'
-import { Button } from 'react-native-elements'
+import { Button, ListItem } from 'react-native-elements'
+import Icon from 'react-native-vector-icons/FontAwesome5'
 import { connect } from 'react-redux'
 import { MenuButton } from '../components/MenuButton'
 import SettingsNav from '../navigation/SettingsNav'
 import UserModal from  '../components/modals/UserModal'
 import { GoogleSignin, GoogleSigninButton, statusCodes } from '@react-native-community/google-signin'
-// import firebase from 'firebase'
-// import auth from '@react-native-firebase/auth'
-import { firebase } from '@react-native-firebase/auth';
+import { authGoogleSignIn, bindGoogleAccount, unbindGoogleAccount, backupData } from '../actions/cloudActions'
+
 
 const SettingsBackupScreen = props => {
 
-  useEffect(() => {
+  // useEffect(() => {
 
-    firebaseConfig = {
-      apiKey: 'AIzaSyCRDc0Yth2Q84TjWMX4mWlGShWvcWAJ0w0',
-      authDomain: 'postrixc137.firebaseapp.com',
-      databaseURL: 'https://postrix-4b28c.firebaseio.com/',
-      projectId: 'postrix-4b28c'
-    }
-    
-    // app = firebase.initializeApp(firebaseConfig)
+  //   firebaseConfig = {
+  //     apiKey: 'AIzaSyCRDc0Yth2Q84TjWMX4mWlGShWvcWAJ0w0',
+  //     authDomain: 'postrixc137.firebaseapp.com',
+  //     databaseURL: 'https://postrix-4b28c.firebaseio.com/',
+  //     projectId: 'postrix-4b28c'
+  //   }
 
-    
-    GoogleSignin.configure({
-      webClientId: '353265660190-gaaeavueigpmaoavql1ocdq6lrq5hhkt.apps.googleusercontent.com', // client ID of type WEB for your server (needed to verify user ID and offline access)
-    });
-    
-  })
-
-  const Todos = () => {
-    
-    return null;
-  }
+  //   GoogleSignin.configure({
+  //     webClientId: '353265660190-gaaeavueigpmaoavql1ocdq6lrq5hhkt.apps.googleusercontent.com', // client ID of type WEB for your server (needed to verify user ID and offline access)
+  //   });
+  // })
 
 	const openMenu = () => {
 		props.navigation.openDrawer()
 	}
 
-  const { users } = props.users
+  const { account } = props.users
 
-  // const insertUser = () => {
-  //   firebase.database() .ref('user/0001').set({
-  //     name: 'mik',
-  //     age: 21
-  //   }).then(() => {
-  //     alert('inserted')
-  //   }).catch((error) => {
-  //     alert(JSON.stringify(error))
-  //   })
-  // }
 
-  // Somewhere in your code
-  const _signIn = async () => {
-    alert('pos0')
-    try {
-      await GoogleSignin.hasPlayServices()
-      userInfo = await GoogleSignin.signIn()
-      credential = firebase.auth.GoogleAuthProvider.credential(userInfo.idToken, userInfo.accessToken)
-      currentUser = await firebase.auth().signInWithCredential(credential);
-      
-      alert(JSON.stringify(currentUser));
-      alert(JSON.stringify(userInfo))
+  const getUsers = async () => {
+    // Read the document for user 'Ada Lovelace':
+    const documentSnapshot = await firestore()
+      .collection('users')
+      .doc('1')
+      .collection('transactions')
+      .get()
 
-    } catch (error) {
-      if (error.code === statusCodes.SIGN_IN_CANCELLED) {
-        alert(error)
-        // user cancelled the login flow
-      } else if (error.code === statusCodes.IN_PROGRESS) {
-        alert(error)
-        // operation (e.g. sign in) is in progress already
-      } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
-        alert(error)
-        // play services not available or outdated
-      } else {
-        alert(error)
-        // some other error happened
-      }
-    }
-  };
+      documentSnapshot.forEach(function(doc) {
+        // doc.data() is never undefined for query doc snapshots
+        console.log(doc.id, " => ", doc.data())
+    });
+  }
 
   return (
     <View style={styles.wrapper}>
@@ -97,21 +63,74 @@ const SettingsBackupScreen = props => {
         <View style={styles.rightContent}>
           <View style={{flex: 1, backgroundColor: 'white', margin: 15, padding: 15}}>
             <Text style={{fontSize: 22, marginBottom: 10}}>Bind postrix to Google account</Text>
-            <View style={{flex: 1, flexDirection: 'row'}}>
-              <GoogleSigninButton
-                style={{ width: 300, height: 60 }}
-                size={GoogleSigninButton.Size.Wide}
-                color={GoogleSigninButton.Color.Dark}
-                fontSize={30}
-                onPress={_signIn}
-                disabled={false} />
+            <View style={{flex: 1}}>
+              {
+                account.user.email?
+                  <GoogleUnbindButton onPress={props.unbindGoogleAccount} account={account}/>:
+                  <GoogleBindButton onPress={props.authGoogleSignIn} account={account}/>
+              }
+            </View>
+            <View style={{flex: 3, flexDirection: 'row'}}>
+              {
+                !account.user.email?
+                <BackupButton onPress={() => props.backupData()} />:null
+              }
             </View>
           </View>
+          {/* <Text style={{fontSize: 22, marginBottom: 10}}>All data will be saved on google cloud service</Text> */}
         </View>
       </View>
       <UserModal />
     </View>
   );
+}
+
+const GoogleBindButton = (props) => {
+  return (
+      <GoogleSigninButton
+        style={{ width: 300, height: 60 }}
+        size={GoogleSigninButton.Size.Wide}
+        color={GoogleSigninButton.Color.Dark}
+        fontSize={30}
+        onPress={props.onPress}
+        disabled={props.account.user.name?true:false} />
+  )
+}
+
+
+const GoogleUnbindButton = (props) => {
+  return (
+    <ListItem
+      key={i}
+      leftAvatar={{ source: { uri: props.account.user.photo } }}
+      title={props.account.user.name}
+      subtitle={props.account.user.email}
+      bottomDivider
+      rightTitle={
+        <Button 
+          title={'Unbind Account'}
+          titleStyle={{fontSize: 20, marginLeft: 10}}
+          onPress={props.onPress} 
+        />
+      }
+    />
+  )
+}
+
+const BackupButton = (props) => {
+  return (
+    <Button
+      onPress={props.onPress}
+      title={'Backup system'}
+      type="solid"
+      titleStyle={{fontSize: 20, marginLeft: 10}}
+      icon={<Icon 
+        name="sync"
+        size={22}
+        color="white"
+      />}
+    />
+  )
 }
 
 function mapStateToProps(state) {
@@ -124,6 +143,10 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     getUsers: () => dispatch(getUsers()),
+    bindGoogleAccount: (account) => dispatch(bindGoogleAccount(account)),
+    unbindGoogleAccount: () => dispatch(unbindGoogleAccount()),
+    authGoogleSignIn: () => dispatch(authGoogleSignIn()),
+    backupData: () => dispatch(backupData())
   }
 }
 

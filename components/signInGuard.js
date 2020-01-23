@@ -36,6 +36,7 @@ const SignInGuard = (props) => {
 function mapStateToProps(state) {
 	return {
     pin: state.pin,
+    
 	}
 }
 

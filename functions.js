@@ -301,5 +301,13 @@ export function sleep(ms) {
 }
 
 export function capitalize(text) {
-  return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase()
+  return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase
+  ()
+}
+
+export function generateTransNo(){
+  ourMax = 999999
+  ourMin = ourMin
+  no = Math.floor(Math.random() * (ourMax - ourMin + 1)) + ourMin;
+  return String(no % 999999).padStart(6, '0')
 }

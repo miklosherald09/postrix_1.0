@@ -21,6 +21,7 @@ import shelves from './shelves'
 import charge from './charge'
 import itemColors from './itemColors'
 import users from './users'
+import cloud from './cloud'
 
 const rootReducer = combineReducers({
     home: home,
@@ -43,7 +44,8 @@ const rootReducer = combineReducers({
     shelves: shelves,
     charge: charge,
     itemColors: itemColors,
-    users: users
+    users: users,
+    cloud: cloud
 })
 
 export default rootReducer;

@@ -3,15 +3,26 @@ import {
   SELECT_USER,
   GET_USERS_SUCCESS,
   UPDATE_UTYPE_SUCCESS,
-  SAVE_USER_SUCCESS
+  SAVE_USER_SUCCESS,
 } from '../actions/usersActions'
+import {
+  GOOGLE_SIGN_IN_SUCCESS,
+  BIND_GOOGLE_ACCOUNT,
+  UNBIND_GOOGLE_ACCOUNT
+} from '../actions/cloudActions'
 
 const initialState = {
   users: [],
   selectedUser: {},
   userModalVisible: false,
   input: {},
-  loggedIn: ''
+  account: {
+    user: {
+      email: '',
+      photo: ''
+    },
+    additionalUserInfo: {}
+  }
 }
 
 export default function usersReducer(state = initialState, action) {
@@ -52,6 +63,32 @@ export default function usersReducer(state = initialState, action) {
       return {
         ...state,
         
+      }
+    }
+
+    case GOOGLE_SIGN_IN_SUCCESS: {
+      return {
+        ...state,
+        account: action.user
+      }
+    }
+
+    case BIND_GOOGLE_ACCOUNT: {
+      return {
+        ...state,
+        account: action.user
+      }
+    }
+
+    case UNBIND_GOOGLE_ACCOUNT: {
+      return {
+        ...state,
+        account: {
+          user: {
+            email: '',
+            photo: ''
+          }
+        }
       }
     }
 

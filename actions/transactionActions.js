@@ -1,4 +1,6 @@
 import { printReceipt as printReceiptAction } from './receiptActions'
+import { firebase } from '@react-native-firebase/auth'
+import firestore from '@react-native-firebase/firestore'
 
 export const ADD_TRANSACTION = 'ADD_TRANSACTION'
 export const ADD_TRANSACTION_SUCCESS = 'ADD_TRANSACTION_SUCCESS'
@@ -9,7 +11,64 @@ export const REFRESH_TRANSACTIONS = 'REFRESH_TRANSACTIONS'
 export const DELETE_TRANSACTION_SUCCESS = 'DELETE_TRANSACTION_SUCCESS'
 export const UPDATE_TRANSACTION_BY_ID = 'UPDATE_STATUS_BY_ID'
 
+
 export const addTransaction = ({payment, total, punched, printReceipt }) => {
+
+  return (dispatch, getState) => {
+
+    const { users } = getState()
+
+    console.log('addTransack')
+    const uid = users.account.user.id?users.account.user.id:"1"
+    console.log('pos2')
+    console.log(uid)
+    firestore()
+      .collection("transactions")
+      .doc()
+      .set({
+        number: punched[0].count,
+        punched: punched
+      })
+    .then(function() {
+      console.log("Document successfully written!");
+    })
+    .catch(function(error) {
+      console.error("Error writing document: ", error);
+    });
+  }
+}
+
+export const addTransaction1 = ({payment, total, punched, printReceipt }) => {
+
+  return (dispatch, getState) => {
+
+    const { users } = getState()
+
+    console.log('addTransack')
+    const uid = users.account.user.id?users.account.user.id:"1"
+    console.log('pos2')
+    console.log(uid)
+    firestore()
+      .collection("users")
+      .doc(uid)
+      .collection("transactions")
+      .doc()
+      .set({
+        name: "223",
+        state: "x232x",
+        country: "xx",
+        punched: punched
+      })
+    .then(function() {
+      console.log("Document successfully written!");
+    })
+    .catch(function(error) {
+      console.error("Error writing document: ", error);
+    });
+  }
+}
+
+export const addTransaction2 = ({payment, total, punched, printReceipt }) => {
 
   return (dispatch, getState) => {
 

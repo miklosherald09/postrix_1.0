@@ -1,11 +1,11 @@
 import { ToastAndroid } from 'react-native'
+import { GoogleSignin, statusCodes } from '@react-native-community/google-signin'
 
 export const USER_MODAL_VISIBLE = 'USER_MODAL_VISIBLE'
 export const SELECT_USER = 'SELECT_USER'
 export const GET_USERS_SUCCESS = 'GET_USERS_SUCCESS'
 export const SAVE_USER_SUCCESS = 'SAVE_USER_SUCCESS'
 export const UPDATE_UTYPE_SUCCESS = 'UPDATE_UTYPE_SUCCESS'
-
 
 export function userModalVisible(visible) {
   return {
@@ -15,8 +15,7 @@ export function userModalVisible(visible) {
 }
 
 export function pinChange(){
-
-
+  
   return ( dispatch, getState ) => {
     
     const { database, pin } = getState()
@@ -138,3 +137,25 @@ export function saveUserDetails(field, value){
     })
   }
 }
+
+// export function bindGoogleAccount(user){
+//   return (dispatch, database) => {
+//     dispatch({type: BIND_GOOGLE_ACCOUNT, user: user})
+//   }
+// }
+
+// export function unbindGoogleAccount(){
+//   return (dispatch, database) => {
+
+//     try{
+//       (async () => {
+//         await GoogleSignin.revokeAccess()
+//         await GoogleSignin.signOut()
+//         dispatch({type: UNBIND_GOOGLE_ACCOUNT})
+//       })()
+//     }catch(error){
+//       console.log(error)
+//     }
+
+//   }
+// }

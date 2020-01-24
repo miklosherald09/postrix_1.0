@@ -1,6 +1,5 @@
 import { GoogleSignin, statusCodes } from '@react-native-community/google-signin'
 import { firebase } from '@react-native-firebase/auth'
-import firestore from '@react-native-firebase/firestore'
 import storage from '@react-native-firebase/storage'
 
 export const GOOGLE_SIGN_IN_SUCCESS = 'GOOGLE_SIGN_IN_SUCCESS'
@@ -12,6 +11,7 @@ export const BACKUP_SYSTEM_ERROR = 'BACKUP_SYSTEM_ERROR'
 export const SET_BACKUP_DATA = 'SET_BACKUP_DATA'
 export const ADD_BACKUP_SUCCESS = 'ADD_BACKUP_SUCCESS'
 export const GET_BACKUP_LIST_SUCCESS = 'GET_BACKUP_LIST_SUCCESS'
+export const RESTORE_BACKUP_BEGIN = 'RESTORE_BACKUP_BEGIN'
 
 
 export function uploadData(){
@@ -38,9 +38,11 @@ export function initGoogleSignIn(){
         try{
           const userInfo = await GoogleSignin.signInSilently()
           if(userInfo){
-            dispatch(signInFirebase(userInfo))
             dispatch({type: GOOGLE_SIGN_IN_SUCCESS, user: userInfo})
             dispatch(getBackupList())
+            signInFirebase(userInfo).then(result => {
+              dispatch(getBackupList())
+            })
           }
           else{
             dispatch(signOutFirebase())
@@ -71,9 +73,10 @@ export function authGoogleSignIn(){
         userInfo = await GoogleSignin.signIn()
         // alert(JSON.stringify(userInfo))
         if(userInfo){
-          dispatch(signInFirebase(userInfo))
+          signInFirebase(userInfo).then(result => {
+            dispatch(getBackupList())
+          })
           dispatch({type: BIND_GOOGLE_ACCOUNT, user: userInfo})
-          dispatch(getBackupList())
         }
         else{
           dispatch(signOutFirebase(userInfo))
@@ -98,12 +101,6 @@ export function authGoogleSignIn(){
   }
 }
 
-export function bindGoogleAccount(user){
-  return (dispatch, database) => {
-    dispatch({type: BIND_GOOGLE_ACCOUNT, user: user})
-  }
-}
-
 export function unbindGoogleAccount(){
   return (dispatch, database) => {
 
@@ -113,40 +110,38 @@ export function unbindGoogleAccount(){
         await GoogleSignin.signOut()
         dispatch(signOutFirebase())
         dispatch({type: UNBIND_GOOGLE_ACCOUNT})
+        dispatch({type: GET_BACKUP_LIST_SUCCESS, backups: []})
       })()
     }catch(error){
       console.log(error)
     }
-
   }
 }
 
-export function signInFirebase(userInfo){
-  return (dispatch) => {
-     (async () => {
-      try{
-        credential = firebase.auth.GoogleAuthProvider.credential(userInfo.idToken, userInfo.accessToken)
-        currentUser = await firebase.auth().signInWithCredential(credential)
+async function signInFirebase(userInfo){
+  
+  return new Promise(async (resolve, reject) => {
 
-        // check if user is status
-        firebase.auth().onAuthStateChanged(function(user) {
-          if (user) {
-            // User is signed in.
-            // dispatch(enableFirestoreSync())
-            // alert(JSON.stringify(user))
-            // console.log(user)
-          } else {
-            // No user is signed in.
-            // dispatch(disableFirestoreSync())
-            alert('no user signed in')
-          }
-        });
+    credential = firebase.auth.GoogleAuthProvider.credential(userInfo.idToken, userInfo.accessToken)
+    currentUser = await firebase.auth().signInWithCredential(credential)
+
+    // check if user is status
+    firebase.auth().onAuthStateChanged(function(user) {
+      if (user) {
+        // User is signed in.
+        // dispatch(enableFirestoreSync())
+        // alert(JSON.stringify(user))
+        // console.log(user)
+        resolve('done!')
+      } else {
+        // No user is signed in.
+        // dispatch(disableFirestoreSync())
+        // alert('no user signed in')
+        resolve('sign out!')
       }
-      catch(error){
-        console.log(error)
-      }
-    })()
-  }
+    })
+
+  })
 }
 
 export function signOutFirebase(){
@@ -403,7 +398,7 @@ export function systemUpload(){
   }
 }
 
-export function getBackupData(){
+export function getBackupDataTEMP(){
   return (dispatch, getState) => {
 
     const { cloud, users } = getState()
@@ -449,42 +444,309 @@ export function getBackupList(){
   return (dispatch, getState) => {
 
     const { users } = getState()
+    const refFromGsUrl = firebase.storage().refFromURL('gs://postrix-4b28c.appspot.com/'+users.account.user.email)
 
-    console.log('users.account.user.email: '+users.account.user.email)
-
-    if(users.account.user.email){
-    
-      const refFromGsUrl = firebase.storage().refFromURL('gs://postrix-4b28c.appspot.com/'+users.account.user.email)
-
-      refFromGsUrl.listAll().then(function(res) {
-        res.prefixes.forEach(function(folderRef) {
-          // All the prefixes under listRef.
-          // You may call listAll() recursively on them.
-        });
-        
-        backups = []
-        res.items.forEach(function(itemRef) {
-          // All the items under listRef
-          backups.push({
-            name: itemRef.name,
-            path: itemRef.fullPath
-          })
+    refFromGsUrl.listAll().then(function(res) {
+      res.prefixes.forEach(function(folderRef) {
+        // All the prefixes under listRef.
+        // You may call listAll() recursively on them.
+      });
+      
+      backups = []
+      res.items.forEach(function(itemRef) {
+        // All the items under listRef
+        backups.push({
+          name: itemRef.name,
+          path: itemRef.fullPath
         })
-
-        dispatch({type: GET_BACKUP_LIST_SUCCESS, backups: backups})
-
-      }).catch(function(error) {
-        // Uh-oh, an error occurred!
       })
-    }
+
+      console.log("backups!")
+      console.log(backups)
+
+      dispatch({type: GET_BACKUP_LIST_SUCCESS, backups: backups})
+
+    }).catch(function(error) {
+      // Uh-oh, an error occurred!
+      console.log(error)
+    })
   }
 }
 
-export function restoreBackup(backup){
+export function restoreBackup(path){
+
   return (dispatch, getState) => {
 
     // restore settings backup
-    
+    dispatch({type: RESTORE_BACKUP_BEGIN})
+
+    const { database } = getState()
+
+    // extract items data
+    getBackupData(path).then(
+      async result => {
+        
+        
+          dispatch(deleteDatabaseData(result))
+          // dispatch(insertBackupData(result))
+         
+        // console.log(result)
+        // resolve(result)
+     
+      },
+      error => reject(error)
+    )
+  }
+}
+
+export function deleteDatabaseData(result){
+
+  return async (dispatch, getState) => {
+
+    const { database } = getState()
+
+    // delete items 
+    await new Promise((resolve, reject) => {
+      database.db.transaction( function(txn){
+        txn.executeSql(`DELETE FROM items`,
+        [],
+        function(_, res){
+          console.log('items deleted')
+          resolve('done!')
+        })
+      },
+      function(err){ reject(err) })
+    })
+
+    // delete charges 
+    await new Promise((resolve, reject) => {
+      database.db.transaction( function(txn){
+        txn.executeSql(`DELETE FROM charges`,
+        [],
+        function(_, res){
+          console.log('charges deleted')
+          resolve('done!')
+        })
+      },
+      function(err){ reject(err) })
+    })
+
+    // delete settings
+    await new Promise((resolve, reject) => {
+      database.db.transaction( function(txn){
+        txn.executeSql(`DELETE FROM settings`,
+        [],
+        function(_, res){
+          console.log('settings deleted')
+          resolve('done!')
+        })
+      },
+      function(err){ reject(err) })
+    })
+
+    // delete shelve items 
+    await new Promise((resolve, reject) => {
+      database.db.transaction( function(txn){
+        txn.executeSql(`DELETE FROM shelve_items`,
+        [],
+        function(_, res){
+          console.log('shelve_items deleted')
+          resolve('done!')
+        })
+      },
+      function(err){ reject(err) })
+    })
+
+    // delete shelves 
+    await new Promise((resolve, reject) => {
+      database.db.transaction( function(txn){
+        txn.executeSql(`DELETE FROM shelves`,
+        [],
+        function(_, res){
+          console.log('shelves deleted')
+          resolve('done!')
+        })
+      },
+      function(err){ reject(err) })
+    })
+
+    // transactions 
+    await new Promise((resolve, reject) => {
+      database.db.transaction( function(txn){
+        txn.executeSql(`DELETE FROM transactions`,
+        [],
+        function(_, res){
+          console.log('transactions deleted')
+          resolve('done!')
+        })
+      },
+      function(err){ reject(err) })
+    })
+
+    // users 
+    await new Promise((resolve, reject) => {
+      database.db.transaction( function(txn){
+        txn.executeSql(`DELETE FROM users`,
+        [],
+        function(_, res){
+          console.log('users deleted')
+          resolve('done!')
+        })
+      },
+      function(err){ reject(err) })
+    })
+
+    await new Promise((resolve, reject) => {
+      dispatch(insertBackupData(result))
+      resolve('done!')
+    })
 
   }
+}
+
+export function insertBackupData(backup){
+
+  return async (dispatch, getState) => {
+    
+    const { database } = getState()
+    
+    // insert items
+    backup.items.map((v) => {
+      database.db.transaction( function(txn){
+        sql = `INSERT 
+                INTO items(id, name, buy_price, sell_price, barcode, datetime, color)
+                VALUES(?, ?, ?, ?, ?, ?, ?)`
+        txn.executeSql(sql,
+        [v.id, v.name, v.buy_price, v.sell_price, v.barcode, v.datetime, v.color],
+        function(_, res){
+          console.log('items inserted')
+          resolve('done!')
+        })
+      },
+      function(err){ console.log(err) })
+    })
+
+    // insert charges 
+    backup.charges.map((v) => {
+      database.db.transaction( function(txn){
+        sql = `INSERT
+                INTO items(id, name, price)
+                VALUES(?, ?, ?)`
+        txn.executeSql(sql,
+        [v.id, v.name, v.price],
+        function(_, res){
+          console.log('charges inserted')
+          resolve('done!')
+        })
+      },
+      function(err){ console.log(err) })
+    })
+
+    // insert settings 
+    backup.settings.map((v) => {
+      database.db.transaction( function(txn){
+        sql = `INSERT
+                INTO settings(name, value, datetime)
+                VALUES(?, ?, ?)`
+        txn.executeSql(sql,
+        [v.id, v.name, v.price],
+        function(_, res){
+          console.log('charges inserted')
+          resolve('done!')
+        })
+      },
+      function(err){ console.log(err) })
+    })
+
+    // insert shelve_items 
+    backup.settings.map((v) => {
+      database.db.transaction( function(txn){
+        sql = `INSERT
+                INTO shelve_items(id, item_id, shelve_id)
+                VALUES(?, ?, ?)`
+        txn.executeSql(sql,
+        [v.id, v.name, v.price],
+        function(_, res){
+          console.log('charges inserted')
+          resolve('done!')
+        })
+      },
+      function(err){ console.log(err) })
+    })
+
+    // insert shelves 
+    backup.shelves.map((v) => {
+      database.db.transaction( function(txn){
+        sql = `INSERT
+                INTO shelve_items(id, name)
+                VALUES(?, ?)`
+        txn.executeSql(sql,
+        [v.id, v.name, v.price],
+        function(_, res){
+          console.log('charges inserted')
+          resolve('done!')
+        })
+      },
+      function(err){ console.log(err) })
+    })
+
+    // insert transactions 
+    backup.shelves.map((v) => {
+      database.db.transaction( function(txn){
+        sql = `INSERT
+                INTO transactions(id, receipt_no, punched, total, payment, printed, datetime)
+                VALUES(?, ?, ?, ?, ?, ?, ?)`
+        txn.executeSql(sql,
+        [v.id, v.name, v.price],
+        function(_, res){
+          console.log('charges inserted')
+          resolve('done!')
+        })
+      },
+      function(err){ console.log(err) })
+    })
+
+    // insert users 
+    backup.shelves.map((v) => {
+      database.db.transaction( function(txn){
+        sql = `INSERT
+                INTO users(id, name, type, pin, datetime)
+                VALUES(?, ?, ?, ?, ?)`
+        txn.executeSql(sql,
+        [v.id, v.name, v.price],
+        function(_, res){
+          console.log('users inserted')
+          resolve('done!')
+        })
+      },
+      function(err){ console.log(err) })
+    })
+
+  }
+}
+
+function getBackupData(path){
+
+  return new Promise((resolve, reject) => {
+    try{
+
+      const refFromGsUrl = firebase.storage().refFromURL('gs://postrix-4b28c.appspot.com/'+path)
+      
+      refFromGsUrl.getDownloadURL().then(url => {
+        var xhr = new XMLHttpRequest()
+        xhr.responseType = 'blob'
+        xhr.onload = async function(event) {
+          var blob = xhr.response
+          var text = await (new Response(blob)).text()
+          var json = JSON.parse(text)
+          resolve(json)
+        }
+        xhr.open('GET', url)
+        xhr.send()
+      }).catch((error) => {console.log(error)})
+    }
+    catch(error){
+      reject(error)
+    }
+  })
 }

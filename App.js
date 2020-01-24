@@ -11,7 +11,7 @@ import { initShelves } from './actions/shelvesActions'
 import { initReportDate } from './actions/reportsActions'
 import { getUsers, initBindAccount } from './actions/usersActions'
 import codePush from "react-native-code-push"
-import { initGoogleSignIn, initBackupList } from './actions/cloudActions'
+import { initGoogleSignIn } from './actions/cloudActions'
 
 
 /**
@@ -41,7 +41,6 @@ class App extends Component{
     store.dispatch(initShelves())
     store.dispatch(initReportDate())
     store.dispatch(initGoogleSignIn())
-    // store.dispatch(initBackupList())
   }
 
   state = store.getState();

@@ -12,7 +12,7 @@ export const DELETE_TRANSACTION_SUCCESS = 'DELETE_TRANSACTION_SUCCESS'
 export const UPDATE_TRANSACTION_BY_ID = 'UPDATE_STATUS_BY_ID'
 
 
-export const addTransaction = ({payment, total, punched, printReceipt }) => {
+export const addTransaction2 = ({payment, total, punched, printReceipt }) => {
 
   return (dispatch, getState) => {
 
@@ -68,7 +68,7 @@ export const addTransaction1 = ({payment, total, punched, printReceipt }) => {
   }
 }
 
-export const addTransaction2 = ({payment, total, punched, printReceipt }) => {
+export const addTransaction = ({payment, total, punched, printReceipt }) => {
 
   return (dispatch, getState) => {
 

@@ -22,6 +22,7 @@ import charge from './charge'
 import itemColors from './itemColors'
 import users from './users'
 import cloud from './cloud'
+import settingsBackup from './settingsBackup'
 
 const rootReducer = combineReducers({
     home: home,
@@ -45,7 +46,8 @@ const rootReducer = combineReducers({
     charge: charge,
     itemColors: itemColors,
     users: users,
-    cloud: cloud
+    cloud: cloud,
+    settingsBackup: settingsBackup
 })
 
 export default rootReducer;

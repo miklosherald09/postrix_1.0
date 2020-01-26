@@ -79,14 +79,14 @@ const HomeScreen = props => {
           </View>
         </View>
         <View style={styles.itemBoxContainer}>
-          <View style={{flexDirection: 'row'}}>
+          {/* <View style={{flexDirection: 'row'}}>
             <Button title={"helo"} onPress={() => props.showFSTrans()}></Button>
             <Button title={"yes"} onPress={() => props.sync()}></Button>
             <Button title={"no"} onPress={() => props.unsync()}></Button>
             <Button title={"uploadData"} onPress={() => props.uploadData()}></Button>
             <Button title={"deleteUsers"} onPress={() => props.deleteUsers()}></Button>
             <Button title={"getBackupData"} onPress={() => props.getBackupData()}></Button>
-          </View>
+          </View> */}
           {
             activeContent == CONTENT_SHELVES?<ShelveItemsList />:<ChargeList />
           }

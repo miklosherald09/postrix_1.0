@@ -43,7 +43,6 @@ const SettingsBackupScreen = props => {
                   <GoogleBindButton onPress={props.authGoogleSignIn} account={account}/>
               }
             </View>
-            
             <View style={{flex: 3}}>
               <View style={{height: 100}}>
                 <View style={{flex: 3, flexDirection: 'row', justifyContent: 'flex-end'}}>

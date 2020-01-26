@@ -171,12 +171,12 @@ const styles = StyleSheet.create({
 		color: '#333'
   },
   container: {
+    flex: 1,
     backgroundColor: 'white',
     margin: 10,
     borderWidth: 1,
     borderColor: '#DDD',
     padding: 10,
-    paddingBottom: 40,
   },
   label: {
     fontWeight: 'normal', 

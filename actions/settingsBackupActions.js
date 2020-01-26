@@ -417,9 +417,9 @@ export function insertBackupData(backup){
                   INTO settings(name, value, datetime)
                   VALUES(?, ?, ?)`
           txn.executeSql(sql,
-          [v.id, v.name, v.price],
+          [v.name, v.value, v.datetime],
           function(_, res){
-            console.log('charges inserted')
+            console.log('settings inserted')
             resolve('done!')
           })
         },

@@ -1,6 +1,12 @@
-import { GoogleSignin, statusCodes } from '@react-native-community/google-signin'
 import { firebase } from '@react-native-firebase/auth'
-import storage from '@react-native-firebase/storage'
+import { getTransactions } from './transactionActions'
+import { insertSettingsPrinter } from './databaseActions'
+import { initSettings } from './settingsActions'
+import { initShelves } from './shelvesActions'
+import { getUsers } from './usersActions'
+import { refreshItemsList, getItems } from './itemActions'
+import { getShelveItems, getShelveItemsRefresh } from './shelvesActions'
+
 
 export const BACKUP_SYSTEM_BEGIN = 'BACKUP_SYSTEM_BEGIN'
 export const BACKUP_SYSTEM_SUCCESS = 'BACKUP_SYSTEM_SUCCESS'
@@ -500,6 +506,16 @@ export function insertBackupData(backup){
     })
 
     dispatch({type: RESTORE_BACKUP_SUCCESS})
+    dispatch(insertSettingsPrinter())
+    dispatch(initSettings())
+    dispatch(getItems())
+    dispatch(getTransactions())
+    dispatch(getUsers())
+    dispatch(initShelves())
+    dispatch(refreshItemsList())
+    dispatch(getItems())
+    dispatch(getShelveItemsRefresh())
+    // dispatch(getShelveItems())
   }
 }
 
@@ -516,8 +532,6 @@ export function bkSuccessModalVisible(visible){
     visible: visible 
   }
 }
-
-
 
 function getBackupData(path){
 

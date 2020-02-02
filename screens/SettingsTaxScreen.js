@@ -1,21 +1,24 @@
-import React from 'react'
-import { StyleSheet, View, Text, TouchableOpacity, FlatList, Image } from 'react-native'
+import React, { useEffect } from 'react'
+import { StyleSheet, View, TouchableOpacity, ScrollView } from 'react-native'
 import { connect } from 'react-redux'
 import { MenuButton } from '../components/MenuButton'
 import SettingsNav from '../navigation/SettingsNav'
-import { pinChangeVisible, selectUserPin, getUsers } from '../actions/pinActions'
-import { userModalVisible, selectUser } from '../actions/usersActions'
+import { taxModalVisible, selectTax, addTaxPrompt, getTaxes } from '../actions/taxActions'
 import { Card, Avatar, ListItem } from 'react-native-elements'
 import { AddButton } from '../components/Common'
-import UserModal from  '../components/modals/UserModal'
+import TaxModal from  '../components/modals/TaxModal'
 
 const SettingsUsersScreen = props => {
+
+  useEffect(() => {
+    // props.getTaxes()
+  }, [])
 
 	const openMenu = () => {
 		props.navigation.openDrawer()
 	}
 
-  const { users } = props.users
+  const { taxes } = props.tax
 
   return (
     <View style={styles.wrapper}>
@@ -32,19 +35,21 @@ const SettingsUsersScreen = props => {
         </View>
         <View style={styles.rightContent}>
           <Card 
-            title="USERS"
+            style={{flex: 1}}
+            title="Tax"
             titleStyle={{fontSize: 20}} >
+              <ScrollView>
             {
-              users.map((u, i) => {
+              taxes.map((u, i) => {
                 return (
-                  <TouchableOpacity key={'users-' + i} onPress={() => props.selectUserPin(u)}>
+                  <TouchableOpacity key={'tax-' + i} onPress={() => props.selectTax(u)}>
                   <ListItem
-                    title={u.name + ' - ' + u.type}
+                    title={u.name + ' - ' + u.percent+'%'}
                     titleStyle={{fontSize: 20}}
                     leftAvatar = {
                       <Avatar
                         rounded
-                        title={u.type.slice(0, 2)}
+                        title={u.name.slice(0, 1)}
                         size="small"
                       />
                     }
@@ -53,33 +58,33 @@ const SettingsUsersScreen = props => {
                 );
               })
             }
+            </ScrollView>
           </Card>
           <View style={{position: 'absolute', bottom: 0, right: 0, margin: 20}}>
-            <AddButton onPress={() => props.addUser(true)}/>
+            <AddButton onPress={() => props.addTaxPrompt()}/>
           </View>
         </View>
       </View>
-      <UserModal />
+      <TaxModal />
     </View>
   );
 }
 
 function mapStateToProps(state) {
 	return {
-    pin: state.pin,
-    users: state.users
+    tax: state.tax,
 	}
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    getUsers: () => dispatch(getUsers()),
-    selectUserPin: (val) => {
-      dispatch(selectUser(val))
-      dispatch(userModalVisible(true))
+    getTaxes: () => dispatch(getTaxes()),
+    selectTax: (val) => {
+      dispatch(selectTax(val))
+      dispatch(taxModalVisible(true))
     },
-    addUser: () => dispatch(pinChangeVisible(true)),
-    // userModalVisible: () => dispatch(userModalVisible(true))
+    taxModalVisible: () => dispatch(taxModalVisible(true)),
+    addTaxPrompt: () => dispatch(addTaxPrompt())
   }
 }
 

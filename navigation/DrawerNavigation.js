@@ -2,7 +2,7 @@ import React from 'react'
 import { Dimensions} from 'react-native'
 import {  createAppContainer, createDrawerNavigator, createStackNavigator } from 'react-navigation'
 import HomeScreen from '../screens/HomeScreen'
-import ItemScreen from '../screens/ItemScreen'
+import ItemsScreen from '../screens/ItemsScreen'
 import ItemAdvanceScreen from '../screens/ItemAdvanceScreen'
 import ReportScreen from '../screens/ReportScreen'
 import TransactionScreen from '../screens/TransactionScreen'
@@ -11,6 +11,7 @@ import SettingsPrinterScreen from '../screens/SettingsPrinterScreen'
 import SettingsItemsScreen from '../screens/SettingsItemsScreen'
 import SettingsUsersScreen from '../screens/SettingsUsersScreen'
 import SettingsBackupScreen from '../screens/SettingsBackupScreen'
+import SettingsTaxScreen from '../screens/SettingsTaxScreen'
 import DebuggerScreen from '../screens/DebuggerScreen'
 import PinScreen from '../components/MenuDrawer'
 import MenuDrawer from '../components/MenuDrawer'
@@ -20,9 +21,9 @@ const DrawerConfig = {
     drawerPosition: 'left',
     drawerBackgroundColor: 'transparent',
     overlayColor: 'rgba(0, 0, 0, .8)',
-    // initialRouteName: 'Home',
+    initialRouteName: 'Home',
     // initialRouteName: 'Items',
-    initialRouteName: 'Settings',
+    // initialRouteName: 'Settings',
     // initialRouteName: 'SettingsBackup',
     // initialRouteName: 'Transactions',
     // initialRouteName: 'Reports',
@@ -67,6 +68,12 @@ const SettingsStack = createStackNavigator({
       header: null
     },
   },
+  SettingsTax: {
+    screen: SettingsTaxScreen,
+    navigationOptions: {
+      header: null
+    },
+  },
 });
 
  const DrawerNavigator = createDrawerNavigator({
@@ -81,7 +88,7 @@ const SettingsStack = createStackNavigator({
 			screen: TransactionScreen
 		},
     Items: {
-      screen: ItemScreen
+      screen: ItemsScreen
     },
     ItemsAdvance: {
       screen: ItemAdvanceScreen

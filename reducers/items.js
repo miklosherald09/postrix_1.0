@@ -1,16 +1,13 @@
 import {
+  SAVE_ITEM_MODAL_VISIBLE,
   SAVE_ITEM_SUCCESS,
   SAVE_ITEM_ERROR,
-  ITEM_INPUT_DUMP,
+  SELECT_ITEM,
   INPUT_NAME_SAVE,
   SET_ITEM_INPUT,
   INPUT_BARCODE_SAVE,
   INPUT_BUYPRICE_SAVE,
   INPUT_SELLPRICE_SAVE,
-  ADD_ITEM_MODAL_VISIBLE,
-  ADD_ITEM_MODAL_INVISIBLE,
-  UPDATE_ITEM_MODAL_VISIBLE,
-  UPDATE_ITEM_MODAL_INVISIBLE,
   DELETE_ITEM_SUCCESS,
   SYNC_GOOGLE_SHEETS,
   SYNC_GOOGLE_SHEET_ITEM,
@@ -27,12 +24,12 @@ import {
   UPDATE_SEARCH_TEXT,
   SYNCED_ITEM,
   REMOVING_UNUSED_ITEM,
-  SAVE_FIELD
+  SAVE_FIELD,
+  ADD_ITEM_PROMPT
 } from '../actions/itemActions';
 
 const initialState = {
-  addItemModalvisible: false,
-  updateItemModalVisible: false,
+  saveItemModalVisible: false,
   saveItemMsg: '', 
   items: [],
   isFetching: false,
@@ -40,14 +37,6 @@ const initialState = {
   removingUnusedItem: false,
   isDeletingAllItems: false,
   error: false,
-  input: {
-    id: '',
-    name: '',
-    buyPrice: '',
-    sellPrice: '',
-    barcode: '',
-    sellPricex: 1,
-  },
   itemsCsv: '',
   itemsCount: 0,
   page: 0,
@@ -56,16 +45,31 @@ const initialState = {
   searchText: '',
   sync_percentage: 0,
   syncedItem: {Name: ''},
+  selectedItem: {},
 }
 
 export default function itemsReducer(state = initialState, action) {
   switch(action.type) {
+
+    case SAVE_ITEM_MODAL_VISIBLE: {
+      return {
+        ...state,
+        saveItemModalVisible: action.visible
+      }
+    }
 
     case SAVE_ITEM_SUCCESS: {
       return {
         ...state,
         saveItemMsg: 'item successfully saved',
         items: [action.item, ...state.items]
+      }
+    }
+
+    case SELECT_ITEM: {
+      return {
+        ...state,
+        selectedItem: action.item
       }
     }
     
@@ -132,18 +136,6 @@ export default function itemsReducer(state = initialState, action) {
       }
     }
 
-    case ITEM_INPUT_DUMP: {
-      return {
-        ...state,
-        input: {
-          id: '',
-          name: '',
-          buyPrice: '',
-          sellPrice: '',
-        }
-      }
-    }
-
     case INPUT_NAME_SAVE: {
       return {
         ...state,
@@ -181,34 +173,6 @@ export default function itemsReducer(state = initialState, action) {
           ...state.input,
           sellPrice: action.payload,
         }
-      }
-    }
-
-    case ADD_ITEM_MODAL_VISIBLE: {
-      return {
-        ...state,
-        addItemModalvisible: true,
-      }
-    }
-
-    case ADD_ITEM_MODAL_INVISIBLE: {
-      return {
-        ...state,
-        addItemModalvisible: false,
-      }
-    }
-
-    case UPDATE_ITEM_MODAL_VISIBLE: {
-      return {
-        ...state,
-        updateItemModalVisible: true,
-      }
-    }
-
-    case UPDATE_ITEM_MODAL_INVISIBLE: {
-      return {
-        ...state,
-        updateItemModalVisible: false,
       }
     }
 
@@ -298,13 +262,20 @@ export default function itemsReducer(state = initialState, action) {
     }
 
     case SAVE_FIELD: {
-      console.log('saving field: '+action.field+ ' - '+action.value)
       return {
         ...state,
-        input: {
-          ...state.input,
+        selectedItem: {
+          ...state.selectedItem,
           [action.field]: action.value
         }
+      }
+    }
+
+    case ADD_ITEM_PROMPT: {
+      return {
+        ...state,
+        saveItemModalVisible: true,
+        selectedItem: {name: '', barcode: '', sellPrice: '', buyPrice: ''}
       }
     }
 

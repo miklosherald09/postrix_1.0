@@ -1,7 +1,7 @@
 import React from 'react'
 import { StyleSheet, View, FlatList, ActivityIndicator, Text } from 'react-native'
 import { connect } from 'react-redux'
-import { updateItemModalVisible, setItemInput, getItems, refreshItemsList } from '../actions/itemActions'
+import { saveItemModalVisible, setItemInput, selectItem, getItems, refreshItemsList } from '../actions/itemActions'
 import { ListItem } from 'react-native-elements'
 import { currency } from '../constants/constants'
 import NumberFormat from 'react-number-format'
@@ -13,11 +13,10 @@ const ItemsList = (props) => {
   renderItem = ({ item, index }) => {
     return (
       <ListItem
-        onPress={ () => props.openModal(item) }
+        onPress={ () => props.selectItem(item) }
         key={String(item.id)}
         title={String(item.name)}
         titleStyle={{ fontSize: 20, color: '#333' }}
-        // subtitle={String(item.price)}
         containerStyle={{padding: 10, marginBottom: 5, borderRadius: 4}}
         rightTitle={
           <NumberFormat
@@ -26,7 +25,7 @@ const ItemsList = (props) => {
             decimalScale={2} 
             value={item.sellPrice} 
             displayType={'text'} 
-            thousandSeparator={true} 
+            thousandSeparator={true}
             prefix={currency} />}
         rightTitleStyle={{fontSize: 20}}
       />
@@ -72,6 +71,10 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     // setModalVisible: () => dispatch({ type: 'ADDITEM_MODAL_VISIBLE' }),
+    selectItem: (item) => {
+      dispatch(saveItemModalVisible()),
+      dispatch(selectItem(item))
+    },
     openModal: (item) => {
       dispatch(setItemInput(item)),
       dispatch(updateItemModalVisible()) 

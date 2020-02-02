@@ -34,13 +34,6 @@ const SettingsItemsScreen = props => {
         <View style={styles.rightContent}>
             <ScrollView>
               <View style={{backgroundColor: 'white', margin: 10, padding: 10}}>
-                {/* <Text>Google Sheets</Text>
-                <TextInput 
-                  style={{marginTop: 5, borderWidth: 1, borderColor: '#CCC'}}
-                  placeholder="enter published google sheet]]]]] link" 
-                  onChangeText={(text) => props.updateGoogleSheetUrl(text)}
-                  value={googleSheetUrl} /> */}
-                
                 <View>
                   <Text style={{...myStyles.header3, margin: 10}}>GOOGLE SHEET CSV</Text>
                   <View style={{flexDirection: 'column'}}>
@@ -48,7 +41,7 @@ const SettingsItemsScreen = props => {
                       style={{fontSize: 20, flex: 5, marginTop: 5, borderBottomWidth: 1, borderColor: '#999'}}
                       placeholder="enter published google sheet csv link"
                       onChangeText={(text) => props.updateGoogleSheetUrlCsv(text)}
-                      defaultValue={GOOGLE_SHEET_URL_CSV} 
+                      defaultValue={GOOGLE_SHEET_URL_CSV}
                     />
                     <View style={{flex: 1, flexDirection: 'row', justifyContent: 'flex-start'}}>
                       { SyncItemButton(props) }

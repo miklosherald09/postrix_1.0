@@ -14,6 +14,8 @@ export function initDatabase() {
     dispatch({ type: INIT_DATABASE, db: db })
     dispatch(insertSettingsPrinter())
     dispatch(addReceiptNoField())
+    dispatch(addItemTaxTypeField())
+    dispatch(taxesTable())
   }
 }
 
@@ -63,6 +65,55 @@ export function addReceiptNoField(){
       console.log(err)
     });
   }
+}
+
+export function addItemTaxTypeField(){
+
+  return (dispatch, getState) => {
+    
+    // insert settings table
+    const { database } = getState()
+
+    database.db.transaction(function(txn){
+      txn.executeSql(
+        `ALTER TABLE items
+        ADD tax_type TEXT;`,
+      [],
+      function(tx, res){
+        console.log('ITEMS TABLE SHIT')
+        console.log(res)
+      });
+    },
+    function(err){
+      console.log(err)
+    });
+  }
+}
+
+export function taxesTable(){
+
+  return (_, getState) => {
+
+    const { database } = getState()
+      // create items table
+      database.db.transaction(function(txn){
+        txn.executeSql(
+          `CREATE TABLE IF NOT EXISTS 
+            taxes(
+              id INTEGER PRIMARY KEY AUTOINCREMENT, 
+              name TEXT,
+              percent INTEGER,
+              datetime datetime default current_timestamp
+          )`,
+        [],
+        function(tx, res){
+          console.log(res)
+        });
+      },
+      function(err){
+        console.log(err)
+      });
+    }
 }
 
 export const initItemsTable = () => {

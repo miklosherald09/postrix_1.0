@@ -44,6 +44,20 @@ export const AddButton = ({onPress, color}) =>  {
   );
 }
 
+export const DeleteButton = ({onPress, color, size}) =>  {
+  return (
+    <TouchableOpacity
+      style={{margin: 0, alignSelf: 'flex-start'}}
+      onPress={ onPress }>
+      <Icon 
+        name="delete" 
+        size={size?size:37}
+        color={color?color:"#2089dc"}
+      />
+    </TouchableOpacity>
+  );
+}
+
 
 const styles = StyleSheet.create({
   wrapper: {

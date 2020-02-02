@@ -2,16 +2,15 @@ import React from 'react'
 import { StyleSheet, View, TouchableOpacity, Text, TouchableHighlight } from 'react-native'
 import { MenuButton } from '../components/MenuButton'
 // import AddItemButton from '../components/buttons/AddItemButton'
-import AddItemModal from '../components/modals/AddItemModal'
-import UpdateItemModal from '../components/modals/UpdateItemModal'
+import SaveItemModal from '../components/modals/SaveItemModal'
 import ItemsList from '../components/ItemsList'
 import { connect } from 'react-redux'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import { linkPermission } from '../functions'
 import { Input } from 'react-native-elements'
-import { itemInputDump, addItemModalVisible, syncGoogleSheet, seeAllItems, searchItems } from '../actions/itemActions'
+import { saveItemModalVisible, searchItems, addItemPrompt } from '../actions/itemActions'
 
-const ItemScreen = (props) => {
+const ItemsScreen = (props) => {
 
   const { searchText  } = props.items
   const { userType } = props.pin
@@ -80,11 +79,10 @@ const ItemScreen = (props) => {
           </View>
           <ItemsList/>
         </View>
-        <AddItemBUtton openModal={() => props.setModalVisible()} />
+        <AddItemBUtton openModal={() => props.addItemPrompt()} />
       </View>
 			<View>
-				<AddItemModal />
-        <UpdateItemModal />
+				<SaveItemModal />
 			</View>
 		</View>
 	);
@@ -101,12 +99,9 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
-      setModalVisible: () => { dispatch(addItemModalVisible()) },
-      setItemInput: (item) => dispatch({type: 'SET_ITEM_INPUT', payload: item}),
-      itemInputDump: () => dispatch(itemInputDump()),
-      syncGoogleSheet: () => dispatch(syncGoogleSheet()),
-      seeAllItems: () => dispatch(seeAllItems()),
-      searchItems: (text) => dispatch(searchItems(text))
+      saveItemModalVisible: (val) => { dispatch(saveItemModalVisible(val)) },
+      searchItems: (text) => dispatch(searchItems(text)),
+      addItemPrompt: () => dispatch(addItemPrompt())
     }
 }
 
@@ -219,4 +214,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(ItemScreen);
+export default connect(mapStateToProps, mapDispatchToProps)(ItemsScreen);

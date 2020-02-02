@@ -1,5 +1,6 @@
-import React, { useEffect } from 'react'
-import { StyleSheet, Text, View, Alert, AppState, Keyboard, Button, TextInput, TouchableOpacity } from 'react-native'
+import React from 'react'
+import { StyleSheet, Text, View, Alert } from 'react-native'
+import { Button, Tooltip, ListItem } from 'react-native-elements'
 import { connect } from 'react-redux'
 import { MenuButton } from '../components/MenuButton'
 import PayModal from '../components/modals/PayModal'
@@ -14,17 +15,17 @@ import PunchItemModal from '../components/modals/PunchItemModal'
 import AddShelveItemsModal from '../components/modals/AddShelveItemsModal'
 import ItemColorsModal from '../components/modals/ItemColorsModal'
 import SaveChargeModal from '../components/modals/SaveChargeModal'
-import { AddShelveButton, ShelveAllButton, ChargeButton, ShelveButton, ItemSearchButton, PayButton } from './HomeScreenComponents'
+import { AddShelveButton, ChargeButton, ShelveButton, ItemSearchButton, PayButton } from './HomeScreenComponents'
 import { CONTENT_SHELVES, CONTENT_CHARGE, changeActiveContent } from '../actions/homeActions'
 import { addModalVisible, getShelveItems, selectShelve, deleteShelve, getShelveItemsRefresh, shelveModalVisible } from '../actions/shelvesActions'
 import { modalVisible } from '../actions/itemSearchActions'
 import { payModalVisible } from '../actions/payActions'
 import { currency } from '../constants/constants'
 import NumberFormat from 'react-number-format'
-import KeyEvent from 'react-native-keyevent'
 import { barcodeSeachItem } from '../actions/barcodeSearchActions'
 import { getCharges } from '../actions/chargeActions'
 import { showFSTrans, enableFirestoreSync, disableFirestoreSync, uploadData, deleteUsers, getBackupData } from '../actions/cloudActions'
+import Icon from 'react-native-vector-icons/FontAwesome5'
 
 
 const HomeScreen = props => {
@@ -32,28 +33,11 @@ const HomeScreen = props => {
   const { total } = props.punched
   const { shelves, activeShelve } = props.shelves
   const { activeContent } = props.home
-  const { connectedDevice } = props.settingsPrinter
+  const { taxes } = props.tax
+  const {  } = props.
 
   searchText = '' 
   timeout = null
-
-  useEffect(() => {
-    KeyEvent.onKeyDownListener((keyEvent) => {
-
-      if(keyEvent.keyCode != 66)
-        searchText += keyEvent.pressedKey
-
-      clearTimeout(timeout);
-
-      timeout = setTimeout(function () {
-        props.barcodeSeachItem(searchText)
-        searchText = ''
-      }, 500)
-
-    });
-    Keyboard.removeAllListeners('keyDown')
-  
-  }, []);
 
   openMenu = () => {
 		props.navigation.openDrawer()
@@ -79,17 +63,7 @@ const HomeScreen = props => {
           </View>
         </View>
         <View style={styles.itemBoxContainer}>
-          {/* <View style={{flexDirection: 'row'}}>
-            <Button title={"helo"} onPress={() => props.showFSTrans()}></Button>
-            <Button title={"yes"} onPress={() => props.sync()}></Button>
-            <Button title={"no"} onPress={() => props.unsync()}></Button>
-            <Button title={"uploadData"} onPress={() => props.uploadData()}></Button>
-            <Button title={"deleteUsers"} onPress={() => props.deleteUsers()}></Button>
-            <Button title={"getBackupData"} onPress={() => props.getBackupData()}></Button>
-          </View> */}
-          {
-            activeContent == CONTENT_SHELVES?<ShelveItemsList />:<ChargeList />
-          }
+          { activeContent == CONTENT_SHELVES?<ShelveItemsList />:<ChargeList /> }
         </View>
         <View style={styles.leftBottomBar}>
           <View style={{flex: 1, flexDirection: 'row'}}>
@@ -115,12 +89,17 @@ const HomeScreen = props => {
             <ChargeButton onPress={() => props.changeActiveContent(CONTENT_CHARGE)} />
           </View>
         </View>
-        <View style={{flex: 1, padding: 10}}>
+        <View style={{flex: 3, padding: 10}}>
           <PunchedItemList />
+        </View>
+        <View style={styles.taxInfoPan}>
+          { <TaxList taxes={taxes}/> }
         </View>
         <View style={styles.rightBottomBar}>
           <View style={styles.customButtonContainer}>
-            
+            <View>
+              <TaxInfoButton onPress={() => alert('shit')}/>
+            </View>
             <View style={styles.punchedButtonPan}>
               <Text style={styles.total}>
                 <NumberFormat renderText={value => <Text style={{fontSize: 40}}>{value}</Text>} fixedDecimalScale={true} decimalScale={2} value={total} displayType={'text'} thousandSeparator={true} prefix={currency} />
@@ -147,12 +126,47 @@ const HomeScreen = props => {
   );
 }
 
+const TaxInfoButton = ({onPress}) => {
+  return (
+    <Button
+      onPress={onPress}
+      type="clear"
+      containerStyle={{padding: 10}}
+      icon={
+        <Icon
+          name={'info-circle'}
+          size={35}
+          color="gray"
+        />
+      }
+    />
+  )
+}
+
+const TaxList = ({taxes}) => {
+  return (
+    taxes.map((tax, i) => {
+        return (
+        <ListItem
+          key={i}
+          containerStyle={{}}
+          title={tax.name}
+          titleStyle={{fontSize: 25}}
+          rightTitle={String(tax.percent)+"%"}
+          rightTitleStyle={{fontSize: 25, fontWeight: 'bold', color: 'black'}}
+        />
+        )
+    })
+  )
+}
+
 function mapStateToProps(state) {
 	return {
     punched: state.punched,
     shelves: state.shelves,
     home: state.home,
-    settingsPrinter: state.settingsPrinter
+    settingsPrinter: state.settingsPrinter,
+    tax: state.tax,
 	}
 }
 
@@ -253,6 +267,11 @@ const styles = StyleSheet.create({
     textAlign: 'right',
     flexDirection: 'row'
   },
+  taxInfoPan: {
+    flex: 1, 
+    flexDirection: 'column', 
+    justifyContent: 'flex-end'
+  }
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(HomeScreen);

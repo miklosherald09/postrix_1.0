@@ -311,3 +311,14 @@ export function generateTransNo(){
   no = Math.floor(Math.random() * (ourMax - ourMin + 1)) + ourMin;
   return String(no % 999999).padStart(6, '0')
 }
+
+export function extractSqlData(sqlRes){
+  data = []
+  n = sqlRes.rows.length; i = 0;
+  while(n != 0){
+    data.push(sqlRes.rows.item(i))
+    n--; i++;
+  }
+
+  return data 
+}

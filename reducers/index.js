@@ -23,6 +23,7 @@ import itemColors from './itemColors'
 import users from './users'
 import cloud from './cloud'
 import settingsBackup from './settingsBackup'
+import tax from './tax'
 
 const rootReducer = combineReducers({
     home: home,
@@ -47,7 +48,8 @@ const rootReducer = combineReducers({
     itemColors: itemColors,
     users: users,
     cloud: cloud,
-    settingsBackup: settingsBackup
+    settingsBackup: settingsBackup,
+    tax: tax
 })
 
 export default rootReducer;

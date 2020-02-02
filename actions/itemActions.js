@@ -1,20 +1,16 @@
 import { csvJSON } from '../functions'
 import { ToastAndroid } from 'react-native';
-import { SET_SHELVE_ITEMS } from './shelvesActions'
+import { SET_SHELVE_ITEMS, SELECT_SHELVE_ITEM } from './shelvesActions'
 
 export const SAVE_ITEM_SUCCESS = 'SAVE_ITEM_SUCCESS'
 export const SAVE_ITEM_ERROR = 'SAVE_ITEM_ERROR'
-export const ITEM_INPUT_DUMP = 'ITEM_INPUT_DUMP'
+export const SAVE_ITEM_MODAL_VISIBLE = 'SAVE_ITEM_MODAL_VISIBLE'
+export const SELECT_ITEM = 'SELECT_ITEM'
 export const INPUT_NAME_SAVE = 'INPUT_NAME_SAVE'
 export const INPUT_BUYPRICE_SAVE = 'INPUT_BUYPRICE_SAVE'
 export const INPUT_SELLPRICE_SAVE = 'INPUT_SELLPRICE_SAVE'
 export const INPUT_BARCODE_SAVE = 'INPUT_BARCODE_SAVE'
 export const SET_ITEM_INPUT = 'SET_ITEM_INPUT'
-export const ADD_ITEM_MODAL_VISIBLE = 'ADD_ITEM_MODAL_VISIBLE'
-export const ADD_ITEM_MODAL_INVISIBLE = 'ADD_ITEM_MODAL_INVISIBLE'
-export const UPDATE_ITEM_MODAL_VISIBLE = 'UPDATE_ITEM_MODAL_VISIBLE'
-export const UPDATE_ITEM_MODAL_INVISIBLE = 'UPDATE_ITEM_MODAL_INVISIBLE'
-export const ADDITEM_MODAL_DUMP_INPUT = 'ADDITEM_MODAL_DUMP_INPUT'
 export const SYNC_GOOGLE_SHEETS = 'SYNC_GOOGLE_SHEETS'
 export const SYNC_GOOGLE_SHEET_ITEM = 'SYNC_GOOGLE_SHEET_ITEM'
 export const SYNC_GOOGLE_SHEET_BEGIN = 'SYNC_GOOGLE_SHEET_BEGIN'
@@ -33,41 +29,19 @@ export const GET_ITEMS_ERROR = 'GET_ITEMS_ERROR'
 export const SYNCED_ITEM = 'SYNCED_ITEM'
 export const REMOVING_UNUSED_ITEM = 'REMOVING_UNUSED_ITEM'
 export const SAVE_FIELD = 'SAVE_FIELD'
+export const ADD_ITEM_PROMPT = 'ADD_ITEM_PROMPT'
 
-export function itemInputDump() {
+export function selectItem(item){
   return {
-    type: ITEM_INPUT_DUMP,
+    type: SELECT_ITEM,
+    item: item
   }
 }
 
-export function addItemModalVisible(){
+export function saveItemModalVisible(visible){
   return {
-    type: ADD_ITEM_MODAL_VISIBLE
-  }
-}
-
-export function addItemModalInvisible() {
-  return {
-    type: ADD_ITEM_MODAL_INVISIBLE,
-  }
-}
-
-export function updateItemModalVisible(){
-  return {
-    type: UPDATE_ITEM_MODAL_VISIBLE
-  }
-}
-
-export function updateItemModalInvisible() {
-  return {
-    type: UPDATE_ITEM_MODAL_INVISIBLE,
-  }
-}
-
-export function setItemInput(item) {
-  return {
-    type: SET_ITEM_INPUT,
-    item: item,
+    type: SAVE_ITEM_MODAL_VISIBLE,
+    visible: visible
   }
 }
 
@@ -96,8 +70,8 @@ export function syncGoogleSheet() {
               if(!exists){
                 // INSERT NEW ITEM
                 tx.executeSql(
-                  `INSERT INTO items(name, barcode, buy_price, sell_price) VALUES(?, ?, ?, ?)`,
-                  [item.Name, item.Barcode, item.BuyPrice, item.SellPrice],
+                  `INSERT INTO items(name, barcode, buy_price, sell_price) VALUES(?, ?, ?, ?, ?)`,
+                  [item.Name, item.Barcode, item.BuyPrice, item.SellPrice, item.Tax],
                   function(_, res){
                     dispatch({type: SYNCED_ITEM, item: item})
                     if(index < items.length - 1){
@@ -116,8 +90,8 @@ export function syncGoogleSheet() {
               else{
                 // UPDATE ITEM
                 tx.executeSql(
-                  `UPDATE items set name=?, barcode=?, buy_price=? , sell_price=? WHERE id=?`,
-                  [item.Name, item.Barcode, item.BuyPrice, item.SellPrice, existsItem.id],
+                  `UPDATE items set name=?, barcode=?, buy_price=? , sell_price=?, tax_type=? WHERE id=?`,
+                  [item.Name, item.Barcode, item.BuyPrice, item.SellPrice, item.Tax, existsItem.id],
                   function(_, res){
                     
                     dispatch({type: SYNCED_ITEM, item: item})
@@ -165,6 +139,7 @@ export function syncGoogleSheet() {
       csvArray = csvJSON(text)
       // items = JSON.parse(csvArray).slice(0, 100)
       items = JSON.parse(csvArray)
+      console.log(items)
 
       async function synchronizeItems() {
 
@@ -315,9 +290,6 @@ export function getItems(){
     page = items.page
     offset = (page-1) * limit
 
-    console.log('fetching items: p: '+ page+' l: '+limit)
-    console.log('SELECT * FROM items ORDER BY name ASC LIMIT '+limit+' OFFSET '+offset)
-
     database.db.transaction( function(txn){
       txn.executeSql(`SELECT * FROM items ORDER BY name ASC LIMIT ? OFFSET ?`,
       [limit, offset],
@@ -342,24 +314,27 @@ export function getItems(){
   }
 }
 
-export function saveItem(item){
+export function saveItem(){
   
   return (dispatch, getState) => {
 
-    const { database } = getState()
+    const { database, items} = getState()
 
-    if(item.id == null || item.id == 0){
-
+    if(!items.selectedItem.id){
+      //create item 
       database.db.transaction(function(txn){
-        //create item 
         console.log('trying save item..')
         console.log(item)
-        txn.executeSql('INSERT INTO items(name, buy_price, sell_price, barcode) VALUES(?, ?, ?, ?)',
-        [item.name, item.buyPrice, item.sellPrice, item.barcode],
+        txn.executeSql('INSERT INTO items(name, buy_price, sell_price, barcode, tax_type) VALUES(?, ?, ?, ?, ?)',
+        [ items.selectedItem.name, 
+          items.selectedItem.buyPrice, 
+          items.selectedItem.sellPrice, 
+          items.selectedItem.barcode,
+          items.selectedItem.tax_type ],
         function(tx, res){
           console.log(item)
           dispatch({type: SAVE_ITEM_SUCCESS, item: item})
-          dispatch({type: ADD_ITEM_MODAL_INVISIBLE})
+          dispatch(saveItemModalVisible(false))
           console.log('item successfully saved');
         });
       },
@@ -373,15 +348,18 @@ export function saveItem(item){
       database.db.transaction(function(txn){
         //update item
         console.log('trying sa update item..');
-        console.log(item)
-        txn.executeSql('UPDATE items set name=?, barcode=?, buy_price=? , sell_price=? WHERE id=?',
-        [item.name, item.barcode, item.buyPrice, item.sellPrice, item.id], 
+        txn.executeSql('UPDATE items set name=?, barcode=?, buy_price=? , sell_price=?, tax_type = ? WHERE id=?',
+        [ items.selectedItem.name,
+          items.selectedItem.barcode, 
+          items.selectedItem.buyPrice, 
+          items.selectedItem.sellPrice,
+          items.selectedItem.tax_type,
+          items.selectedItem.id ], 
         function(tx, res){
-          dispatch(addItemModalInvisible());
-          dispatch({type: UPDATE_ITEM_MODAL_INVISIBLE})
+          console.log('success updating item')
           dispatch(refreshItemsList())
           dispatch(getItems())
-          console.log('success updating item');
+          dispatch(saveItemModalVisible(false))
         });
       },
       function(err){
@@ -495,5 +473,11 @@ export function saveField(field, value){
     type: SAVE_FIELD,
     field: field,
     value: value
+  }
+}
+
+export function addItemPrompt(){
+  return {
+    type: ADD_ITEM_PROMPT
   }
 }

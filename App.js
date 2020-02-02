@@ -10,6 +10,7 @@ import SignInGuard from './components/signInGuard'
 import { initShelves } from './actions/shelvesActions'
 import { initReportDate } from './actions/reportsActions'
 import { getUsers, initBindAccount } from './actions/usersActions'
+import { getTaxes } from './actions/taxActions'
 import codePush from "react-native-code-push"
 import { initGoogleSignIn } from './actions/cloudActions'
 
@@ -41,6 +42,7 @@ class App extends Component{
     store.dispatch(initShelves())
     store.dispatch(initReportDate())
     store.dispatch(initGoogleSignIn())
+    store.dispatch(getTaxes())
   }
 
   state = store.getState();

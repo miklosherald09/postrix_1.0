@@ -1,99 +1,83 @@
 import React from 'react'
 import { StyleSheet, Text, View, TouchableOpacity, Modal, Dimensions, Alert, TextInput, ToastAndroid } from 'react-native'
 import { connect } from 'react-redux'
-import { Field, reduxForm } from 'redux-form'
-import { submit } from 'redux-form'
-import { Input, Button } from 'react-native-elements'
+import { Button } from 'react-native-elements'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import { CloseButton, CheckButton } from '../../components/Common'
-import validate from '../../validations'
 import myStyles from '../../constants/styles'
-import { getItems, saveItem, deleteItem, saveField,	updateItemModalVisible as openModal, updateItemModalInvisible as closeModal } from '../../actions/itemActions'
+import { saveItem, deleteItem, saveField, saveItemModalVisible } from '../../actions/itemActions'
 import { deleteShelveItemByItemID } from '../../actions/shelvesActions'
 
 const screenWidth = Math.round(Dimensions.get('window').width)
 const screenHeight = Math.round(Dimensions.get('window').height)
 
-const UpdateItemModal = (props) => {
+const SaveItemModal = (props) => {
  
-  const { input, updateItemModalVisible } = props.items
-  
-  const submitField = (field, value) => {
-    console.log('field: '+field)
-    console.log('field: '+value)
-  
-    errors = []
-    if(field == 'name'){
-      if(value == ''){
-        errors.push(field + ' must have a value')    
-      }
-    }
-
-    if(field == 'barcode'){
-    }
-
-    if(field == 'buyPrice'){
-      if(value == ''){
-        errors.push(field + ' must have a value')    
-      }
-    }
-
-    if(field == 'sellPrice'){
-      if(value == ''){
-        errors.push(field + ' must have a value')    
-      }
-    }
-
-    console.log(errors)
-  
-    if(errors.length){
-      alert(errors.join(', '))
-    }
-    else{
-      props.saveField(field, value)
-    }
-  }
-
-	
+  const { selectedItem, saveItemModalVisible } = props.items
+  const { taxes } = props.tax
+  	
 	return (
 		<View style={styles.wrapper}>
 			<Modal
 				animationType="none"
 				transparent={true}
-				visible={updateItemModalVisible}
+				visible={saveItemModalVisible}
 				onRequestClose={() => {
 					alert('Modal has been closed.');
 				}}>
-				<TouchableOpacity activeOpacity={1} style={styles.touchable} onPress={ () => {props.setModalInvisible()}}>
+				<TouchableOpacity activeOpacity={1} style={styles.touchable} onPress={ () => {props.saveItemModalVisible(false)}}>
 					<TouchableOpacity activeOpacity={1} style={styles.container} >
 						<View style={styles.wrap} >
 							<View style={myStyles.headerPan}>
 								<View style={myStyles.headerLeft}>
-									<CloseButton onPress={ () => props.setModalInvisible() }/>
+									<CloseButton onPress={ () => props.saveItemModalVisible(false) }/>
 								</View>
 								<View style={myStyles.headerMiddle}>
-									<Text style={myStyles.headerModal}>EDIT ITEM</Text>
+									<Text style={myStyles.headerModal}>SAVE ITEM</Text>
 								</View>
 								<View style={myStyles.headerRight}>
-									<CheckButton onPress={() => props.saveItem(input)}/>
+									<CheckButton onPress={() => props.saveItem()}/>
 								</View>
 							</View>
 							<View style={styles.content}>
-
                 <View style={{marginBottom: 20}}>
-                  <UselessField key='input-name' style={myStyles.input1} label={'NAME'} defaultValue={input.name} onSubmitEditing={(e) => submitField('name', e.nativeEvent.text)} keyboardType="default"/>
+                  <UselessField key='input-name' style={myStyles.input1} label={'NAME'} defaultValue={selectedItem.name} onChange={(e) => props.saveField('name', e.nativeEvent.text)} keyboardType="default"/>
 								</View>
                 <View style={{marginBottom: 20}}>
-                  <UselessField key='input-barcode' style={myStyles.input1} label={'BARCODE'} defaultValue={input.barcode} onSubmitEditing={(e) => submitField('barcode', e.nativeEvent.text)} keyboardType="default" />
+                  <UselessField key='input-barcode' style={myStyles.input1} label={'BARCODE'} defaultValue={selectedItem.barcode} onChange={(e) => props.saveField('barcode', e.nativeEvent.text)} keyboardType="default" />
 								</View>
                 <View style={{flex: 1, flexDirection: 'row'}}>
                   <View style={{flex: 1, marginBottom: 20}}>
-                    <UselessField key='input-sellprice' style={myStyles.input1} label={'PRICE'} defaultValue={String(input.sellPrice)} onSubmitEditing={(e) => submitField('sellPrice', e.nativeEvent.text)} keyboardType="numeric" />
+                    <UselessField key='input-sellprice' style={myStyles.input1} label={'PRICE'} defaultValue={String(selectedItem.sellPrice)} onChange={(e) => props.saveField('sellPrice', e.nativeEvent.text)} keyboardType="numeric" />
 									</View>
                   <View style={{flex: 1, marginBottom: 20, marginRight: 20}}>
-                    <UselessField key='input-buyprice' style={myStyles.input1} label={'BASE PRICE'} defaultValue={String(input.buyPrice)} onSubmitEditing={(e) => submitField('buyPrice', e.nativeEvent.text)} keyboardType="numeric" />
+                    <UselessField key='input-buyprice' style={myStyles.input1} label={'BASE PRICE'} defaultValue={String(selectedItem.buyPrice)} onChange={(e) => props.saveField('buyPrice', e.nativeEvent.text)} keyboardType="numeric" />
 									</View>
 								</View>
+                <View style={{flex: 1, flexDirection: 'row'}}>
+                  <TaxButton
+                    onPress={() => props.saveField('tax_type', '')}
+                    itemTax={selectedItem.tax_type}
+                    key={-1}
+                    percent={""}
+                    name=""
+                    title={"None"}
+                  />
+                  {
+                    taxes.map((tax, i) => {
+                      return (
+                        <TaxButton
+                          onPress={() => props.saveField('tax_type', tax.name)} 
+                          itemTax={selectedItem.tax_type} 
+                          key={i} 
+                          percent={tax.percent} 
+                          name={tax.name} 
+                          title={tax.name+" "+ tax.percent+"%"}
+                        />
+                      )
+                    })
+                  }
+                </View>
                 <View style={{width: 100}}>
 									<DeleteButton onPress={() => props.deleteItem(input)}/>
                 </View>
@@ -108,19 +92,16 @@ const UpdateItemModal = (props) => {
 
 function mapStateToProps(state) {
 	return {
-		items: state.items,
+    items: state.items,
+    tax: state.tax
 	}
 }
 
 function mapDispatchToProps(dispatch) {
 	return {
-		setModalVisible: () => dispatch(openModal()),
-    setModalInvisible: () => dispatch(closeModal()),
+		saveItemModalVisible: (visible) => dispatch(saveItemModalVisible(visible)),
     saveField: (field, value) => dispatch(saveField(field, value)),
-    saveItem: (input) => {
-      dispatch(saveItem(input))
-      dispatch(getItems())
-    },
+    saveItem: () => { dispatch(saveItem())  },
     deleteItem: (item) => {
       Alert.alert(
         'Logout',
@@ -154,6 +135,7 @@ export class UselessField extends React.Component{
           style={this.props.style}
           defaultValue={this.props.defaultValue} 
           onSubmitEditing={this.props.onSubmitEditing} 
+          onChange={this.props.onChange}
           keyboardType={this.props.keyboardType}/>
       </View>
     )
@@ -180,6 +162,18 @@ export class DeleteButton extends React.Component{
       />
     )
   }
+}
+
+export const TaxButton = ({title, name, itemTax, onPress}) => {
+  return (
+    <Button
+      containerStyle={{flex: 1, padding: 10}}
+      title={title}
+      titleStyle={{fontSize: 22}}
+      onPress={onPress}
+      type={itemTax.toUpperCase() == name.toUpperCase()?'outline':'clear'}
+    />
+  )
 }
 
 const styles = StyleSheet.create({
@@ -263,4 +257,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(UpdateItemModal)
+export default connect(mapStateToProps, mapDispatchToProps)(SaveItemModal)

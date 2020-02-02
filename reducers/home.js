@@ -1,11 +1,12 @@
 import {
   CONTENT_SHELVES,
-  CONTENT_CHARGE,
-  CHANGE_ACTIVE_CONTENT
+  CHANGE_ACTIVE_CONTENT,
+  TAX_DETAILS_VISIBLE
 } from '../actions/homeActions'
 
 const initialState = {
   activeContent: CONTENT_SHELVES,
+  taxDetailsVisible: false,
 }
 
 export default function homeReducer(state = initialState, action) {
@@ -16,6 +17,13 @@ export default function homeReducer(state = initialState, action) {
       return {
         ...state,
         activeContent: action.activeContent
+      }
+    }
+
+    case TAX_DETAILS_VISIBLE: {
+      return {
+        ...state,
+        taxDetailsVisible: action.visible
       }
     }
 

@@ -234,9 +234,6 @@ export function getBackupList(){
         })
       })
 
-      console.log("backups!")
-      console.log(backups)
-
       dispatch({type: GET_BACKUP_LIST_SUCCESS, backups: backups})
 
     }).catch(function(error) {

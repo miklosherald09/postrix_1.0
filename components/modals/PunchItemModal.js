@@ -6,6 +6,7 @@ import { CloseButton, CheckButton } from '../Common'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import { currency as curr } from '../../constants/constants'
 import { punchedItemCount, punchItemInvisible, deletePunchItem } from '../../actions/punchedActions'
+import { computeTaxValues } from '../../actions/taxActions'
 import NumberFormat from 'react-number-format'
 import myStyles from '../../constants/styles'
 
@@ -106,7 +107,11 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
 	return {
-		punchedItemCount: (val) => { dispatch(punchedItemCount(val)) },
+		punchedItemCount: (val) => { 
+			dispatch(punchedItemCount(val)),
+			dispatch(computeTaxValues())
+			// setTimeout(() => 	dispatch(computeTaxValues()), 3000)
+		},
 		punchItemInvisible: () => { dispatch(punchItemInvisible()) },
 		deletePunchItem: () => { 
 			dispatch(deletePunchItem()),

@@ -6,9 +6,9 @@ import { payModalInvisible, setPayment, PAY_MODAL_VISIBLE, PAY_MODAL_INVISIBLE }
 import { resetPunched } from '../../actions/punchedActions'
 import { payChangeModalVisible, computeChange } from '../../actions/payChangeActions'
 import { addTransaction } from '../../actions/transactionActions'
-import { printReceipt as printReceiptAction } from '../../actions/receiptActions'
 import { togglePrintButton, resetPayment } from '../../actions/payActions'
 import { openCashDrawer } from '../../actions/cashDrawerActions'
+import { resetTaxValues } from '../../actions/taxActions'
 import { CustomKeyboard } from '../../components/natives/CustomKeyboard'
 import { currency } from '../../constants/constants'
 import { CloseButton } from '../../components/Common'
@@ -125,6 +125,7 @@ function mapDispatchToProps(dispatch) {
       dispatch(addTransaction(values))
       dispatch(computeChange(values))
       dispatch(resetPunched())
+      dispatch(resetTaxValues())
       dispatch(openCashDrawer())
     } 
 	}

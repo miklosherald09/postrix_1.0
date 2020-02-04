@@ -23,33 +23,9 @@ export default function punchedReducer(state = initialState, action) {
 
     case PUNCH: {
       
-      punchedArr = [];
-      doublePunch = false;
-      newState = [];
-      newItem = {};
-
-      const newPunch = state.punched.map((item, i) => {
-        if(item.id == action.item.id){
-          doublePunch = true;
-          return {
-            ...item, 
-            count: item.count + 1,
-            accruePrice: item.accruePrice + item.sellPrice
-          };
-        }
-        return item;
-      })
-
-      if(!doublePunch){
-        itemToPush = [...newPunch, action.item];
-      }
-      else{
-        itemToPush = [...newPunch];
-      }
-
       return {
         ...state,
-        punched: itemToPush,
+        punched: action.itemToPush,
         total: state.total + action.item.accruePrice
       }
     }

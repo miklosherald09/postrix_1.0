@@ -1,3 +1,5 @@
+import { computeTaxValues } from './taxActions'
+
 export const PUNCHED_ITEM_BEGIN   = 'PUNCHED_ITEM_BEGIN'
 export const PUNCH = 'PUNCH'
 export const RESET_PUNCHED = 'RESET_PUNCHED'
@@ -6,6 +8,7 @@ export const PUNCH_ITEM_VISIBLE = 'PUNCH_ITEM_VISIBLE'
 export const PUNCH_ITEM_INVISIBLE = 'PUNCH_ITEM_INVISIBLE'
 export const SET_SELECTED_ITEM = 'SET_SELECTED_ITEM'
 export const DELETE_PUNCHED_ITEM = 'DELETE_PUNCHED_ITEM'
+export const UPDATE_TAXES = 'UPDATE_TAXES'
 
 export function punchItemBegin() {
   return {
@@ -21,12 +24,42 @@ export function resetPunched() {
 
 export function punch(item) {
 
-  item.accruePrice = item.sellPrice
-  item.count =  1
+  return (dispatch, getState) => {
 
-  return {
-    type: PUNCH,
-    item: item,
+    const { punched, tax } = getState()
+
+    item.accruePrice = item.sellPrice
+    item.count =  1
+
+    punchedArr = []
+    doublePunch = false
+    newState = []
+    newItem = {}
+    taxType = ""
+    vatableAmount = 0
+
+    const newPunch = punched.punched.map((v, i) => {
+      if(item.id == v.id){
+        doublePunch = true
+        return {
+          ...v,
+          count: v.count + 1,
+          accruePrice: v.accruePrice + v.sellPrice
+        };
+      }
+      return v;
+    })
+  
+    if(!doublePunch){
+      itemToPush = [...newPunch, item];
+    }
+    else{
+      itemToPush = [...newPunch];
+    }
+
+    dispatch({ type: PUNCH, itemToPush: itemToPush, item: item })
+    dispatch(computeTaxValues())
+
   }
 }
 

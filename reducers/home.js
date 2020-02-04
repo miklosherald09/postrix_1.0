@@ -1,7 +1,8 @@
 import {
   CONTENT_SHELVES,
   CHANGE_ACTIVE_CONTENT,
-  TAX_DETAILS_VISIBLE
+  TAX_DETAILS_VISIBLE,
+  TAX_DETAILS_TOGGLE
 } from '../actions/homeActions'
 
 const initialState = {
@@ -24,6 +25,13 @@ export default function homeReducer(state = initialState, action) {
       return {
         ...state,
         taxDetailsVisible: action.visible
+      }
+    }
+
+    case TAX_DETAILS_TOGGLE: {
+      return {
+        ...state,
+        taxDetailsVisible: !state.taxDetailsVisible
       }
     }
 

@@ -212,7 +212,17 @@ export function getShelveItems(){
       params = [limit, offset]
     }
     else{
-      query = `SELECT * FROM shelve_items LEFT JOIN items ON items.id = shelve_items.item_id WHERE shelve_items.shelve_id = ? ORDER BY items.name ASC LIMIT ? OFFSET ?`
+      query = `SELECT * 
+                FROM shelve_items 
+                LEFT JOIN items 
+                ON items.id = shelve_items.item_id 
+                LEFT JOIN taxes
+                ON upper(items.tax_type) = upper(taxes.name)
+                WHERE shelve_items.shelve_id = ? 
+                ORDER BY items.name 
+                ASC 
+                LIMIT ? 
+                OFFSET ?`
       params = [shelves.activeShelve.id, limit, offset]
     }
 
@@ -222,15 +232,19 @@ export function getShelveItems(){
       function(tx, res){
         itemsList = []
         for (i = 0; i < res.rows.length; ++i) {
-          itemsList.push({
-            barcode: res.rows.item(i).barcode,
-            buyPrice: parseInt(res.rows.item(i).buy_price),
-            datetime: res.rows.item(i).datetime,
-            id: res.rows.item(i).item_id,
-            name: res.rows.item(i).name,
-            sellPrice: parseInt(res.rows.item(i).sell_price),
-            color: res.rows.item(i).color,
-          })
+          
+
+          item = res.rows.item(i)
+          // console.log(item)
+          item.buyPrice = parseInt(res.rows.item(i).buy_price)
+          item.sellPrice = parseInt(res.rows.item(i).sell_price)
+          item.taxType = res.rows.item(i).tax_type
+
+          delete item.buy_price
+          delete item.tax_type
+          delete item.sell_price
+
+          itemsList.push(item)
         }
 
         dispatch({type: GET_SHELVE_ITEMS_SUCCESS, items: itemsList})

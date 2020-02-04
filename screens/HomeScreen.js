@@ -1,6 +1,6 @@
 import React from 'react'
 import { StyleSheet, Text, View, Alert } from 'react-native'
-import { Button, Tooltip, ListItem } from 'react-native-elements'
+import { Button, Divider, ListItem } from 'react-native-elements'
 import { connect } from 'react-redux'
 import { MenuButton } from '../components/MenuButton'
 import PayModal from '../components/modals/PayModal'
@@ -16,7 +16,7 @@ import AddShelveItemsModal from '../components/modals/AddShelveItemsModal'
 import ItemColorsModal from '../components/modals/ItemColorsModal'
 import SaveChargeModal from '../components/modals/SaveChargeModal'
 import { AddShelveButton, ChargeButton, ShelveButton, ItemSearchButton, PayButton } from './HomeScreenComponents'
-import { CONTENT_SHELVES, CONTENT_CHARGE, changeActiveContent } from '../actions/homeActions'
+import { CONTENT_SHELVES, CONTENT_CHARGE, changeActiveContent, taxDetailsToggle } from '../actions/homeActions'
 import { addModalVisible, getShelveItems, selectShelve, deleteShelve, getShelveItemsRefresh, shelveModalVisible } from '../actions/shelvesActions'
 import { modalVisible } from '../actions/itemSearchActions'
 import { payModalVisible } from '../actions/payActions'
@@ -32,9 +32,8 @@ const HomeScreen = props => {
 
   const { total } = props.punched
   const { shelves, activeShelve } = props.shelves
-  const { activeContent } = props.home
-  const { taxes } = props.tax
-  const {  } = props.
+  const { activeContent, taxDetailsVisible } = props.home
+  const { taxes, vatableAmount } = props.tax
 
   searchText = '' 
   timeout = null
@@ -92,13 +91,13 @@ const HomeScreen = props => {
         <View style={{flex: 3, padding: 10}}>
           <PunchedItemList />
         </View>
-        <View style={styles.taxInfoPan}>
-          { <TaxList taxes={taxes}/> }
-        </View>
+        
+          { taxDetailsVisible?<TaxList taxes={taxes} vatableAmount={vatableAmount}/>:null }
+        
         <View style={styles.rightBottomBar}>
           <View style={styles.customButtonContainer}>
             <View>
-              <TaxInfoButton onPress={() => alert('shit')}/>
+              <TaxInfoButton onPress={() => props.taxDetailsToggle()}/>
             </View>
             <View style={styles.punchedButtonPan}>
               <Text style={styles.total}>
@@ -143,20 +142,49 @@ const TaxInfoButton = ({onPress}) => {
   )
 }
 
-const TaxList = ({taxes}) => {
+const TaxList = ({taxes, vatableAmount}) => {
   return (
-    taxes.map((tax, i) => {
-        return (
-        <ListItem
-          key={i}
-          containerStyle={{}}
-          title={tax.name}
-          titleStyle={{fontSize: 25}}
-          rightTitle={String(tax.percent)+"%"}
-          rightTitleStyle={{fontSize: 25, fontWeight: 'bold', color: 'black'}}
-        />
-        )
-    })
+    <View style={styles.taxInfoPan}>
+      <Divider style={{ backgroundColor: '#CCC' }} />
+      { taxes.map((tax, i) => {
+          return (
+            <ListItem
+              key={i}
+              containerStyle={{paddingTop: 5, paddingBottom: 5}}
+              title={tax.name+ " sales"}
+              titleStyle={{fontSize: 20}}
+              rightTitle={
+                <NumberFormat 
+                  renderText={value => <Text style={{fontSize: 25}}>{value}</Text>} 
+                  fixedDecimalScale={true} 
+                  decimalScale={2} 
+                  value={tax.accrueTax?tax.accrueTax:0} 
+                  displayType={'text'} 
+                  thousandSeparator={true} 
+                  prefix={currency} />
+              }
+              rightTitleStyle={{fontSize: 20, fontWeight: 'bold', color: 'black'}}
+            />
+          )
+        }) }
+      <ListItem
+        key={i}
+        containerStyle={{paddingTop: 5, paddingBottom: 5}}
+        title={"VATABLE Amount"}
+        titleStyle={{fontSize: 20}}
+        rightTitle={
+          <NumberFormat
+            renderText={value => <Text style={{fontSize: 25}}>{value}</Text>} 
+            fixedDecimalScale={true} 
+            decimalScale={2} 
+            value={vatableAmount} 
+            displayType={'text'} 
+            thousandSeparator={true} 
+            prefix={currency} />
+        }
+        rightTitleStyle={{fontSize: 20, fontWeight: 'bold', color: 'black'}}
+      />
+    </View>
   )
 }
 
@@ -207,7 +235,8 @@ function mapDispatchToProps(dispatch) {
       }],
       {cancelable: false} )
     },
-    shelveModalVisible: (v) => dispatch(shelveModalVisible(v))
+    shelveModalVisible: (v) => dispatch(shelveModalVisible(v)),
+    taxDetailsToggle: () => dispatch(taxDetailsToggle())
   }
 }
 
@@ -270,7 +299,8 @@ const styles = StyleSheet.create({
   taxInfoPan: {
     flex: 1, 
     flexDirection: 'column', 
-    justifyContent: 'flex-end'
+    justifyContent: 'flex-end',
+    marginTop: 10,
   }
 });
 

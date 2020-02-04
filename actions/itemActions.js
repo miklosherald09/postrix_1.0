@@ -67,10 +67,12 @@ export function syncGoogleSheet() {
               exists = res.rows.item(0) ? true:false
               existsItem = res.rows.item(0)
 
+              console.log(exists?'true':'false')
+
               if(!exists){
                 // INSERT NEW ITEM
                 tx.executeSql(
-                  `INSERT INTO items(name, barcode, buy_price, sell_price) VALUES(?, ?, ?, ?, ?)`,
+                  `INSERT INTO items(name, barcode, buy_price, sell_price, tax_type) VALUES(?, ?, ?, ?, ?)`,
                   [item.Name, item.Barcode, item.BuyPrice, item.SellPrice, item.Tax],
                   function(_, res){
                     dispatch({type: SYNCED_ITEM, item: item})
@@ -83,6 +85,7 @@ export function syncGoogleSheet() {
                     }
                   },
                   function(err){
+                    console.log(error)
                     reject({msg: 'error!', err: err})
                   }
                 )
@@ -144,7 +147,12 @@ export function syncGoogleSheet() {
       async function synchronizeItems() {
 
         let resolvedFinalArray = await Promise.all(items.map(async (item, i) => { // map instead of forEach
+
+          // console.log(item)
+
           const result = await _syncItem(items, item, i)
+
+          console.log('watasiht')
           
           finalValue = {}
           finalValue.item = result.item;
@@ -157,7 +165,8 @@ export function syncGoogleSheet() {
 
     })
     .catch((error) => {
-      dispatch({type: SYNC_GOOGLE_SHEET_FAIL});
+      console.log(error)
+      dispatch({type: SYNC_GOOGLE_SHEET_FAIL})
     });
 
   }

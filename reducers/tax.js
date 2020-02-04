@@ -5,13 +5,17 @@ import {
   SAVE_TAX_SUCCESS,
   ADD_TAX_PROMPT,
   GET_TAXES_SUCCESS,
-  DELETE_TAX_SUCCESS
+  DELETE_TAX_SUCCESS,
+  SAVE_TAXES_SUCCESS,
+  COMPUTE_TAX_VALUES_SUCCESS,
+  RESET_TAX_VALUES_SUCCESS
 } from '../actions/taxActions'
 
 const initialState = {
   taxes: [],
   taxModalVisible: false,
-  selectedTax: {}
+  selectedTax: {},
+  vatableAmount: 0
 }
 
 export default function usersReducer(state = initialState, action) {
@@ -55,6 +59,14 @@ export default function usersReducer(state = initialState, action) {
       }
     }
 
+    case SAVE_TAXES_SUCCESS: {
+      return {
+        ...state,
+        taxes: action.taxes,
+        vatableAmount: action.vatableAmount
+      }
+    }
+
     case GET_TAXES_SUCCESS: {
       return {
         ...state,
@@ -66,6 +78,22 @@ export default function usersReducer(state = initialState, action) {
       return {
         ...state,
         taxModalVisible: false
+      }
+    }
+
+    case COMPUTE_TAX_VALUES_SUCCESS: {
+      return {
+        ...state,
+        taxes: action.taxes,
+        vatableAmount: action.vatableAmount
+      }
+    }
+
+    case RESET_TAX_VALUES_SUCCESS: {
+      return {
+        ...state,
+        taxes: action.taxes,
+        vatableAmount: 0
       }
     }
 

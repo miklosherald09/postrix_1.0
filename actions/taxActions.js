@@ -10,6 +10,9 @@ export const SAVE_INPUT = 'SAVE_INPUT'
 export const SAVE_TAX_SUCCESS = 'SAVE_TAX_SUCCESS'
 export const GET_TAXES_SUCCESS = 'GET_TAXES_SUCCESS'
 export const DELETE_TAX_SUCCESS = 'DELETE_TAX_SUCCESS'
+export const SAVE_TAXES_SUCCESS = 'SAVE_TAXES_SUCCESS'
+export const COMPUTE_TAX_VALUES_SUCCESS = 'COMPUTE_TAX_VALUES_SUCCESS'
+export const RESET_TAX_VALUES_SUCCESS = 'RESET_TAX_VALUES_SUCCESS'
 
 export function taxModalVisible(visible) {
   return {
@@ -119,4 +122,49 @@ export function deleteTax(id){
     console.log(err)
   })
  } 
+}
+
+export function computeTaxValues(){
+  return (dispatch, getState) => {
+
+    const { tax, punched } = getState()
+    
+    dispatch(resetTaxValues())
+    vatableAmount = 0
+
+    punched.punched.map((item, i) => {
+      console.log(item)
+      if(item.taxType){
+        tax.taxes.map((v, i) => {
+          if(v.name.toUpperCase() == item.taxType.toUpperCase()){
+            initialAccrueTax = taxes[i].accrueTax?taxes[i].accrueTax:0
+            taxes[i].accrueTax = initialAccrueTax + ((item.accruePrice * (v.percent/100)) / 1.12)
+
+            vatableAmount = punched.total -  taxes[i].accrueTax
+          }
+        })
+      }
+    })
+
+    dispatch({
+      type: COMPUTE_TAX_VALUES_SUCCESS, 
+      taxes: taxes,
+      vatableAmount: vatableAmount
+    })
+  }
+}
+
+export function resetTaxValues(){
+  return (dispatch, getState) => {
+
+    const { tax } = getState()
+
+    taxes = []
+    tax.taxes.map((v, i) => {
+      tax.taxes[i].accrueTax = 0
+      taxes.push(tax.taxes[i])
+    })
+
+    dispatch({type: RESET_TAX_VALUES_SUCCESS, taxes: taxes })
+  }
 }

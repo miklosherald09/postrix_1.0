@@ -1,6 +1,8 @@
-import { printReceipt as printReceiptAction } from './receiptActions'
 import { firebase } from '@react-native-firebase/auth'
 import firestore from '@react-native-firebase/firestore'
+import { printReceipt as printReceiptAction } from './receiptActions'
+import { resetTaxValues } from './taxActions'
+
 
 export const ADD_TRANSACTION = 'ADD_TRANSACTION'
 export const ADD_TRANSACTION_SUCCESS = 'ADD_TRANSACTION_SUCCESS'
@@ -68,7 +70,7 @@ export const addTransaction1 = ({payment, total, punched, printReceipt }) => {
   }
 }
 
-export const addTransaction = ({payment, total, punched, printReceipt }) => {
+export const addTransaction = ({payment, total, punched, printReceipt, taxes }) => {
 
   return (dispatch, getState) => {
 
@@ -87,12 +89,16 @@ export const addTransaction = ({payment, total, punched, printReceipt }) => {
           total: total,
           punched: punched,
           printed: 0,
+          taxes: taxes,
           datetime: Date.now(),
         }
 
         if(printReceipt == true){
           console.log('trying to print recipt')
           dispatch(printReceiptAction(transaction))
+        }
+        else{
+          dispatch(resetTaxValues())
         }
 
         dispatch({type: ADD_TRANSACTION_SUCCESS, transaction: transaction})

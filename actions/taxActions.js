@@ -125,22 +125,24 @@ export function deleteTax(id){
 }
 
 export function computeTaxValues(){
-  return (dispatch, getState) => {
+  
+  return async (dispatch, getState) => {
 
     const { tax, punched } = getState()
     
-    dispatch(resetTaxValues())
-    vatableAmount = 0
-
+    await new Promise((resolve, reject) => {
+      dispatch(resetTaxValues())
+      resolve('done!')
+    })
+    
     punched.punched.map((item, i) => {
-      console.log(item)
       if(item.taxType){
         tax.taxes.map((v, i) => {
           if(v.name.toUpperCase() == item.taxType.toUpperCase()){
-            initialAccrueTax = taxes[i].accrueTax?taxes[i].accrueTax:0
-            taxes[i].accrueTax = initialAccrueTax + ((item.accruePrice * (v.percent/100)) / 1.12)
-
-            vatableAmount = punched.total -  taxes[i].accrueTax
+            itemTotalValue = item.count * item.sellPrice
+            taxes[i].amount = ((itemTotalValue * (v.percent/100)) / 1.12)
+            taxes[i].net = punched.total - taxes[i].amount
+            // console.log(taxes[i])
           }
         })
       }
@@ -149,7 +151,6 @@ export function computeTaxValues(){
     dispatch({
       type: COMPUTE_TAX_VALUES_SUCCESS, 
       taxes: taxes,
-      vatableAmount: vatableAmount
     })
   }
 }
@@ -161,7 +162,8 @@ export function resetTaxValues(){
 
     taxes = []
     tax.taxes.map((v, i) => {
-      tax.taxes[i].accrueTax = 0
+      tax.taxes[i].amount = 0
+      tax.taxes[i].net = 0
       taxes.push(tax.taxes[i])
     })
 

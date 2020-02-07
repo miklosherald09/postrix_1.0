@@ -12,6 +12,7 @@ import SettingsItemsScreen from '../screens/SettingsItemsScreen'
 import SettingsUsersScreen from '../screens/SettingsUsersScreen'
 import SettingsBackupScreen from '../screens/SettingsBackupScreen'
 import SettingsTaxScreen from '../screens/SettingsTaxScreen'
+import SettingsDiscountScreen from '../screens/SettingsDiscountScreen'
 import DebuggerScreen from '../screens/DebuggerScreen'
 import PinScreen from '../components/MenuDrawer'
 import MenuDrawer from '../components/MenuDrawer'
@@ -70,6 +71,12 @@ const SettingsStack = createStackNavigator({
   },
   SettingsTax: {
     screen: SettingsTaxScreen,
+    navigationOptions: {
+      header: null
+    },
+  },
+  Settings: {
+    screen: SettingsDiscountScreen,
     navigationOptions: {
       header: null
     },

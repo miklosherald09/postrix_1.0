@@ -85,7 +85,6 @@ export default function usersReducer(state = initialState, action) {
       return {
         ...state,
         taxes: action.taxes,
-        vatableAmount: action.vatableAmount
       }
     }
 

@@ -36,7 +36,7 @@ const ShelveItemsList = (props) => {
       return (
         <View style={styles.itemBoxPan}>
           <TouchableHighlight
-            onLongPress={() => props.selectItem(item) }
+            // onLongPress={() => props.selectItem(item) }
             onPress={() => {props.punch(item)}} >
             <View style={{...styles.itemBox, backgroundColor: bgcolor,}}>
               <Text style={{...styles.barcode, color: txcolor}}>{item.barcode}</Text>

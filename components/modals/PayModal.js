@@ -22,8 +22,9 @@ const screenHeight = Math.round(Dimensions.get('window').height);
 
 const PayModal = (props) => {
  
-  const { payModalVisible, payment, printReceipt } = props.pay;
-  const { total, punched } = props.punched;
+  const { payModalVisible, payment, printReceipt } = props.pay
+  const { total, punched } = props.punched
+  const { taxes } = props.tax
 
 	return (
 		<View style={styles.wrapper}>
@@ -74,7 +75,7 @@ const PayModal = (props) => {
                       title={printReceipt?'print':'unprint'}
                       titleStyle={{fontSize: 20, fontWeight: 'normal', color: '#666', marginLeft: 10, marginVertical: 5}}
                     />
-                    <TouchableOpacity onPress={ () => props.submit({payment, total, punched, printReceipt}) } title="PAY">
+                    <TouchableOpacity onPress={ () => props.submit({payment, total, punched, printReceipt, taxes}) } title="PAY">
                       <View style={{marginHorizontal: 15, height: 80, backgroundColor: '#2089dc', borderRadius: 5, justifyContent: 'center', alignItems: 'center'}}>
                         <Text style={{color: 'white', fontSize: 30, fontWeight: 'bold', textAlign: 'center'}}>PAY</Text>
                       </View>
@@ -107,6 +108,7 @@ function mapStateToProps(state) {
 	return {
     pay: state.pay,
     punched: state.punched,
+    tax: state.tax
 	}
 }
 
@@ -125,7 +127,7 @@ function mapDispatchToProps(dispatch) {
       dispatch(addTransaction(values))
       dispatch(computeChange(values))
       dispatch(resetPunched())
-      dispatch(resetTaxValues())
+      // dispatch(resetTaxValues())
       dispatch(openCashDrawer())
     } 
 	}

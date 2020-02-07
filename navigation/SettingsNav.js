@@ -24,6 +24,7 @@ const SettingsNav = (props) => {
         {linkPermission('Settings_Items', userType)?navLink('SettingsItems', 'Items'):null}
         {linkPermission('SettingsUsers', userType)?navLink('SettingsUsers', 'Users'):null}
         {linkPermission('SettingsTax', userType)?navLink('SettingsTax', 'Tax'):null}
+        {linkPermission('SettingsDiscounts', userType)?navLink('SettingsDiscounts', 'Discounts'):null}
         {linkPermission('SettingsPrinter', userType)?navLink('SettingsPrinter', 'Printer'):null}
         {linkPermission('SettingsBackup', userType)?navLink('SettingsBackup', 'Backup & Recovery'):null}
       </View>

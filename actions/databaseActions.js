@@ -16,6 +16,7 @@ export function initDatabase() {
     dispatch(addReceiptNoField())
     dispatch(addItemTaxTypeField())
     dispatch(taxesTable())
+    // dispatch(insertTaxes())
   }
 }
 

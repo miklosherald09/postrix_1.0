@@ -3,10 +3,10 @@ import { StyleSheet, View, TouchableOpacity, ScrollView } from 'react-native'
 import { connect } from 'react-redux'
 import { MenuButton } from '../components/MenuButton'
 import SettingsNav from '../navigation/SettingsNav'
-import { taxModalVisible, selectTax, addTaxPrompt, getTaxes } from '../actions/taxActions'
+import { discountModalVisible, selectDiscount, addDiscountPrompt, getDiscounts } from '../actions/discountActions'
 import { Card, Avatar, ListItem } from 'react-native-elements'
 import { AddButton } from '../components/Common'
-import TaxModal from  '../components/modals/TaxModal'
+import DiscountModal from  '../components/modals/DiscountModal'
 
 const SettingsDiscountScreen = props => {
 
@@ -18,7 +18,7 @@ const SettingsDiscountScreen = props => {
 		props.navigation.openDrawer()
 	}
 
-  const { taxes } = props.tax
+  const { discounts } = props.discount
 
   return (
     <View style={styles.wrapper}>
@@ -36,15 +36,15 @@ const SettingsDiscountScreen = props => {
         <View style={styles.rightContent}>
           <Card 
             style={{flex: 1}}
-            title="Tax"
+            title="Discounts"
             titleStyle={{fontSize: 20}} >
-              <ScrollView>
+            <ScrollView>
             {
-              taxes.map((u, i) => {
+              discounts.map((u, i) => {
                 return (
-                  <TouchableOpacity key={'tax-' + i} onPress={() => props.selectTax(u)}>
+                  <TouchableOpacity key={'tax-' + i} onPress={() => props.selectDiscount(u)}>
                   <ListItem
-                    title={u.name + ' - ' + u.percent+'%'}
+                    title={u.name + ' - ' + u.value}
                     titleStyle={{fontSize: 20}}
                     leftAvatar = {
                       <Avatar
@@ -61,30 +61,30 @@ const SettingsDiscountScreen = props => {
             </ScrollView>
           </Card>
           <View style={{position: 'absolute', bottom: 0, right: 0, margin: 20}}>
-            <AddButton onPress={() => props.addTaxPrompt()}/>
+            <AddButton onPress={() => props.addDiscountPrompt()}/>
           </View>
         </View>
       </View>
-      <TaxModal />
+      <DiscountModal />
     </View>
   );
 }
 
 function mapStateToProps(state) {
 	return {
-    tax: state.tax,
+    discount: state.discount,
 	}
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    getTaxes: () => dispatch(getTaxes()),
-    selectTax: (val) => {
-      dispatch(selectTax(val))
-      dispatch(taxModalVisible(true))
+    getDiscounts: () => dispatch(getDiscounts()),
+    selectDiscount: (val) => {
+      dispatch(selectDiscount(val))
+      dispatch(discountModalVisible(true))
     },
-    taxModalVisible: () => dispatch(taxModalVisible(true)),
-    addTaxPrompt: () => dispatch(addTaxPrompt())
+    discountModalVisible: () => dispatch(discountModalVisible(true)),
+    addDiscountPrompt: () => dispatch(addDiscountPrompt())
   }
 }
 

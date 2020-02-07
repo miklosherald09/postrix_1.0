@@ -22,9 +22,9 @@ const DrawerConfig = {
     drawerPosition: 'left',
     drawerBackgroundColor: 'transparent',
     overlayColor: 'rgba(0, 0, 0, .8)',
-    initialRouteName: 'Home',
+    // initialRouteName: 'Home',
     // initialRouteName: 'Items',
-    // initialRouteName: 'Settings',
+    initialRouteName: 'Settings',
     // initialRouteName: 'SettingsBackup',
     // initialRouteName: 'Transactions',
     // initialRouteName: 'Reports',
@@ -75,7 +75,7 @@ const SettingsStack = createStackNavigator({
       header: null
     },
   },
-  Settings: {
+  SettingsDiscounts: {
     screen: SettingsDiscountScreen,
     navigationOptions: {
       header: null

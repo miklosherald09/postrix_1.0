@@ -13,6 +13,7 @@ import { getUsers, initBindAccount } from './actions/usersActions'
 import { getTaxes } from './actions/taxActions'
 import codePush from "react-native-code-push"
 import { initGoogleSignIn } from './actions/cloudActions'
+import { getDiscounts } from './actions/discountActions'
 
 
 /**
@@ -26,6 +27,7 @@ import { initGoogleSignIn } from './actions/cloudActions'
  */
 
 import configureStore from './store'
+
 
 const store = configureStore()
 
@@ -43,6 +45,7 @@ class App extends Component{
     store.dispatch(initReportDate())
     store.dispatch(initGoogleSignIn())
     store.dispatch(getTaxes())
+    store.dispatch(getDiscounts())
   }
 
   state = store.getState();

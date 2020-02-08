@@ -5,64 +5,62 @@ import { Button } from 'react-native-elements'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import { CloseButton, CheckButton, DeleteButton,  } from '../../components/Common'
 import myStyles from '../../constants/styles'
-import { discountModalVisible, saveDiscountInput, saveDiscount, deleteDiscount, saveDiscountTypeInput } from '../../actions/discountActions'
+import { taxModalVisible, saveInput, saveTax, deleteTax } from '../../actions/taxActions'
+import { chargeDiscountModalVisible } from '../../actions/discountActions'
 import { capitalize } from '../../functions'
 
 const screenWidth = Math.round(Dimensions.get('window').width)
 const screenHeight = Math.round(Dimensions.get('window').height)
 
-const DiscountModal = (props) => {
+const ChargeDiscountModal = (props) => {
  
-  const { discountModalVisible, selectedDiscount } = props.discount
+  const { taxModalVisible, selectedTax } = props.tax
+  const { chargeDiscountModalVisible, discounts } = props.discount
   
 	return (
 		<View style={styles.wrapper}>
 			<Modal
 				animationType="none"
 				transparent={true}
-				visible={discountModalVisible}
-				onRequestClose={() => {  props.discountModalVisible(false) 	}}>
-				<TouchableOpacity activeOpacity={1} style={styles.touchable} onPress={ () => {props.discountModalVisible(false)}}>
+				visible={chargeDiscountModalVisible}
+				onRequestClose={() => {  props.chargeDiscountModalVisible(false) 	}}>
+				<TouchableOpacity activeOpacity={1} style={styles.touchable} onPress={ () => {props.chargeDiscountModalVisible(false)}}>
 					<TouchableOpacity activeOpacity={1} style={styles.container} >
 						<View style={styles.wrap} >
 							<View style={myStyles.headerPan}>
 								<View style={myStyles.headerLeft}>
-									<CloseButton onPress={ () => props.discountModalVisible(false) }/>
+									<CloseButton onPress={ () => props.chargeDiscountModalVisible(false) }/>
 								</View>
 								<View style={myStyles.headerMiddle}>
-									<Text style={myStyles.headerModal}>DISCOUNT</Text>
+									<Text style={myStyles.headerModal}>Charge Discount</Text>
 								</View>
 								<View style={myStyles.headerRight}>
-									<CheckButton onPress={() => props.saveDiscount()}/>
+									<CheckButton onPress={() => props.saveTax()}/>
 								</View>
 							</View>
 							<View style={styles.content}>
-                <View style={{marginBottom: 20, flex: 1 }}>
-                  <UselessField style={myStyles.input1} defaultValue={selectedDiscount.name} label={'Name'} onChange={(e) => props.saveDiscountInput('name', e.nativeEvent.text)} keyboardType="default"/>
-                  <UselessField style={{...myStyles.input1, width: 100}} defaultValue={String(selectedDiscount.value)} label={'Value'} onChange={(e) => props.saveDiscountInput('value', e.nativeEvent.text)} keyboardType="default"/>
 
-                  <View style={{flexDirection: 'row'}}>
-                    <Text style={{marginTop: 25, marginLeft: 10, fontSize: 20}}>Click </Text>
-                    <Button
-                        containerStyle={{marginTop: 10}}
-                        onPress={() => props.saveDiscountTypeInput()}
-                        style={{}}
-                        type="clear"
-                        icon={<Icon
-                          name={selectedDiscount.type == "PERCENTAGE"?"money-bill-alt":"percentage"}
-                          size={40}
-                          color="#2089dc"
-                          // color="white"
-                        />}
-                      />
-                      <Text style={{marginTop: 25, marginLeft: 10, fontSize: 20}}>to change Discount type (percentage/value) </Text>
-                  </View>
+                <View>
+                  {
+                    discounts.map((v) => {
+                      return (
+                        <Button 
+                          title={v.name}
+                        />
+                      )
+                    })
+                  }
+                </View>
+
+                {/* <View style={{marginBottom: 20, flex: 1 }}>
+                  <UselessField style={myStyles.input1} defaultValue={selectedTax.name} label={'Name'} onChange={(e) => props.saveInput('name', e.nativeEvent.text)} keyboardType="default"/>
+                  <UselessField style={myStyles.input1} defaultValue={String(selectedTax.percent)} label={'Percent'} onChange={(e) => props.saveInput('percent', e.nativeEvent.text)} keyboardType="default"/>
                 </View>
                 <View style={{height: 50 }}>
                   <View style={{flex: 1, flexDirection: 'row'}}>
-                    <DeleteButton onPress={() => props.deleteDiscount(selectedDiscount.id)} color={'#666'}/>
+                    <DeleteButton onPress={() => props.deleteTax(selectedTax.id)} color={'#999'}/>
                   </View>
-                </View>
+                </View> */}
 							</View>
 						</View>
 					</TouchableOpacity>
@@ -74,28 +72,29 @@ const DiscountModal = (props) => {
 
 function mapStateToProps(state) {
 	return {
+    tax: state.tax,
     discount: state.discount
 	}
 }
 
 function mapDispatchToProps(dispatch) {
 	return {
-    saveDiscount: () => {
-      dispatch(saveDiscount())
-      dispatch(discountModalVisible(false))
+    chargeDiscountModalVisible: (v) => dispatch(chargeDiscountModalVisible(v)),
+    saveTax: () => {
+      dispatch(saveTax())
+      dispatch(taxModalVisible(false))
     },
-    discountModalVisible: (val) => dispatch(discountModalVisible(val)),
-    saveDiscountInput: (name, value) => dispatch(saveDiscountInput(name, value)),
-    deleteDiscount: (id) => {
-      Alert.alert( 'Delete Discount', 'Are you sure?', 
+    taxModalVisible: (val) => dispatch(taxModalVisible(val)),
+    saveInput: (name, value) => dispatch(saveInput(name, value)),
+    deleteTax: (id) => {
+      Alert.alert( 'Delete Tax', 'Are you sure?', 
         [
           { text: 'Cancel', style: 'cancel' },
-          { text: 'OK', onPress: () => dispatch(deleteDiscount(id)) }
+          { text: 'OK', onPress: () => dispatch(deleteTax(id)) }
         ],
         { cancelable: false },
       )
-    },
-    saveDiscountTypeInput: () => dispatch(saveDiscountTypeInput())
+    }
 	}
 }
 
@@ -115,10 +114,10 @@ export class UselessField extends React.Component{
 
   render(){
     return (
-      <View style={{}}>
-        <Text style={myStyles.input2}>{this.props.label}</Text>
-        <TextInput
-          style={{...this.props.style, borderColor: '#CCC', borderBottomWidth: 1, marginBottom: 15}}
+      <View style={{borderColor: '#CCC', borderBottomWidth: 1}}>
+        <Text style={myStyles.label1}>{this.props.label}</Text>
+        <TextInput 
+          style={this.props.style}
           defaultValue={this.props.defaultValue} 
           onSubmitEditing={this.props.onSubmitEditing}
           onBlur={this.props.onBlur}
@@ -129,6 +128,7 @@ export class UselessField extends React.Component{
     )
   }
 }
+
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -211,4 +211,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(DiscountModal)
+export default connect(mapStateToProps, mapDispatchToProps)(ChargeDiscountModal)

@@ -1,6 +1,6 @@
 import React from 'react'
 import { StyleSheet, Text, View, Alert } from 'react-native'
-import { Button, Divider, ListItem } from 'react-native-elements'
+import { Button } from 'react-native-elements'
 import { connect } from 'react-redux'
 import { MenuButton } from '../components/MenuButton'
 import PayModal from '../components/modals/PayModal'
@@ -15,16 +15,17 @@ import PunchItemModal from '../components/modals/PunchItemModal'
 import AddShelveItemsModal from '../components/modals/AddShelveItemsModal'
 import ItemColorsModal from '../components/modals/ItemColorsModal'
 import SaveChargeModal from '../components/modals/SaveChargeModal'
-import { AddShelveButton, ChargeButton, ShelveButton, ItemSearchButton, PayButton } from './HomeScreenComponents'
+import ChargeDiscountModal from '../components/modals/ChargeDiscountModal'
+import { AddShelveButton, ChargeButton, ShelveButton, ItemSearchButton, PayButton, TaxList, DiscountButton } from './HomeScreenComponents'
 import { CONTENT_SHELVES, CONTENT_CHARGE, changeActiveContent, taxDetailsToggle } from '../actions/homeActions'
 import { addModalVisible, getShelveItems, selectShelve, deleteShelve, getShelveItemsRefresh, shelveModalVisible } from '../actions/shelvesActions'
 import { modalVisible } from '../actions/itemSearchActions'
+import { chargeDiscountModalVisible } from '../actions/discountActions'
 import { payModalVisible } from '../actions/payActions'
 import { currency } from '../constants/constants'
 import NumberFormat from 'react-number-format'
 import { barcodeSeachItem } from '../actions/barcodeSearchActions'
 import { getCharges } from '../actions/chargeActions'
-import { showFSTrans, enableFirestoreSync, disableFirestoreSync, uploadData, deleteUsers, getBackupData } from '../actions/cloudActions'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 
 
@@ -84,16 +85,15 @@ const HomeScreen = props => {
       </View>
       <View style={{flex: 1, borderLeftColor: 'black'}}>
         <View style={styles.rightTopBar}>
-          <View style={{alignSelf: 'flex-end', marginTop: 3}}>
+          <View style={{flex: 1, flexDirection: 'row', justifyContent: 'flex-end', marginTop: 3}}>
+            <DiscountButton onPress={() => props.chargeDiscountModalVisible(true)} />
             <ChargeButton onPress={() => props.changeActiveContent(CONTENT_CHARGE)} />
           </View>
         </View>
         <View style={{flex: 3, padding: 10}}>
           <PunchedItemList />
         </View>
-        
           { taxDetailsVisible?<TaxList taxes={taxes} vatableAmount={vatableAmount}/>:null }
-        
         <View style={styles.rightBottomBar}>
           <View style={styles.customButtonContainer}>
             <View>
@@ -120,6 +120,7 @@ const HomeScreen = props => {
         <ItemColorsModal />
         <ShelveModal />
         <SaveChargeModal />
+        <ChargeDiscountModal />
       </View>
     </View>
   );
@@ -142,75 +143,6 @@ const TaxInfoButton = ({onPress}) => {
   )
 }
 
-const TaxList = ({taxes, vatableAmount}) => {
-  return (
-    <View style={styles.taxInfoPan}>
-      <Divider style={{ backgroundColor: '#CCC' }} />
-      <ListItem
-        key={i}
-        containerStyle={{paddingTop: 5, paddingBottom: 5}}
-        title=""
-        titleStyle={{fontSize: 20}}
-        rightTitle={
-        <View style={{flexDirection: 'row'}}>
-          <Text style={{fontSize: 25, marginRight: 20}}>Net</Text> 
-          <Text style={{fontSize: 25}}>Amt</Text>
-        </View>}
-        rightTitleStyle={{fontSize: 20, fontWeight: 'bold', color: 'black'}}
-      />
-      { taxes.map((tax, i) => {
-          return (
-            <ListItem
-              key={i}
-              containerStyle={{paddingTop: 5, paddingBottom: 5}}
-              title={tax.name}
-              titleStyle={{fontSize: 20}}
-              rightTitle={
-                <View style={{flexDirection: 'row'}}>
-                  <NumberFormat 
-                    renderText={value => <Text style={{fontSize: 25, marginRight: 20}}>{value}</Text>} 
-                    fixedDecimalScale={true} 
-                    decimalScale={2} 
-                    value={tax.net?tax.net:0} 
-                    displayType={'text'} 
-                    thousandSeparator={true} 
-                    prefix={""} />
-
-                  <NumberFormat 
-                    renderText={value => <Text style={{fontSize: 25}}>{value}</Text>} 
-                    fixedDecimalScale={true} 
-                    decimalScale={2} 
-                    value={tax.amount?tax.amount:0} 
-                    displayType={'text'} 
-                    thousandSeparator={true} 
-                    prefix={""} />
-                </View>
-              }
-              rightTitleStyle={{fontSize: 20, fontWeight: 'bold', color: 'black'}}
-            />
-          )
-        }) }
-      {/* <ListItem
-        key={i}
-        containerStyle={{paddingTop: 5, paddingBottom: 5}}
-        title={"VAT Net"}
-        titleStyle={{fontSize: 20}}
-        rightTitle={
-          <NumberFormat
-            renderText={value => <Text style={{fontSize: 25}}>{value}</Text>} 
-            fixedDecimalScale={true} 
-            decimalScale={2} 
-            value={vatableAmount} 
-            displayType={'text'} 
-            thousandSeparator={true} 
-            prefix={currency} />
-        }
-        rightTitleStyle={{fontSize: 20, fontWeight: 'bold', color: 'black'}}
-      /> */}
-    </View>
-  )
-}
-
 function mapStateToProps(state) {
 	return {
     punched: state.punched,
@@ -223,12 +155,6 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    getBackupData: () => dispatch(getBackupData()),
-    deleteUsers: () => dispatch(deleteUsers()),
-    uploadData: () => dispatch(uploadData()),
-    sync: () => dispatch(enableFirestoreSync()),
-    unsync: () => dispatch(disableFirestoreSync()),
-    showFSTrans: () => dispatch(showFSTrans()),
     barcodeSeachItem: (text) => { dispatch(barcodeSeachItem(text)) },
     addModalVisible: (e) => dispatch(addModalVisible()),
     getShelves: () => dispatch(getShelves()),
@@ -242,11 +168,9 @@ function mapDispatchToProps(dispatch) {
       dispatch(changeActiveContent(val))
       dispatch(getCharges())
     },
-    modalVisible: () => {
-      dispatch(modalVisible())
-    },
+    modalVisible: () => { dispatch(modalVisible()) },
     payModalVisible: () => dispatch(payModalVisible()),
-    showItemColorsModal: () => dispatch(showItemColorsModal()), 
+    showItemColorsModal: () => dispatch(showItemColorsModal()),
     deleteShelve: (shelve) => {
       Alert.alert('Delete Shelve', 'Are you sure?', [{
           text: 'Cancel',
@@ -259,7 +183,8 @@ function mapDispatchToProps(dispatch) {
       {cancelable: false} )
     },
     shelveModalVisible: (v) => dispatch(shelveModalVisible(v)),
-    taxDetailsToggle: () => dispatch(taxDetailsToggle())
+    taxDetailsToggle: () => dispatch(taxDetailsToggle()),
+    chargeDiscountModalVisible: (val) => dispatch(chargeDiscountModalVisible(val))
   }
 }
 

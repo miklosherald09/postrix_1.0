@@ -1,7 +1,8 @@
 import React from 'react'
 import { View, StyleSheet, TouchableHighlight, Text } from 'react-native'
-import { Button } from 'react-native-elements'
+import { Button, Divider, ListItem } from 'react-native-elements'
 import Icon from 'react-native-vector-icons/FontAwesome5'
+import NumberFormat from 'react-number-format'
 
 
 export class AddShelveButton extends React.Component{
@@ -107,6 +108,72 @@ export class PayButton extends React.Component {
     )
   }
 };
+
+export const DiscountButton = ({onPress}) => {
+  return (
+    <Button
+      type='clear'
+      onPress={onPress}
+      icon={<Icon
+        name='percentage'
+        size={35}
+        color='#039BE5' />} 
+    />
+  )
+}
+
+export const TaxList = ({taxes}) => {
+  return (
+    <View style={styles.taxInfoPan}>
+      <Divider style={{ backgroundColor: '#CCC' }} />
+      <ListItem
+        key={i}
+        containerStyle={{paddingTop: 5, paddingBottom: 5}}
+        title=""
+        titleStyle={{fontSize: 20}}
+        rightTitle={
+        <View style={{flexDirection: 'row'}}>
+          <Text style={{fontSize: 25, marginRight: 20}}>Net</Text> 
+          <Text style={{fontSize: 25}}>Amt</Text>
+        </View>}
+        rightTitleStyle={{fontSize: 20, fontWeight: 'bold', color: 'black'}}
+      />
+      { taxes.map((tax, i) => {
+          return (
+            <ListItem
+              key={i}
+              containerStyle={{paddingTop: 5, paddingBottom: 5}}
+              title={tax.name}
+              titleStyle={{fontSize: 20}}
+              rightTitle={
+                <View style={{flexDirection: 'row'}}>
+                  <NumberFormat 
+                    renderText={value => <Text style={{fontSize: 25, marginRight: 20}}>{value}</Text>} 
+                    fixedDecimalScale={true} 
+                    decimalScale={2} 
+                    value={tax.net?tax.net:0} 
+                    displayType={'text'} 
+                    thousandSeparator={true} 
+                    prefix={""} />
+
+                  <NumberFormat 
+                    renderText={value => <Text style={{fontSize: 25}}>{value}</Text>} 
+                    fixedDecimalScale={true} 
+                    decimalScale={2} 
+                    value={tax.amount?tax.amount:0} 
+                    displayType={'text'} 
+                    thousandSeparator={true} 
+                    prefix={""} />
+                </View>
+              }
+              rightTitleStyle={{fontSize: 20, fontWeight: 'bold', color: 'black'}}
+            />
+          )
+        }) }
+    </View>
+  )
+}
+
 
 const styles = StyleSheet.create({
   menuIcon: {

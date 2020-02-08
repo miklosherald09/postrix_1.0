@@ -10,6 +10,8 @@ export const SAVE_DISCOUNT_INPUT = 'SAVE_DISCOUNT_INPUT'
 export const SAVE_DISCOUNT_SUCCESS = 'SAVE_DISCOUNT_SUCCESS'
 export const GET_DISCOUNTS_SUCCESS = 'GET_DISCOUNTS_SUCCESS'
 export const DELETE_DISCOUNT_SUCCESS = 'DELETE_DISCOUNT_SUCCESS'
+export const SAVE_DISCOUNT_TYPE_INPUT = 'SAVE_DISCOUNT_TYPE_INPUT'
+export const CHARGE_DISCOUNT_MODAL_VISIBLE = 'CHARGE_DISCOUNT_MODAL_VISIBLE'
 
 export function discountModalVisible(visible) {
   return {
@@ -171,5 +173,20 @@ export function resetDiscountValues(){
     })
 
     dispatch({type: RESET_DISCOUNTS_VALUES_SUCCESS, discounts: discounts })
+  }
+}
+
+export function saveDiscountTypeInput(){
+
+  return {
+    type: SAVE_DISCOUNT_TYPE_INPUT,
+  }
+
+}
+
+export function chargeDiscountModalVisible(visible){
+  return {
+    type: CHARGE_DISCOUNT_MODAL_VISIBLE,
+    visible: visible
   }
 }

@@ -116,5 +116,9 @@ export default StyleSheet.create({
 		input1: {
 			fontSize: 20, 
 			color: '#333',
+		},
+		input2: {
+			fontSize: 20, 
+			color: '#999',
 		}
 });

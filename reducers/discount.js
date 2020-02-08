@@ -7,14 +7,19 @@ import {
   GET_DISCOUNTS_SUCCESS,
   DELETE_DISCOUNT_SUCCESS,
   COMPUTE_DISCOUNTS_VALUES_SUCCESS,
-  RESET_DISCOUNT_VALUES_SUCCESS
+  RESET_DISCOUNT_VALUES_SUCCESS,
+  SAVE_DISCOUNT_TYPE_INPUT,
+  CHARGE_DISCOUNT_MODAL_VISIBLE
 } from '../actions/discountActions'
 
 const initialState = {
   discounts: [],
   discountModalVisible: false,
-  selectedDiscount: {},
-  vatableAmount: 0
+  selectedDiscount: {
+    name: '', value: 0, type: 'money-bill-alt'
+  },
+  vatableAmount: 0,
+  chargeDiscountModalVisible: false,
 }
 
 export default function usersReducer(state = initialState, action) {
@@ -47,7 +52,7 @@ export default function usersReducer(state = initialState, action) {
     case ADD_DISCOUNT_PROMPT: {
       return {
         ...state,
-        selectedDiscount: {name: '', percent: 0},
+        selectedDiscount: {name: '', value: 0, type: ''},
         discountModalVisible: true
       }
     }
@@ -85,6 +90,23 @@ export default function usersReducer(state = initialState, action) {
         ...state,
         discounts: action.discounts,
         vatableAmount: 0
+      }
+    }
+
+    case SAVE_DISCOUNT_TYPE_INPUT: {
+      return {
+        ...state,
+        selectedDiscount: {
+          ...state.selectedDiscount,
+          type: state.selectedDiscount.type == 'PERCENTAGE'?'BILL':'PERCENTAGE'
+        }
+      }
+    }
+
+    case CHARGE_DISCOUNT_MODAL_VISIBLE: {
+      return {
+        ...state,
+        chargeDiscountModalVisible: action.visible
       }
     }
 

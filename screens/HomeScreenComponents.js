@@ -174,6 +174,58 @@ export const TaxList = ({taxes}) => {
   )
 }
 
+export const DiscountList = ({discounts}) => {
+  return (
+    <View style={styles.taxInfoPan}>
+      <Divider style={{ backgroundColor: '#CCC' }} />
+      <ListItem
+        key={-1}
+        containerStyle={{paddingTop: 5, paddingBottom: 5}}
+        title=""
+        titleStyle={{fontSize: 20}}
+        rightTitle={
+        <View style={{flexDirection: 'row'}}>
+          <Text style={{fontSize: 25, marginRight: 20}}>Net</Text> 
+          <Text style={{fontSize: 25}}>Amt</Text>
+        </View>}
+        rightTitleStyle={{fontSize: 20, fontWeight: 'bold', color: 'black'}}
+      />
+      { discounts.map((el, i) => {
+          return (
+            <ListItem
+              key={i}
+              containerStyle={{paddingTop: 5, paddingBottom: 5}}
+              title={el.name}
+              titleStyle={{fontSize: 20}}
+              rightTitle={
+                <View style={{flexDirection: 'row'}}>
+                  <NumberFormat 
+                    renderText={value => <Text style={{fontSize: 25, marginRight: 20}}>{value}</Text>} 
+                    fixedDecimalScale={true} 
+                    decimalScale={2} 
+                    value={el.net?el.net:0} 
+                    displayType={'text'} 
+                    thousandSeparator={true} 
+                    prefix={""} />
+
+                  <NumberFormat 
+                    renderText={value => <Text style={{fontSize: 25}}>{value}</Text>} 
+                    fixedDecimalScale={true} 
+                    decimalScale={2} 
+                    value={el.amount?el.amount:0} 
+                    displayType={'text'} 
+                    thousandSeparator={true} 
+                    prefix={""} />
+                </View>
+              }
+              rightTitleStyle={{fontSize: 20, fontWeight: 'bold', color: 'black'}}
+            />
+          )
+        }) }
+    </View>
+  )
+}
+
 
 const styles = StyleSheet.create({
   menuIcon: {

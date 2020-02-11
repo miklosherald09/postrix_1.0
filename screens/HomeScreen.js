@@ -16,7 +16,7 @@ import AddShelveItemsModal from '../components/modals/AddShelveItemsModal'
 import ItemColorsModal from '../components/modals/ItemColorsModal'
 import SaveChargeModal from '../components/modals/SaveChargeModal'
 import ChargeDiscountModal from '../components/modals/ChargeDiscountModal'
-import { AddShelveButton, ChargeButton, ShelveButton, ItemSearchButton, PayButton, TaxList, DiscountButton } from './HomeScreenComponents'
+import { AddShelveButton, ChargeButton, ShelveButton, ItemSearchButton, PayButton, TaxList, DiscountList, DiscountButton } from './HomeScreenComponents'
 import { CONTENT_SHELVES, CONTENT_CHARGE, changeActiveContent, taxDetailsToggle } from '../actions/homeActions'
 import { addModalVisible, getShelveItems, selectShelve, deleteShelve, getShelveItemsRefresh, shelveModalVisible } from '../actions/shelvesActions'
 import { modalVisible } from '../actions/itemSearchActions'
@@ -35,6 +35,7 @@ const HomeScreen = props => {
   const { shelves, activeShelve } = props.shelves
   const { activeContent, taxDetailsVisible } = props.home
   const { taxes, vatableAmount } = props.tax
+  const { discountCharges } = props.discount
 
   searchText = '' 
   timeout = null
@@ -93,7 +94,8 @@ const HomeScreen = props => {
         <View style={{flex: 3, padding: 10}}>
           <PunchedItemList />
         </View>
-          { taxDetailsVisible?<TaxList taxes={taxes} vatableAmount={vatableAmount}/>:null }
+        <DiscountList discounts={discountCharges} />
+        { taxDetailsVisible?<TaxList taxes={taxes} vatableAmount={vatableAmount}/>:null }
         <View style={styles.rightBottomBar}>
           <View style={styles.customButtonContainer}>
             <View>
@@ -150,6 +152,7 @@ function mapStateToProps(state) {
     home: state.home,
     settingsPrinter: state.settingsPrinter,
     tax: state.tax,
+    discount: state.discount
 	}
 }
 

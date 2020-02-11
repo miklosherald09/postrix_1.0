@@ -1,4 +1,5 @@
 import { computeTaxValues } from './taxActions'
+import { extractSqlData } from '../functions'
 
 export const PUNCHED_ITEM_BEGIN   = 'PUNCHED_ITEM_BEGIN'
 export const PUNCH = 'PUNCH'
@@ -9,6 +10,9 @@ export const PUNCH_ITEM_INVISIBLE = 'PUNCH_ITEM_INVISIBLE'
 export const SET_SELECTED_ITEM = 'SET_SELECTED_ITEM'
 export const DELETE_PUNCHED_ITEM = 'DELETE_PUNCHED_ITEM'
 export const UPDATE_TAXES = 'UPDATE_TAXES'
+export const PUNCH_DISCOUNT_MODAL_VISIBLE = 'PUNCH_DISCOUNT_MODAL_VISIBLE'
+export const GET_PUNCH_DISCOUNTS_SUCCESS = 'GET_PUNCH_DISCOUNTS_SUCCESS'
+export const TOGGLE_PUNCH_DISCOUNT = 'TOGGLE_PUNCH_DISCOUNT'
 
 export function punchItemBegin() {
   return {
@@ -92,5 +96,56 @@ export function setSelectedItem(item){
 export function deletePunchItem(){
   return {
     type: DELETE_PUNCHED_ITEM,
+  }
+}
+
+export function punchDiscountVisible(v){
+  return {
+    type: PUNCH_DISCOUNT_MODAL_VISIBLE,
+    visible: v
+  }
+}
+
+export function getPunchDiscounts(){
+
+  return (dispatch, getState) => {
+
+    const { database } = getState()
+
+    database.db.transaction( function(txn){
+      txn.executeSql(`SELECT * FROM discounts`,
+      [],
+      function(_, res){
+        
+        discounts = extractSqlData(res)
+        discounts = discounts.map((v) => {
+          v.selected = false 
+          return v
+        })
+        
+        dispatch({type: GET_PUNCH_DISCOUNTS_SUCCESS, discounts: discounts })
+      })
+    },
+    function(err){
+      console.log(err)
+    })
+  }
+}
+
+export function togglePunchDiscount(v){
+  
+  return (dispatch, getState) => {
+
+    const { punched } = getState()
+   
+    punchDiscounts = []
+    punched.punchDiscounts.forEach((el) => {
+      if(el.id == v.id){
+        el.selected = !el.selected
+      }
+      punchDiscounts.push(el)
+    }) 
+
+    dispatch({ type: TOGGLE_PUNCH_DISCOUNT, discounts: punchDiscounts})
   }
 }

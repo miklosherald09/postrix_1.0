@@ -9,17 +9,22 @@ import {
   COMPUTE_DISCOUNTS_VALUES_SUCCESS,
   RESET_DISCOUNT_VALUES_SUCCESS,
   SAVE_DISCOUNT_TYPE_INPUT,
-  CHARGE_DISCOUNT_MODAL_VISIBLE
+  CHARGE_DISCOUNT_MODAL_VISIBLE,
+  TOGGLE_CHARGE_DISCOUNT,
+  GET_DISCOUNT_CHARGES_SUCCESS
 } from '../actions/discountActions'
 
 const initialState = {
   discounts: [],
   discountModalVisible: false,
   selectedDiscount: {
-    name: '', value: 0, type: 'money-bill-alt'
+    name: '', 
+    value: 0, 
+    type: 'money-bill-alt'
   },
   vatableAmount: 0,
   chargeDiscountModalVisible: false,
+  discountCharges: []
 }
 
 export default function usersReducer(state = initialState, action) {
@@ -107,6 +112,21 @@ export default function usersReducer(state = initialState, action) {
       return {
         ...state,
         chargeDiscountModalVisible: action.visible
+      }
+    }
+
+    case TOGGLE_CHARGE_DISCOUNT: {
+      
+      return {
+        ...state,
+        discountCharges: action.discountCharges
+      }
+    }
+
+    case GET_DISCOUNT_CHARGES_SUCCESS: {
+      return {
+        ...state,
+        discountCharges: action.discounts
       }
     }
 

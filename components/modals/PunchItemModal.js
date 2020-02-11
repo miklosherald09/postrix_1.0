@@ -1,12 +1,13 @@
 import React from 'react'
 import { Dimensions, StyleSheet, Text, View, TouchableOpacity, Modal } from 'react-native'
 import { connect } from 'react-redux'
-import { Button, ListItem } from 'react-native-elements'
+import { Button, Divider } from 'react-native-elements'
 import { CloseButton, CheckButton } from '../Common'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import { currency as curr } from '../../constants/constants'
-import { punchedItemCount, punchItemInvisible, deletePunchItem } from '../../actions/punchedActions'
+import { punchedItemCount, punchItemInvisible, deletePunchItem, punchDiscountModalVisible, punchDiscountVisible } from '../../actions/punchedActions'
 import { computeTaxValues } from '../../actions/taxActions'
+import PunchDiscountModal from './PunchDiscountModal'
 import NumberFormat from 'react-number-format'
 import myStyles from '../../constants/styles'
 
@@ -79,8 +80,12 @@ const PunchItemModal = (props) => {
 										</View>
 									</View>
 								</View>
-								
-								<View style={{ marginRight: 10, marginLeft: 10, justifyContent: 'flex-start', flexDirection:'row', flexWrap:'wrap'}}></View>
+								<View style={{flex: 3, flexDirection: 'column'}}>
+									<View style={{flex: 1, flexDirection: 'row', padding: 15}}>
+										<DiscountButton onPress={() => props.punchDiscountVisible(true)}/>
+									</View>
+								</View>
+								<Divider />
 							</View>
 							<View style={{ flexDirection: 'row', height: 60, borderTopColor: '#EEE', borderTopWidth: 1, }}>
 								<Button
@@ -95,8 +100,27 @@ const PunchItemModal = (props) => {
           </TouchableOpacity>
         </TouchableOpacity>
       </Modal>
+			<PunchDiscountModal />
 		</View>
 	);
+}
+
+const DiscountButton = ({onPress}) => {
+	return (
+		<Button
+			type={"clear"}
+			titleStyle={{fontSize: 20, marginLeft: 10, color: '#666'}}
+			title={"Add discount"}
+			onPress={onPress}
+			icon={
+				<Icon
+					name="info-circle"
+					color="#666"
+					size={25}
+				/>
+			}
+		/>
+	)
 }
 
 function mapStateToProps(state) {
@@ -116,7 +140,8 @@ function mapDispatchToProps(dispatch) {
 		deletePunchItem: () => { 
 			dispatch(deletePunchItem()),
 			dispatch(punchItemInvisible())
-		}
+		},
+		punchDiscountVisible: (v) => dispatch(punchDiscountVisible(v))
 	}
 }
 

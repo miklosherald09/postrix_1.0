@@ -1,6 +1,3 @@
-import { ToastAndroid } from 'react-native'
-import { firebase } from '@react-native-firebase/auth'
-import { setSelectedItem } from './punchedActions'
 import { extractSqlData } from '../functions'
 
 export const ADD_DISCOUNT_PROMPT = 'ADD_DISCOUNT_PROMPT'
@@ -12,6 +9,8 @@ export const GET_DISCOUNTS_SUCCESS = 'GET_DISCOUNTS_SUCCESS'
 export const DELETE_DISCOUNT_SUCCESS = 'DELETE_DISCOUNT_SUCCESS'
 export const SAVE_DISCOUNT_TYPE_INPUT = 'SAVE_DISCOUNT_TYPE_INPUT'
 export const CHARGE_DISCOUNT_MODAL_VISIBLE = 'CHARGE_DISCOUNT_MODAL_VISIBLE'
+export const TOGGLE_CHARGE_DISCOUNT = 'TOGGLE_CHARGE_DISCOUNT'
+export const GET_DISCOUNT_CHARGES_SUCCESS = 'GET_DISCOUNT_CHARGES_SUCCESS'
 
 export function discountModalVisible(visible) {
   return {
@@ -72,7 +71,6 @@ export function saveDiscount(){
       },
       function(err){
         console.log(err)
-        alert(err)
       })
     }
     
@@ -90,7 +88,6 @@ export function getDiscounts(){
   return (dispatch, getState) => {
 
     const { database } = getState()
-    console.log('shit1')
 
     database.db.transaction( function(txn){
       txn.executeSql(`SELECT * FROM discounts`,
@@ -104,9 +101,7 @@ export function getDiscounts(){
     },
     function(err){
       console.log(err)
-      alert(err)
     })
-
   }
 }
 
@@ -184,9 +179,51 @@ export function saveDiscountTypeInput(){
 
 }
 
+export function toggleChargeDiscount(v){
+  
+  return (dispatch, getState) => {
+
+    const { discount } = getState()
+   
+    discountCharges = []
+    discount.discountCharges.forEach((el) => {
+      if(el.id == v.id){
+        el.selected = !el.selected
+      }
+      discountCharges.push(el)
+    }) 
+
+    dispatch({ type: TOGGLE_CHARGE_DISCOUNT, discountCharges: discountCharges})
+  }
+}
+
 export function chargeDiscountModalVisible(visible){
   return {
     type: CHARGE_DISCOUNT_MODAL_VISIBLE,
     visible: visible
+  }
+}
+
+export function getDiscountCharges(){
+
+  return (dispatch, getState) => {
+
+    const { database } = getState()
+
+    database.db.transaction( function(txn){
+      txn.executeSql(`SELECT * FROM discounts`,
+      [],
+      function(_, res){
+        discounts = extractSqlData(res)
+        discounts = discounts.map((v) => {
+          v.selected = false 
+          return v
+        })
+        dispatch({type: GET_DISCOUNT_CHARGES_SUCCESS, discounts: discounts })
+      })
+    },
+    function(err){
+      console.log(err)
+    })
   }
 }

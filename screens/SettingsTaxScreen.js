@@ -41,15 +41,17 @@ const SettingsUsersScreen = props => {
               <ScrollView>
             {
               taxes.map((u, i) => {
+                title = u.name?u.name + ' - ' + u.percent+'%':''
+                avatarTitle = u.name?u.name.slice(0, 1):'T'
                 return (
                   <TouchableOpacity key={'tax-' + i} onPress={() => props.selectTax(u)}>
                   <ListItem
-                    title={u.name + ' - ' + u.percent+'%'}
+                    title={title}
                     titleStyle={{fontSize: 20}}
                     leftAvatar = {
                       <Avatar
                         rounded
-                        title={u.name.slice(0, 1)}
+                        title={avatarTitle}
                         size="small"
                       />
                     }

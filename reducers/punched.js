@@ -7,6 +7,9 @@ import {
   PUNCH_ITEM_INVISIBLE,
   SET_SELECTED_ITEM,
   DELETE_PUNCHED_ITEM,
+  PUNCH_DISCOUNT_MODAL_VISIBLE,
+  GET_PUNCH_DISCOUNTS_SUCCESS,
+  TOGGLE_PUNCH_DISCOUNT
 } from '../actions/punchedActions'
 
 const initialState = {
@@ -14,7 +17,9 @@ const initialState = {
   total: 0,
   counter: 0,
   punchItemVisible: false,
-  selectedItem: {}
+  selectedItem: {},
+  punchDiscountVisible: false,
+  punchDiscounts: [],
 }
 
 export default function punchedReducer(state = initialState, action) {
@@ -128,7 +133,28 @@ export default function punchedReducer(state = initialState, action) {
         total: newTotal
       }
     }
-    
+
+    case PUNCH_DISCOUNT_MODAL_VISIBLE: {
+      return {
+        ...state,
+        punchDiscountVisible: action.visible
+      }
+    }
+
+    case GET_PUNCH_DISCOUNTS_SUCCESS: {
+      return {
+        ...state,
+        punchDiscounts: action.discounts
+      }
+    }
+
+    case TOGGLE_PUNCH_DISCOUNT: {
+      return {
+        ...state,
+        punchDiscounts: action.discounts
+      }
+    }
+
     default:
       // ALWAYS have a default case in a reducer
       return state;

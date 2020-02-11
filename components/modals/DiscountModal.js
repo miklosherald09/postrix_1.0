@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { StyleSheet, Text, View, TouchableOpacity, Modal, Dimensions, Alert, TextInput, ToastAndroid } from 'react-native'
 import { connect } from 'react-redux'
 import { Button } from 'react-native-elements'
@@ -12,8 +12,8 @@ const screenWidth = Math.round(Dimensions.get('window').width)
 const screenHeight = Math.round(Dimensions.get('window').height)
 
 const DiscountModal = (props) => {
- 
-  const { discountModalVisible, selectedDiscount } = props.discount
+
+  const { discountModalVisible, selectedDiscount, discountCharges } = props.discount
   
 	return (
 		<View style={styles.wrapper}>
@@ -95,7 +95,7 @@ function mapDispatchToProps(dispatch) {
         { cancelable: false },
       )
     },
-    saveDiscountTypeInput: () => dispatch(saveDiscountTypeInput())
+    saveDiscountTypeInput: () => dispatch(saveDiscountTypeInput()),
 	}
 }
 

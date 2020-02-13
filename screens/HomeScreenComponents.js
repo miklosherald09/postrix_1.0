@@ -117,7 +117,7 @@ export const DiscountButton = ({onPress}) => {
       icon={<Icon
         name='percentage'
         size={35}
-        color='#039BE5' />} 
+        color='#039BE5' />}
     />
   )
 }

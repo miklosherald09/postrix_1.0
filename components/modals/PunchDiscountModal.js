@@ -15,7 +15,6 @@ const screenHeight = Math.round(Dimensions.get('window').height)
 const PunchDiscountModal = (props) => {
 
   useEffect(() => {
-    alert('shit')
     props.getPunchDiscounts()
   }, [])
  
@@ -89,7 +88,9 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
 	return {
-    togglePunchDiscount: (v) => dispatch(togglePunchDiscount(v)),
+    togglePunchDiscount: (v) => {
+      dispatch(togglePunchDiscount(v))
+    },
     punchDiscountVisible: (v) => dispatch(punchDiscountVisible(v)),
     getPunchDiscounts: () => dispatch(getPunchDiscounts()),
 	}

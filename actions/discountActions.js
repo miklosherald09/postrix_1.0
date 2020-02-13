@@ -1,4 +1,5 @@
 import { extractSqlData } from '../functions'
+import { chargeItemDiscount } from './punchedActions'
 
 export const ADD_DISCOUNT_PROMPT = 'ADD_DISCOUNT_PROMPT'
 export const SELECT_DISCOUNT = 'SELECT_DISCOUNT'
@@ -11,6 +12,7 @@ export const SAVE_DISCOUNT_TYPE_INPUT = 'SAVE_DISCOUNT_TYPE_INPUT'
 export const CHARGE_DISCOUNT_MODAL_VISIBLE = 'CHARGE_DISCOUNT_MODAL_VISIBLE'
 export const TOGGLE_CHARGE_DISCOUNT = 'TOGGLE_CHARGE_DISCOUNT'
 export const GET_DISCOUNT_CHARGES_SUCCESS = 'GET_DISCOUNT_CHARGES_SUCCESS'
+export const UPDATE_PUNCH_ITEM_DISCOUNT = 'UPDATE_PUNCH_ITEM_DISCOUNT'
 
 export function discountModalVisible(visible) {
   return {
@@ -183,17 +185,19 @@ export function toggleChargeDiscount(v){
   
   return (dispatch, getState) => {
 
-    const { discount } = getState()
-   
+    const { discount, punched } = getState()
+    
     discountCharges = []
     discount.discountCharges.forEach((el) => {
       if(el.id == v.id){
         el.selected = !el.selected
       }
       discountCharges.push(el)
-    }) 
+    })
 
     dispatch({ type: TOGGLE_CHARGE_DISCOUNT, discountCharges: discountCharges})
+    dispatch(chargeItemDiscount(v))
+    dispatch(computeDiscount())
   }
 }
 
@@ -225,5 +229,15 @@ export function getDiscountCharges(){
     function(err){
       console.log(err)
     })
+  }
+}
+
+export function computeDiscount(){
+  
+  return (dispatch, getState) => {
+    
+    const { punched } = getState()
+    console.log(punched.punched)
+
   }
 }

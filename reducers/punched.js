@@ -9,7 +9,8 @@ import {
   DELETE_PUNCHED_ITEM,
   PUNCH_DISCOUNT_MODAL_VISIBLE,
   GET_PUNCH_DISCOUNTS_SUCCESS,
-  TOGGLE_PUNCH_DISCOUNT
+  TOGGLE_PUNCH_DISCOUNT,
+  CHARGE_PUNCH_DISCOUNT
 } from '../actions/punchedActions'
 
 const initialState = {
@@ -154,6 +155,14 @@ export default function punchedReducer(state = initialState, action) {
         punchDiscounts: action.discounts
       }
     }
+
+    case CHARGE_PUNCH_DISCOUNT: {
+      return {
+        ...state,
+        punched: action.punched
+      }
+    }
+        
 
     default:
       // ALWAYS have a default case in a reducer

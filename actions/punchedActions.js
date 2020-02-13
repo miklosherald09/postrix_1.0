@@ -13,6 +13,8 @@ export const UPDATE_TAXES = 'UPDATE_TAXES'
 export const PUNCH_DISCOUNT_MODAL_VISIBLE = 'PUNCH_DISCOUNT_MODAL_VISIBLE'
 export const GET_PUNCH_DISCOUNTS_SUCCESS = 'GET_PUNCH_DISCOUNTS_SUCCESS'
 export const TOGGLE_PUNCH_DISCOUNT = 'TOGGLE_PUNCH_DISCOUNT'
+export const UPDATE_PUNCH_ITEM_DISCOUNT = 'UPDATE_PUNCH_ITEM_DISCOUNT'
+export const CHARGE_PUNCH_DISCOUNT = 'CHARGE_PUNCH_DISCOUNT'
 
 export function punchItemBegin() {
   return {
@@ -149,3 +151,43 @@ export function togglePunchDiscount(v){
     dispatch({ type: TOGGLE_PUNCH_DISCOUNT, discounts: punchDiscounts})
   }
 }
+
+export function chargeItemDiscount(discount){
+
+  return (dispatch, getState) => {
+
+    const { punched } = getState()
+    
+    // add punch item discounts
+    punched_ = []
+    punched.punched.forEach((el) => {
+
+      if(!el.discounts){
+        el.discounts = []
+      }
+
+      found = false
+      if(el.discounts){
+        found = el.discounts.find((d) => d.id == discount.id)
+      }
+
+      if(discount.selected == true){
+        if(!found){
+          el.discounts.push(discount)
+        }
+      }
+      else{
+        if(found){
+          el.discounts = el.discounts.filter((d) => d.id != discount.id)
+          console.log('removeing this')
+        }
+      }
+
+      punched_.push(el)
+      
+    })
+
+    dispatch({ type: CHARGE_PUNCH_DISCOUNT, punched: punched_ })
+
+  }
+}  

@@ -134,7 +134,6 @@ function mapDispatchToProps(dispatch) {
 		punchedItemCount: (val) => { 
 			dispatch(punchedItemCount(val)),
 			dispatch(computeTaxValues())
-			// setTimeout(() => 	dispatch(computeTaxValues()), 3000)
 		},
 		punchItemInvisible: () => { dispatch(punchItemInvisible()) },
 		deletePunchItem: () => { 

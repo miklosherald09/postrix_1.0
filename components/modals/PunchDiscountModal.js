@@ -6,6 +6,7 @@ import Icon from 'react-native-vector-icons/FontAwesome5'
 import { CloseButton, CheckButton } from '../../components/Common'
 import myStyles from '../../constants/styles'
 import { punchDiscountVisible, togglePunchDiscount, getPunchDiscounts } from '../../actions/punchedActions'
+import { computeDiscount } from '../../actions/discountActions'
 import { capitalize } from '../../functions'
 import { currency } from '../../constants/constants'
 
@@ -19,7 +20,8 @@ const PunchDiscountModal = (props) => {
   }, [])
  
  
-  const { punchDiscountVisible, punchDiscounts } = props.punched
+  const { punchDiscountVisible, selectedItem } = props.punched
+  const { discounts } = props.discount
   
 	return (
 		<View style={styles.wrapper}>
@@ -45,21 +47,25 @@ const PunchDiscountModal = (props) => {
 							<View style={styles.content}>
                 <View style={{flexDirection: 'row'}}>
                   {
-                    punchDiscounts.map((v, i) => {
+                    discounts.map((v, i) => {
+
+                      found = false
+                      if(selectedItem.discounts)
+                        found = selectedItem.discounts.find((f) => f.id == v.id)
 
                       preLabel = v.type == 'BILL'?currency:''
                       postLabel = v.type == 'PERCENTAGE'?'%':''
 
                       return (
                         <Button
-                          type={v.selected?'solid':'outline'} 
+                          type={found?'solid':'outline'} 
                           containerStyle={{marginRight: 10}}
                           key={v.id}
                           title={ v.name + ' ' + '(' + preLabel + v.value + postLabel +')'}
                           titleStyle={{marginLeft: 10, fontSize: 20}}
                           onPress={() => props.togglePunchDiscount(v)}
                           icon={
-                            v.selected?
+                            found?
                             <Icon
                               name={"check"}
                               color="white"
@@ -82,7 +88,8 @@ const PunchDiscountModal = (props) => {
 
 function mapStateToProps(state) {
 	return {
-    punched: state.punched
+    punched: state.punched,
+    discount: state.discount
 	}
 }
 
@@ -90,6 +97,7 @@ function mapDispatchToProps(dispatch) {
 	return {
     togglePunchDiscount: (v) => {
       dispatch(togglePunchDiscount(v))
+      dispatch(computeDiscount())
     },
     punchDiscountVisible: (v) => dispatch(punchDiscountVisible(v)),
     getPunchDiscounts: () => dispatch(getPunchDiscounts()),
@@ -148,8 +156,8 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     backgroundColor: 'white',
     height: screenHeight - (screenHeight * 0.20 * 2),
-    marginLeft: screenWidth * 0.2,
-    marginRight: screenWidth * 0.2,
+    marginLeft: screenWidth * 0.22,
+    marginRight: screenWidth * 0.22,
     marginTop: screenHeight * 0.08,
     marginBottom: screenHeight * 0.2,
   },

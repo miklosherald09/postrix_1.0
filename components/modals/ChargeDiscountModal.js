@@ -20,6 +20,7 @@ const ChargeDiscountModal = (props) => {
  
  
   const { chargeDiscountModalVisible, discountCharges } = props.discount
+  const { selectedItem } = props.punched
   
 	return (
 		<View style={styles.wrapper}>
@@ -53,7 +54,7 @@ const ChargeDiscountModal = (props) => {
 
                       return (
                         <Button
-                          type={v.selected?'solid':'outline'} 
+                          type={v.selected?'solid':'outline'}
                           containerStyle={{marginRight: 10}}
                           key={v.id}
                           title={ v.name + ' ' + '(' + preLabel + v.value + postLabel +')'}
@@ -84,7 +85,8 @@ const ChargeDiscountModal = (props) => {
 function mapStateToProps(state) {
 	return {
     tax: state.tax,
-    discount: state.discount
+    discount: state.discount,
+    punched: state.punched
 	}
 }
 

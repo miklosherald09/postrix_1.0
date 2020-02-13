@@ -13,6 +13,8 @@ export const CHARGE_DISCOUNT_MODAL_VISIBLE = 'CHARGE_DISCOUNT_MODAL_VISIBLE'
 export const TOGGLE_CHARGE_DISCOUNT = 'TOGGLE_CHARGE_DISCOUNT'
 export const GET_DISCOUNT_CHARGES_SUCCESS = 'GET_DISCOUNT_CHARGES_SUCCESS'
 export const UPDATE_PUNCH_ITEM_DISCOUNT = 'UPDATE_PUNCH_ITEM_DISCOUNT'
+export const ADD_DISCOUNT_TOTAL = 'ADD_DISCOUNT_TOTAL'
+export const COMPUTE_DISCOUNT_SUCCESS = 'COMPUTE_DISCOUNT_SUCCESS'
 
 export function discountModalVisible(visible) {
   return {
@@ -47,7 +49,7 @@ export function saveDiscount(){
       database.db.transaction( function(txn){
         txn.executeSql(`INSERT INTO discounts(name, value, type) VALUES(?, ?, ?)`,
         [ discount.selectedDiscount.name, 
-          discount.selectedDiscount.value, 
+          parseInt(discount.selectedDiscount.value), 
           discount.selectedDiscount.type ],
         function(_, res){
           dispatch({type: SAVE_DISCOUNT_SUCCESS })
@@ -63,7 +65,7 @@ export function saveDiscount(){
       database.db.transaction( function(txn){
         txn.executeSql(`UPDATE discounts SET name = ?, value = ?, type = ? WHERE id = ?`,
         [ discount.selectedDiscount.name, 
-          discount.selectedDiscount.value, 
+          parseInt(discount.selectedDiscount.value), 
           discount.selectedDiscount.type, 
           discount.selectedDiscount.id ],
         function(_, res){
@@ -236,8 +238,44 @@ export function computeDiscount(){
   
   return (dispatch, getState) => {
     
-    const { punched } = getState()
-    console.log(punched.punched)
+    const { punched, discount } = getState()
+
+    discountCharges = [...discount.discountCharges]
+    discountCharges.forEach((d, i) => {
+
+      if(d.net){ d.net = 0 }
+      if(d.amount) {d.amount = 0 }
+
+      discountCharges[i] = d
+    })
+    
+    punched.punched.forEach((p) => {
+      if(p.discounts){
+        p.discounts.forEach((d) => {
+          value = 0
+          if(d.type == 'PERCENTAGE'){
+            value = p.sellPrice * p.count * (parseInt(d.value)/100)
+          }
+          if(d.type == 'BILL'){
+            value = parseInt(d.value)
+          }
+          
+          discountCharges.map((f, i) => {
+            if(f.id == d.id){
+              f.net = f.net?f.net:0
+              f.amount = f.amount?f.amount:0
+
+              f.net = f.net + (p.sellPrice * p.count)
+              f.amount = f.amount + value
+            }
+            discountCharges[i] = f
+          })
+
+        })
+      }
+    })
+
+    dispatch({type: COMPUTE_DISCOUNT_SUCCESS, discountCharges: discountCharges})
 
   }
 }

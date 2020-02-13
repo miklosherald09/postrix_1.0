@@ -150,9 +150,14 @@ export default function punchedReducer(state = initialState, action) {
     }
 
     case TOGGLE_PUNCH_DISCOUNT: {
+
       return {
         ...state,
-        punchDiscounts: action.discounts
+        selectedItem: {
+          ...state.selectedItem,
+          discounts: action.discounts
+        },
+        punched: action.punched,
       }
     }
 

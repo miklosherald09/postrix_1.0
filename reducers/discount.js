@@ -11,7 +11,8 @@ import {
   SAVE_DISCOUNT_TYPE_INPUT,
   CHARGE_DISCOUNT_MODAL_VISIBLE,
   TOGGLE_CHARGE_DISCOUNT,
-  GET_DISCOUNT_CHARGES_SUCCESS
+  GET_DISCOUNT_CHARGES_SUCCESS,
+  COMPUTE_DISCOUNT_SUCCESS
 } from '../actions/discountActions'
 
 const initialState = {
@@ -127,6 +128,13 @@ export default function usersReducer(state = initialState, action) {
       return {
         ...state,
         discountCharges: action.discounts
+      }
+    }
+
+    case COMPUTE_DISCOUNT_SUCCESS: {
+      return {
+        ...state,
+        discountCharges: action.discountCharges
       }
     }
 

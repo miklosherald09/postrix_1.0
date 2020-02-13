@@ -140,15 +140,29 @@ export function togglePunchDiscount(v){
 
     const { punched } = getState()
    
-    punchDiscounts = []
-    punched.punchDiscounts.forEach((el) => {
-      if(el.id == v.id){
-        el.selected = !el.selected
-      }
-      punchDiscounts.push(el)
-    }) 
+    discounts = []
+    if(punched.selectedItem.discounts)
+      discounts = [...punched.selectedItem.discounts]
+    
+    found = discounts.find((f) => f.id == v.id)
+    console.log('shit!')
+    console.log(found)
+    if(found){
+      discounts = discounts.filter((f) => f.id != v.id)
+    }
+    else{
+      discounts.push(v)
+    }
 
-    dispatch({ type: TOGGLE_PUNCH_DISCOUNT, discounts: punchDiscounts})
+    punched_ = [...punched.punched]
+    punched_.forEach((p, i) => {
+      if(p.id == punched.selectedItem.id){
+        p.discounts = discounts
+        punched_[i] = p
+      }
+    })
+
+    dispatch({ type: TOGGLE_PUNCH_DISCOUNT, discounts: discounts, punched: punched_})
   }
 }
 

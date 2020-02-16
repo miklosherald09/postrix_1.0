@@ -94,7 +94,7 @@ export function printReceiptBT({id, settings, punched, datetime, total, printed,
       await BluetoothEscposPrinter.printText("\n\r",{})
       // iterate taxes items
       columnWidths = [12, 10, 10]
-      found = taxes.find((f) => (f.net) || (f.amount) )
+      found = taxes.find((f) => (f.net) || (f.amount) || (f.enabled == true) )
       if(found){
         await BluetoothEscposPrinter.printColumn(columnWidths, [leftAlign, rightAlign, rightAlign],
           ["", "Net", "Amt"],{})

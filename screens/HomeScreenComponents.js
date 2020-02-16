@@ -123,55 +123,61 @@ export const DiscountButton = ({onPress}) => {
 }
 
 export const TaxList = ({taxes}) => {
-  return (
-    <View style={styles.taxInfoPan}>
-      <Divider style={{ backgroundColor: '#CCC' }} />
-      <ListItem
-        key={i}
-        containerStyle={{paddingTop: 5, paddingBottom: 5}}
-        title=""
-        titleStyle={{fontSize: 20}}
-        rightTitle={
-        <View style={{flexDirection: 'row'}}>
-          <Text style={{fontSize: 25, marginRight: 20}}>Net</Text> 
-          <Text style={{fontSize: 25}}>Amt</Text>
-        </View>}
-        rightTitleStyle={{fontSize: 20, fontWeight: 'bold', color: 'black'}}
-      />
-      { taxes.map((tax, i) => {
-          return (
-            <ListItem
-              key={i}
-              containerStyle={{paddingTop: 5, paddingBottom: 5}}
-              title={tax.name}
-              titleStyle={{fontSize: 20}}
-              rightTitle={
-                <View style={{flexDirection: 'row'}}>
-                  <NumberFormat 
-                    renderText={value => <Text style={{fontSize: 25, marginRight: 20}}>{value}</Text>} 
-                    fixedDecimalScale={true} 
-                    decimalScale={2} 
-                    value={tax.net?tax.net:0} 
-                    displayType={'text'} 
-                    thousandSeparator={true} 
-                    prefix={""} />
+  
+  found = taxes.find((t) => t.enabled == true)
+  if(found){
+    return (
+      <View style={styles.taxInfoPan}>
+        <Divider style={{ backgroundColor: '#CCC' }} />
+        <ListItem
+          key={i}
+          containerStyle={{paddingTop: 5, paddingBottom: 5}}
+          title=""
+          titleStyle={{fontSize: 20}}
+          rightTitle={
+          <View style={{flexDirection: 'row'}}>
+            <Text style={{fontSize: 25, marginRight: 20}}>Net</Text> 
+            <Text style={{fontSize: 25}}>Amt</Text>
+          </View>}
+          rightTitleStyle={{fontSize: 20, fontWeight: 'bold', color: 'black'}}
+        />
+        { taxes.map((tax, i) => {
+            return (
+              <ListItem
+                key={i}
+                containerStyle={{paddingTop: 5, paddingBottom: 5}}
+                title={tax.name}
+                titleStyle={{fontSize: 20}}
+                rightTitle={
+                  <View style={{flexDirection: 'row'}}>
+                    <NumberFormat 
+                      renderText={value => <Text style={{fontSize: 25, marginRight: 20}}>{value}</Text>} 
+                      fixedDecimalScale={true} 
+                      decimalScale={2} 
+                      value={tax.net?tax.net:0} 
+                      displayType={'text'} 
+                      thousandSeparator={true} 
+                      prefix={""} />
 
-                  <NumberFormat 
-                    renderText={value => <Text style={{fontSize: 25}}>{value}</Text>} 
-                    fixedDecimalScale={true} 
-                    decimalScale={2} 
-                    value={tax.amount?tax.amount:0} 
-                    displayType={'text'} 
-                    thousandSeparator={true} 
-                    prefix={""} />
-                </View>
-              }
-              rightTitleStyle={{fontSize: 20, fontWeight: 'bold', color: 'black'}}
-            />
-          )
-        }) }
-    </View>
-  )
+                    <NumberFormat 
+                      renderText={value => <Text style={{fontSize: 25}}>{value}</Text>} 
+                      fixedDecimalScale={true} 
+                      decimalScale={2} 
+                      value={tax.amount?tax.amount:0} 
+                      displayType={'text'} 
+                      thousandSeparator={true} 
+                      prefix={""} />
+                  </View>
+                }
+                rightTitleStyle={{fontSize: 20, fontWeight: 'bold', color: 'black'}}
+              />
+            )
+          }) }
+      </View>
+    )
+  }
+  else
+    return null
 }
 
 export const DiscountList = ({discounts}) => {

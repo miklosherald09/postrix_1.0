@@ -14,7 +14,9 @@ import {
 const initialState = {
   taxes: [],
   taxModalVisible: false,
-  selectedTax: {},
+  selectedTax: {
+    enabled: true
+  },
   vatableAmount: 0
 }
 

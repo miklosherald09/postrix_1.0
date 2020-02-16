@@ -45,8 +45,8 @@ export function saveTax(){
     if(!tax.selectedTax.id){
       // insert item
       database.db.transaction( function(txn){
-        txn.executeSql(`INSERT INTO taxes(name, percent) VALUES(?, ?)`,
-        [ tax.selectedTax.name, tax.selectedTax.percent ],
+        txn.executeSql(`INSERT INTO taxes(name, percent, enabled) VALUES(?, ?)`,
+        [ tax.selectedTax.name, tax.selectedTax.percent, tax.selectedTax.enabled ],
         function(_, res){
           dispatch({type: SAVE_TAX_SUCCESS })
           dispatch(getTaxes())
@@ -59,8 +59,8 @@ export function saveTax(){
     else{
       // update item
       database.db.transaction( function(txn){
-        txn.executeSql(`UPDATE taxes SET name = ?, percent = ? WHERE id = ?`,
-        [ tax.selectedTax.name, tax.selectedTax.percent, tax.selectedTax.id ],
+        txn.executeSql(`UPDATE taxes SET name = ?, percent = ?, enabled = ? WHERE id = ?`,
+        [ tax.selectedTax.name, tax.selectedTax.percent, tax.selectedTax.enabled, tax.selectedTax.id ],
         function(_, res){
           dispatch({type: SAVE_TAX_SUCCESS })
           dispatch(getTaxes())

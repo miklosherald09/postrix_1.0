@@ -7,6 +7,7 @@ import Icon from 'react-native-vector-icons/FontAwesome5'
 import { currency as curr } from '../../constants/constants'
 import { punchedItemCount, punchItemInvisible, deletePunchItem, punchDiscountVisible } from '../../actions/punchedActions'
 import { computeTaxValues } from '../../actions/taxActions'
+import { computeDiscount } from '../../actions/discountActions'
 import PunchDiscountModal from './PunchDiscountModal'
 import NumberFormat from 'react-number-format'
 import myStyles from '../../constants/styles'
@@ -134,6 +135,7 @@ function mapDispatchToProps(dispatch) {
 		punchedItemCount: (val) => { 
 			dispatch(punchedItemCount(val)),
 			dispatch(computeTaxValues())
+			dispatch(computeDiscount())
 		},
 		punchItemInvisible: () => { dispatch(punchItemInvisible()) },
 		deletePunchItem: () => { 

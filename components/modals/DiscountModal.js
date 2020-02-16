@@ -39,7 +39,7 @@ const DiscountModal = (props) => {
 							<View style={styles.content}>
                 <View style={{marginBottom: 20, flex: 1 }}>
                   <UselessField style={myStyles.input1} defaultValue={selectedDiscount.name} label={'Name'} onChange={(e) => props.saveDiscountInput('name', e.nativeEvent.text)} keyboardType="default"/>
-                  <UselessField style={{...myStyles.input1, width: 100}} defaultValue={String(selectedDiscount.value)} label={'Value'} onChange={(e) => props.saveDiscountInput('value', e.nativeEvent.text)} keyboardType="default"/>
+                  <UselessField style={{...myStyles.input1, width: 100}} defaultValue={String(selectedDiscount.value)} label={'Value'} onChange={(e) => props.saveDiscountInput('value', e.nativeEvent.text)} keyboardType="numeric"/>
 
                   <View style={{flexDirection: 'row'}}>
                     <Text style={{marginTop: 25, marginLeft: 10, fontSize: 20}}>Click </Text>
@@ -49,7 +49,7 @@ const DiscountModal = (props) => {
                         style={{}}
                         type="clear"
                         icon={<Icon
-                          name={selectedDiscount.type == "PERCENTAGE"?"money-bill-alt":"percentage"}
+                          name={selectedDiscount.type == "PERCENTAGE"?"percentage":"money-bill-alt"}
                           size={40}
                           color="#2089dc"
                           // color="white"

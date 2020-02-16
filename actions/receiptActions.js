@@ -9,6 +9,7 @@ import moment, { HTML5_FMT } from 'moment'
 import { USBPrinter, NetPrinter, BLEPrinter } from 'react-native-printer'
 import { CONNECTION_TYPE_USB, CONNECTION_TYPE_BT } from './settingsPrinterActions'
 import { resetTaxValues } from './taxActions'
+import { resetChargeDiscountValues } from './discountActions'
 
 export const RECEIPT_MODAL_VISIBLE = 'RECEIPT_MODAL_VISIBLE'
 export const RECEIPT_MODAL_INVISIBLE = 'RECEIPT_MODAL_INVISIBLE'
@@ -25,29 +26,35 @@ export function printReceipt({id, payment, total, punched, printed, datetime, ta
 
     const { settingsPrinter, settings } = getState()
 
-    if(settingsPrinter.connectionType == CONNECTION_TYPE_BT){
-      dispatch(printReceiptBT({id, settings, punched, datetime, total, printed, payment, taxes}))
-      dispatch({ type: PRINT_RECEIPT_SUCCESS })
-    }
+    dispatch(printReceiptUSB({id, settings, punched, datetime, total, printed, payment, taxes}))
 
-    if(settingsPrinter.connectionType == CONNECTION_TYPE_USB){
-      dispatch(printReceiptUSB({id, settings, punched, datetime, total, printed, payment, taxes}))
-      dispatch({ type: PRINT_RECEIPT_SUCCESS })
-    }
+    // if(settingsPrinter.connectionType == CONNECTION_TYPE_BT){
+    //   dispatch(printReceiptBT({id, settings, punched, datetime, total, printed, payment, taxes}))
+    //   dispatch({ type: PRINT_RECEIPT_SUCCESS })
+    // }
+
+    // if(settingsPrinter.connectionType == CONNECTION_TYPE_USB){
+    //   dispatch(printReceiptUSB({id, settings, punched, datetime, total, printed, payment, taxes}))
+    //   dispatch({ type: PRINT_RECEIPT_SUCCESS })
+    // }
     
     if(settingsPrinter.connectionType == null){
       ToastAndroid.show('Printer Not Connected!', ToastAndroid.LONG)
       dispatch({ type: PRINT_RECEIPT_ERROR })
       dispatch(resetTaxValues())
+      dispatch(resetChargeDiscountValues())
     }
   }
 }
 
-export  function printReceiptBT({id, settings, punched, datetime, total, printed, payment, taxes}){
+export function printReceiptBT({id, settings, punched, datetime, total, printed, payment, taxes}){
 
-  return async (dispatch) => {
+  return async (dispatch, getState) => {
 
     try{
+
+      const { discount } = getState()
+
       columnWidths = [12, 4, 8, 8];
       rightAlign = BluetoothEscposPrinter.ALIGN.RIGHT
       leftAlign = BluetoothEscposPrinter.ALIGN.LEFT
@@ -84,14 +91,34 @@ export  function printReceiptBT({id, settings, punched, datetime, total, printed
         ["TOTAL", String(accounting.formatMoney(total, 'P'))],{})
       await BluetoothEscposPrinter.printText("\n\r",{})
 
+      await BluetoothEscposPrinter.printText("\n\r",{})
       // iterate taxes items
       columnWidths = [12, 10, 10]
-      await BluetoothEscposPrinter.printColumn(columnWidths, [leftAlign, rightAlign, rightAlign],
-        ["", "Net", "Amt"],{})
-      taxes.map(async (v, i) => {
+      found = taxes.find((f) => (f.net) || (f.amount) )
+      if(found){
         await BluetoothEscposPrinter.printColumn(columnWidths, [leftAlign, rightAlign, rightAlign],
-          [String(v.name), String(accounting.formatMoney(v.net, 'P')), String(accounting.formatMoney(v.amount, 'P'))],{})
-      })
+          ["", "Net", "Amt"],{})
+        taxes.map(async (v, i) => {
+          if(v.net || v.amount){
+            await BluetoothEscposPrinter.printColumn(columnWidths, [leftAlign, rightAlign, rightAlign],
+              [String(v.name.slice(0, 10)), String(accounting.formatMoney(v.net, 'P')), String(accounting.formatMoney(v.amount, 'P'))],{})}
+        })
+      }
+
+      await BluetoothEscposPrinter.printText("\n\r",{})
+      // iterate discounts
+      columnWidths = [12, 10, 10]
+      found = discount.discountCharges.find((f) => (f.net) || (f.amount) )
+      if(found){
+        await BluetoothEscposPrinter.printColumn(columnWidths, [leftAlign, rightAlign, rightAlign],
+          ["", "Net", "Amt"],{})
+        discount.discountCharges.map(async (v, i) => {
+          if(v.net || v.amount){
+            await BluetoothEscposPrinter.printColumn(columnWidths, [leftAlign, rightAlign, rightAlign],
+              [String(v.name.slice(0, 10)), String(accounting.formatMoney(v.net, 'P')), String(accounting.formatMoney(v.amount, 'P'))],{})
+          }
+        })
+      }
 
       await BluetoothEscposPrinter.printText("\n\r",{})
 
@@ -112,96 +139,127 @@ export  function printReceiptBT({id, settings, punched, datetime, total, printed
       }
       await BluetoothEscposPrinter.printText("\n\r\n\r\n\r",{})
       dispatch(resetTaxValues())
+      dispatch(resetChargeDiscountValues())
     }
     catch(e){
       console.log(e.message)
     }
-
-    
   }
 }
 
 export function printReceiptUSB({id, settings, punched, datetime, total, printed, payment, taxes}) {
 
-  return async (dispatch) => {
+  return async (dispatch, getState) => {
 
-    USBPrinter.printText("<C><B>"+settings.SHOP_NAME+"</B></C>\n\n\n")
-    await sleep(6)
-    USBPrinter.printText(settings.RECEIPT_HEADER+"\n")
-    await sleep(6)
-    USBPrinter.printText(moment(datetime).format('LLL')+"\n")
-    await sleep(6)
-    USBPrinter.printText("Receipt No. " + String(id).padStart(6, '0') + "\n\n")
-    await sleep(6)
-    USBPrinter.printText("--------------------------------\n")
-    await sleep(6)
-    h1 = textDelimiter('Item', 12, 'LEFT')
-    h2 = textDelimiter('Qty', 4, 'LEFT')
-    h3 = textDelimiter('Price', 8, 'RIGHT')
-    h4 = textDelimiter('Total', 8, 'RIGHT')
+    const { discount } = getState()
 
-    USBPrinter.printText(h1 + h2 + h3 + h4 +"\n")
-    // iterate punched items
-    await sleep(50)
-    punched.map(async (v, i) => {
-      name = textDelimiter(String(v.name.slice(0, 10)), 12, 'LEFT')
-      count = textDelimiter(String('x'+v.count), 4, 'LEFT')
-      sellPrice = textDelimiter(String(accounting.formatMoney(v.sellPrice, 'P')), 8, 'RIGHT')
-      accruePrice = textDelimiter(String(accounting.formatMoney(v.sellPrice * v.count, 'P')), 8, 'RIGHT')
+    try{
+
+      USBPrinter.printText("<C><B>"+settings.SHOP_NAME+"</B></C>\n\n\n")
+      await sleep(6)
+      USBPrinter.printText(settings.RECEIPT_HEADER+"\n")
+      await sleep(6)
+      USBPrinter.printText(moment(datetime).format('LLL')+"\n")
+      await sleep(6)
+      USBPrinter.printText("Receipt No. " + String(id).padStart(6, '0') + "\n\n")
+      await sleep(6)
+      USBPrinter.printText("--------------------------------\n")
+      await sleep(6)
+      h1 = textDelimiter('Item', 12, 'LEFT')
+      h2 = textDelimiter('Qty', 4, 'LEFT')
+      h3 = textDelimiter('Price', 8, 'RIGHT')
+      h4 = textDelimiter('Total', 8, 'RIGHT')
+
+      USBPrinter.printText(h1 + h2 + h3 + h4 +"\n")
+      // iterate punched items
+      await sleep(50)
+      punched.map(async (v, i) => {
+        name = textDelimiter(String(v.name.slice(0, 10)), 12, 'LEFT')
+        count = textDelimiter(String('x'+v.count), 4, 'LEFT')
+        sellPrice = textDelimiter(String(accounting.formatMoney(v.sellPrice, 'P')), 8, 'RIGHT')
+        accruePrice = textDelimiter(String(accounting.formatMoney(v.sellPrice * v.count, 'P')), 8, 'RIGHT')
+        
+        USBPrinter.printText(name + count + sellPrice + accruePrice +'\n')
+      })
       
-      USBPrinter.printText(name + count + sellPrice + accruePrice +'\n')
-    })
-    
-    USBPrinter.printText("\n")
-    await sleep(6)
-    h5 = textDelimiter('Total', 16, 'LEFT')
-    h6 = textDelimiter(String(accounting.formatMoney(total, 'P')), 16, 'RIGHT')
+      USBPrinter.printText("\n")
+      await sleep(6)
+      h5 = textDelimiter('Total', 16, 'LEFT')
+      h6 = textDelimiter(String(accounting.formatMoney(total, 'P')), 16, 'RIGHT')
 
-    USBPrinter.printText(h5 + h6 + "\n\n")
+      USBPrinter.printText(h5 + h6 + "\n\n")
 
-    await sleep(6)
-    // iterate taxes items
-    h1 = textDelimiter('', 12, 'LEFT')
-    h2 = textDelimiter('Net', 10, 'RIGHT')
-    h3 = textDelimiter('Amt', 10, 'RIGHT')
+      await sleep(6)
+      // iterate taxes items
+      h1 = textDelimiter('', 12, 'LEFT')
+      h2 = textDelimiter('Net', 10, 'RIGHT')
+      h3 = textDelimiter('Amt', 10, 'RIGHT')
 
-    await sleep(6)
-    USBPrinter.printText(h1 + h2 + h3 + "\n")
+      await sleep(6)
+      USBPrinter.printText("\n")
 
-    // iterate punched items
-    await sleep(50)
-    taxes.map(async (v, i) => {
-      name = textDelimiter(String(v.name), 12, 'LEFT')
-      net = textDelimiter(String(accounting.formatMoney(v.net, 'P')), 10, 'RIGHT')
-      amount = textDelimiter(String( accounting.formatMoney(v.amount, 'P')), 10, 'RIGHT')
-      USBPrinter.printText(name + net + amount +'\n')
-    })
+      found = taxes.find((f) => (f.net) || (f.amount) )
+      if(found){
+        await sleep(6)
+        USBPrinter.printText(h1 + h2 + h3 + "\n")
+        taxes.map(async (v, i) => {
+          if(v.net || v.amount){
+            name = textDelimiter(String(v.name), 12, 'LEFT')
+            net = textDelimiter(String(accounting.formatMoney(v.net, 'P')), 10, 'RIGHT')
+            amount = textDelimiter(String( accounting.formatMoney(v.amount, 'P')), 10, 'RIGHT')
+            USBPrinter.printText(name2 + net + amount +'\n')
+          }
+        })
+      }
 
-    await sleep(6)
-    USBPrinter.printText("\n")
-    
-    cashLabel = textDelimiter(' cash', 16, 'LEFT')
-    paymentCount = textDelimiter(String(accounting.formatMoney(payment, 'P')), 16, 'RIGHT')
-    await sleep(6)
-    USBPrinter.printText(cashLabel + paymentCount + "\n")
+      await sleep(6)
+      // iterate discounts
+      h1 = textDelimiter('', 12, 'LEFT')
+      h2 = textDelimiter('Net', 10, 'RIGHT')
+      h3 = textDelimiter('Amt', 10, 'RIGHT')
 
-    changeLabel = textDelimiter(' change', 16, 'LEFT')
-    change = textDelimiter(String(accounting.formatMoney(payment-total, 'P')), 16, 'RIGHT')
-    await sleep(6)
-    USBPrinter.printText(changeLabel + change + "\n")
+      columnWidths = [12, 10, 10]
+      found = discount.discountCharges.find((f) => (f.net) || (f.amount) )
+      if(found){
+        USBPrinter.printText(h1 + h2 + h3 + "\n")
+        discount.discountCharges.map(async (v, i) => {
+          if(v.net || v.amount){
+            name = textDelimiter(String(v.name), 12, 'LEFT')
+            net = textDelimiter(String(accounting.formatMoney(v.net, 'P')), 10, 'RIGHT')
+            amount = textDelimiter(String( accounting.formatMoney(v.amount, 'P')), 10, 'RIGHT')
+            USBPrinter.printText(name + net + amount +'\n')
+          }
+        })
+      }
 
-    await sleep(6)
-    USBPrinter.printText("--------------------------------\n")
-    await sleep(6)
-    if(printed){
-      USBPrinter.printText("RECEIPT REPRINTED: "+moment().format('LLL'),{})
+      await sleep(6)
+      USBPrinter.printText("\n")
+      
+      cashLabel = textDelimiter(' cash', 16, 'LEFT')
+      paymentCount = textDelimiter(String(accounting.formatMoney(payment, 'P')), 16, 'RIGHT')
+      await sleep(6)
+      USBPrinter.printText(cashLabel + paymentCount + "\n")
+
+      changeLabel = textDelimiter(' change', 16, 'LEFT')
+      change = textDelimiter(String(accounting.formatMoney(payment-total, 'P')), 16, 'RIGHT')
+      await sleep(6)
+      USBPrinter.printText(changeLabel + change + "\n")
+
+      await sleep(6)
+      USBPrinter.printText("--------------------------------\n")
+      await sleep(6)
+      if(printed){
+        USBPrinter.printText("RECEIPT REPRINTED: "+moment().format('LLL'),{})
+      }
+      await sleep(6)
+      USBPrinter.printText(settings.RECEIPT_FOOTER+"\n\n\n\n\n\n")
+
+      dispatch(resetTaxValues())
+      dispatch(resetChargeDiscountValues())
     }
-    await sleep(6)
-    USBPrinter.printText(settings.RECEIPT_FOOTER+"\n\n\n\n\n\n")
-
-    await sleep(6)
-    dispatch(resetTaxValues())
-    return true
+    catch(e){
+      console.log(e.message)
+    }
   }
 }
 

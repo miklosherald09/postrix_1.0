@@ -2,6 +2,7 @@ import { firebase } from '@react-native-firebase/auth'
 import firestore from '@react-native-firebase/firestore'
 import { printReceipt as printReceiptAction } from './receiptActions'
 import { resetTaxValues } from './taxActions'
+import { resetChargeDiscountValues } from './discountActions'
 
 
 export const ADD_TRANSACTION = 'ADD_TRANSACTION'
@@ -99,6 +100,7 @@ export const addTransaction = ({payment, total, punched, printReceipt, taxes }) 
         }
         else{
           dispatch(resetTaxValues())
+          dispatch(resetChargeDiscountValues())
         }
 
         dispatch({type: ADD_TRANSACTION_SUCCESS, transaction: transaction})

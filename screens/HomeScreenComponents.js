@@ -175,8 +175,12 @@ export const TaxList = ({taxes}) => {
 }
 
 export const DiscountList = ({discounts}) => {
+  
+  show = discounts.find(d => d.amount || d.net )
+
   return (
-    <View style={styles.taxInfoPan}>
+
+    show?<View style={styles.discountInfoPan}>
       <Divider style={{ backgroundColor: '#CCC' }} />
       <ListItem
         key={-1}
@@ -192,6 +196,7 @@ export const DiscountList = ({discounts}) => {
       />
       { discounts.map((el, i) => {
           return (
+            (el.amount && el.net)?
             <ListItem
               key={i}
               containerStyle={{paddingTop: 5, paddingBottom: 5}}
@@ -219,10 +224,10 @@ export const DiscountList = ({discounts}) => {
                 </View>
               }
               rightTitleStyle={{fontSize: 20, fontWeight: 'bold', color: 'black'}}
-            />
+            />:null
           )
         }) }
-    </View>
+    </View>:null
   )
 }
 
@@ -244,5 +249,11 @@ const styles = StyleSheet.create({
     margin: 10,
     width: 42,
     height: 42,
+  },
+  taxInfoPan: {
+
+  },
+  discountInfoPan: {
+    paddingBottom: 10,
   }
 });

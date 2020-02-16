@@ -15,6 +15,7 @@ export const GET_DISCOUNT_CHARGES_SUCCESS = 'GET_DISCOUNT_CHARGES_SUCCESS'
 export const UPDATE_PUNCH_ITEM_DISCOUNT = 'UPDATE_PUNCH_ITEM_DISCOUNT'
 export const ADD_DISCOUNT_TOTAL = 'ADD_DISCOUNT_TOTAL'
 export const COMPUTE_DISCOUNT_SUCCESS = 'COMPUTE_DISCOUNT_SUCCESS'
+export const RESET_CHARGE_DISCOUNTS_VALUES = 'RESET_CHARGE_DISCOUNTS_VALUES' 
 
 export function discountModalVisible(visible) {
   return {
@@ -278,4 +279,24 @@ export function computeDiscount(){
     dispatch({type: COMPUTE_DISCOUNT_SUCCESS, discountCharges: discountCharges})
 
   }
+}
+
+export function resetChargeDiscountValues(){
+
+  return (dispatch, getState) => {
+    const { discount } = getState()
+
+    discounts = [...discount.discountCharges]
+    discounts = discounts.map((d) => {
+      d.net = 0
+      d.amount = 0
+      return d
+    })
+
+    dispatch({
+      type: RESET_CHARGE_DISCOUNTS_VALUES,
+      discountCharges: discounts
+    })
+  }
+
 }

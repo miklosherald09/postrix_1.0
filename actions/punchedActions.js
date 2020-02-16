@@ -1,5 +1,7 @@
 import { computeTaxValues } from './taxActions'
+import { computeDiscount } from './discountActions'
 import { extractSqlData } from '../functions'
+
 
 export const PUNCHED_ITEM_BEGIN   = 'PUNCHED_ITEM_BEGIN'
 export const PUNCH = 'PUNCH'
@@ -32,7 +34,7 @@ export function punch(item) {
 
   return (dispatch, getState) => {
 
-    const { punched, tax } = getState()
+    const { punched, discount } = getState()
 
     item.accruePrice = item.sellPrice
     item.count =  1
@@ -57,15 +59,20 @@ export function punch(item) {
     })
   
     if(!doublePunch){
+      // override chargeDiscount
+      item.discounts = discount.discountCharges.filter((f) => f.selected == true)
       itemToPush = [...newPunch, item];
     }
     else{
       itemToPush = [...newPunch];
     }
 
+    
+
+
     dispatch({ type: PUNCH, itemToPush: itemToPush, item: item })
     dispatch(computeTaxValues())
-
+    dispatch(computeDiscount())
   }
 }
 

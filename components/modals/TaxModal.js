@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet, Text, View, TouchableOpacity, Modal, Dimensions, Alert, TextInput, ToastAndroid } from 'react-native'
+import { StyleSheet, Switch, Text, View, TouchableOpacity, Modal, Dimensions, Alert, TextInput, ToastAndroid } from 'react-native'
 import { connect } from 'react-redux'
 import { Button } from 'react-native-elements'
 import Icon from 'react-native-vector-icons/FontAwesome5'
@@ -40,6 +40,7 @@ const TaxModal = (props) => {
                 <View style={{marginBottom: 20, flex: 1 }}>
                   <UselessField style={myStyles.input1} defaultValue={selectedTax.name} label={'Name'} onChange={(e) => props.saveInput('name', e.nativeEvent.text)} keyboardType="default"/>
                   <UselessField style={myStyles.input1} defaultValue={String(selectedTax.percent)} label={'Percent'} onChange={(e) => props.saveInput('percent', e.nativeEvent.text)} keyboardType="default"/>
+                  <Switch value={true} style={{ transform: [{ scaleX: .8 }, { scaleY: .8 }] }} />
                 </View>
                 <View style={{height: 50 }}>
                   <View style={{flex: 1, flexDirection: 'row'}}>

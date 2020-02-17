@@ -40,8 +40,10 @@ const TaxModal = (props) => {
                 <View style={{marginBottom: 20, flex: 1 }}>
                   <UselessField style={myStyles.input1} defaultValue={selectedTax.name} label={'Name'} onChange={(e) => props.saveInput('name', e.nativeEvent.text)} keyboardType="default"/>
                   <UselessField style={myStyles.input1} defaultValue={String(selectedTax.percent)} label={'Percent'} onChange={(e) => props.saveInput('percent', e.nativeEvent.text)} keyboardType="default"/>
-                  <Switch value={selectedTax.enabled} onValueChange={(v) => props.saveInput('enabled', v)} style={{ transform: [{ scaleX: .8 }, { scaleY: .8 }] }} />
-                  <Text>{selectedTax.enabled?'enabled':'disabled'}}</Text>
+                  <View style={{flexDirection: 'row', paddingTop: 10}}>
+                    <Switch value={selectedTax.enabled?true:false} onValueChange={(v) => props.saveInput('enabled', v)} style={{ transform: [{ scaleX: 1 }, { scaleY: 1 }] }} />
+                    <Text style={{fontSize: 15, marginTop: 2}}>{selectedTax.enabled?'On':'Off'}</Text>
+                  </View>
                 </View>
                 <View style={{height: 50 }}>
                   <View style={{flex: 1, flexDirection: 'row'}}>

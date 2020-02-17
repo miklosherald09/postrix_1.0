@@ -1,5 +1,5 @@
-import { firebase } from '@react-native-firebase/auth'
-import firestore from '@react-native-firebase/firestore'
+// import { firebase } from '@react-native-firebase/auth'
+// import firestore from '@react-native-firebase/firestore'
 import { printReceipt as printReceiptAction } from './receiptActions'
 import { resetTaxValues } from './taxActions'
 import { resetChargeDiscountValues } from './discountActions'

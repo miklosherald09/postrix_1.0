@@ -142,6 +142,7 @@ export const TaxList = ({taxes}) => {
           rightTitleStyle={{fontSize: 20, fontWeight: 'bold', color: 'black'}}
         />
         { taxes.map((tax, i) => {
+          if(tax.enabled == true)
             return (
               <ListItem
                 key={i}
@@ -158,7 +159,6 @@ export const TaxList = ({taxes}) => {
                       displayType={'text'} 
                       thousandSeparator={true} 
                       prefix={""} />
-
                     <NumberFormat 
                       renderText={value => <Text style={{fontSize: 25}}>{value}</Text>} 
                       fixedDecimalScale={true} 

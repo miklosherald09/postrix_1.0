@@ -32,14 +32,14 @@ const PunchedItemList = (props) => {
 
   return(
     <View style={styles.container}>
-      <ScrollView contentContainerStyle={{flexWrap: null}}>
+      {/* <ScrollView contentContainerStyle={{flexWrap: null}}> */}
         <FlatList
           contentContainerStyle={styles.list}
           keyExtractor={this.keyExtractor}
           data={punched}
           renderItem={renderItem}
         />
-      </ScrollView>
+      {/* </ScrollView> */}
     </View>
   )
 }

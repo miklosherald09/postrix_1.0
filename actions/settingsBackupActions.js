@@ -1,4 +1,4 @@
-import { firebase } from '@react-native-firebase/auth'
+// import { firebase } from '@react-native-firebase/auth'
 import { getTransactions } from './transactionActions'
 import { insertSettingsPrinter } from './databaseActions'
 import { initSettings } from './settingsActions'

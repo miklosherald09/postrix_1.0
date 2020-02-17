@@ -92,7 +92,7 @@ const AddShelveItemsModal = (props) => {
 								/>
 							</View>
 							<View style={styles.content}>
-								<ScrollView contentContainerStyle={{flex: 1, borderRadius: 10, margin: 10}}>
+								{/* <ScrollView contentContainerStyle={{flex: 1, borderRadius: 10, margin: 10}}> */}
 									<FlatList
 										keyExtractor={keyExtractor}
 										data={itemOptions}
@@ -104,7 +104,7 @@ const AddShelveItemsModal = (props) => {
 										extraData={selectedOptions}
 										ItemSeparatorComponent={FlatListItemSeparator}
 									/>
-								</ScrollView>
+								{/* </ScrollView> */}
 							</View>
 						</View>
           </TouchableOpacity>

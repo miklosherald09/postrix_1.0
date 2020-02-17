@@ -36,8 +36,7 @@ const SettingsUsersScreen = props => {
         <View style={styles.rightContent}>
           <Card 
             style={{flex: 1}}
-            title="Tax"
-            titleStyle={{fontSize: 20}} >
+            title="Tax">
               <ScrollView>
             {
               taxes.map((u, i) => {

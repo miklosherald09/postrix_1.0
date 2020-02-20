@@ -85,7 +85,6 @@ export function getTaxes(){
   return (dispatch, getState) => {
 
     const { database } = getState()
-    console.log('shit1')
 
     database.db.transaction( function(txn){
       txn.executeSql(`SELECT * FROM taxes`,

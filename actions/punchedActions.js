@@ -34,7 +34,7 @@ export function punch(item) {
 
   return (dispatch, getState) => {
 
-    const { punched, discount } = getState()
+    const { punched, discount, tax } = getState()
 
     item.accruePrice = item.sellPrice
     item.count =  1
@@ -61,16 +61,13 @@ export function punch(item) {
     if(!doublePunch){
       // override chargeDiscount
       item.discounts = discount.discountCharges.filter((f) => f.selected == true)
-      itemToPush = [...newPunch, item];
+      itemToPush = [...newPunch, item]
     }
     else{
-      itemToPush = [...newPunch];
+      itemToPush = [...newPunch]
     }
 
-    
-
-
-    dispatch({ type: PUNCH, itemToPush: itemToPush, item: item })
+    dispatch({ type: PUNCH, itemToPush: itemToPush, item: item, taxes: taxes })
     dispatch(computeTaxValues())
     dispatch(computeDiscount())
   }
@@ -152,8 +149,7 @@ export function togglePunchDiscount(v){
       discounts = [...punched.selectedItem.discounts]
     
     found = discounts.find((f) => f.id == v.id)
-    console.log('shit!')
-    console.log(found)
+
     if(found){
       discounts = discounts.filter((f) => f.id != v.id)
     }

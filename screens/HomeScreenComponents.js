@@ -124,7 +124,7 @@ export const DiscountButton = ({onPress}) => {
 
 export const TaxList = ({taxes}) => {
   
-  found = taxes.find((t) => t.enabled == true)
+  found = taxes.find((t) => t.enabled)
   if(found){
     return (
       <View style={styles.taxInfoPan}>
@@ -142,7 +142,7 @@ export const TaxList = ({taxes}) => {
           rightTitleStyle={{fontSize: 20, fontWeight: 'bold', color: 'black'}}
         />
         { taxes.map((tax, i) => {
-          if(tax.enabled == true)
+          if(tax.enabled)
             return (
               <ListItem
                 key={i}
@@ -236,7 +236,6 @@ export const DiscountList = ({discounts}) => {
     </View>:null
   )
 }
-
 
 const styles = StyleSheet.create({
   menuIcon: {

@@ -24,6 +24,7 @@ const PayModal = (props) => {
  
   const { payModalVisible, payment, printReceipt } = props.pay
   const { total, punched } = props.punched
+  const { discountCharges } = props.discount
   const { taxes } = props.tax
 
 	return (
@@ -75,7 +76,7 @@ const PayModal = (props) => {
                       title={printReceipt?'print':'unprint'}
                       titleStyle={{fontSize: 20, fontWeight: 'normal', color: '#666', marginLeft: 10, marginVertical: 5}}
                     />
-                    <TouchableOpacity onPress={ () => props.submit({payment, total, punched, printReceipt, taxes}) } title="PAY">
+                    <TouchableOpacity onPress={ () => props.submit({payment, total, punched, printReceipt, taxes, discountCharges}) } title="PAY">
                       <View style={{marginHorizontal: 15, height: 80, backgroundColor: '#2089dc', borderRadius: 5, justifyContent: 'center', alignItems: 'center'}}>
                         <Text style={{color: 'white', fontSize: 30, fontWeight: 'bold', textAlign: 'center'}}>PAY</Text>
                       </View>
@@ -108,7 +109,8 @@ function mapStateToProps(state) {
 	return {
     pay: state.pay,
     punched: state.punched,
-    tax: state.tax
+    tax: state.tax,
+    discount: state.discount
 	}
 }
 

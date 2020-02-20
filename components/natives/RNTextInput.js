@@ -39,7 +39,6 @@ export class RNInput extends React.Component{
   shouldComponentUpdate(nextProps, nextState) {
     
 		if (this.props.focus !== nextProps.focus) {
-			console.log(this.props)
 			this._RNInput.focus()
       return true;
     }

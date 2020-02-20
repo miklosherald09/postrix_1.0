@@ -21,6 +21,7 @@ const initialState = {
   selectedItem: {},
   punchDiscountVisible: false,
   punchDiscounts: [],
+  taxes: []
 }
 
 export default function punchedReducer(state = initialState, action) {
@@ -32,7 +33,8 @@ export default function punchedReducer(state = initialState, action) {
       return {
         ...state,
         punched: action.itemToPush,
-        total: state.total + action.item.accruePrice
+        total: state.total + action.item.accruePrice,
+        taxes: action.taxes
       }
     }
 

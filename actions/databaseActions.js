@@ -81,7 +81,6 @@ export function addItemTaxTypeField(){
         ADD tax_type TEXT;`,
       [],
       function(tx, res){
-        console.log('ITEMS TABLE SHIT')
         console.log(res)
       });
     },
@@ -238,7 +237,6 @@ export const initItemsTable = () => {
     });
 
     // insert users
-    console.log('insert user..')
     database.db.transaction(function(txn){
       txn.executeSql(
         `INSERT INTO users(type, pin, datetime)
@@ -253,7 +251,6 @@ export const initItemsTable = () => {
     });
 
      // insert users 
-     console.log('insert user..')
      database.db.transaction(function(txn){
        txn.executeSql(
          `INSERT INTO users(type, pin, datetime)
@@ -268,7 +265,6 @@ export const initItemsTable = () => {
      });
 
       // insert users 
-      console.log('insert user..')
       database.db.transaction(function(txn){
         txn.executeSql(
           `INSERT INTO users(type, pin, datetime)

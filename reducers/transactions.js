@@ -5,7 +5,9 @@ import {
   GET_TRANSACTIONS_BEGIN,
   GET_TRANSACTIONS_ERROR,
   REFRESH_TRANSACTIONS,
-  DELETE_TRANSACTION_SUCCESS
+  DELETE_TRANSACTION_SUCCESS,
+  REFUND_TRANSACTION_SUCCESS,
+  REFUND_PUNCH_SUCCESS
 } from '../actions/transactionActions';
 import { appendTransactionEmptyBox } from '../functions'
 
@@ -84,8 +86,6 @@ export default function transactionsReducer(state = initialState, action) {
         return typeof(v.empty) !== 'undefined'
       })
 
-      console.log(transaction)
-
       _transactions = transactions.filter((v) => {
         return v.id != action.transId
       })
@@ -95,6 +95,20 @@ export default function transactionsReducer(state = initialState, action) {
       return {
         ...state,
         transactions: transactionFinal
+      }
+    }
+
+    case REFUND_TRANSACTION_SUCCESS: {
+      return {
+        ...state,
+        transactions: action.transactions,
+      }
+    }
+
+    case REFUND_PUNCH_SUCCESS: {
+      return {
+        ...state,
+        transactions: action.transactions
       }
     }
    

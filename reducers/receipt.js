@@ -5,7 +5,10 @@ import {
   PRINT_RECEIPT_SUCCESS,
   PRINT_RECEIPT_ERROR,
   SELECT_RECEIPT,
-  DELETE_RECEIPT_SUCCESS
+  SELECT_RECEIPT_PUNCH,
+  DELETE_RECEIPT_SUCCESS,
+  RECEIPT_PUNCH_VISIBLE,
+  SAVE_RECEIPT_PUNCH_SUCCESS,
 } from '../actions/receiptActions'
 
 const initialState = {
@@ -17,6 +20,8 @@ const initialState = {
     punched: [],
     payment: ""
   },
+  receiptPunchVisible: false,
+  selectedReceiptPunch: {}
 }
 
 export default function receiptReducer(state = initialState, action) {
@@ -70,6 +75,26 @@ export default function receiptReducer(state = initialState, action) {
         ...state,
         receiptModalVisible: false,
         deleteReceiptModalVisible: false,
+      }
+    }
+
+    case RECEIPT_PUNCH_VISIBLE: {
+      return {
+        ...state,
+        receiptPunchVisible: action.visible
+      }
+    }
+
+    case SAVE_RECEIPT_PUNCH_SUCCESS: {
+      return {
+        ...state
+      }
+    }
+
+    case SELECT_RECEIPT_PUNCH: {
+      return {
+        ...state,
+        selectedReceiptPunch: action.selected
       }
     }
 

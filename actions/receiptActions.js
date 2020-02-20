@@ -16,27 +16,30 @@ export const RECEIPT_MODAL_INVISIBLE = 'RECEIPT_MODAL_INVISIBLE'
 export const PRINT_RECEIPT_SUCCESS = 'PRINT_RECEIPT_SUCCESS'
 export const PRINT_RECEIPT_ERROR = 'PRINT_RECEIPT_ERROR'
 export const SELECT_RECEIPT = 'SELECT_RECEIPT'
+export const SELECT_RECEIPT_PUNCH = 'SELECT_RECEIPT_PUNCH'
 export const DELETE_RECEIPT_MODAL_VISIBLE = 'DELETE_RECEIPT_MODAL_VISIBLE'
 export const DELETE_RECEIPT_SUCCESS = 'DELETE_RECEIPT_SUCCESS'
 export const DELETE_RECEIPT_ERROR = 'DELETE_RECEIPT_ERROR'
+export const RECEIPT_PUNCH_VISIBLE = 'RECEIPT_PUNCH_VISIBLE'
+export const SAVE_RECEIPT_PUNCH_SUCCESS = 'SAVE_RECEIPT_PUNCH_SUCCESS'
 
-export function printReceipt({id, payment, total, punched, printed, datetime, taxes}){
+export function printReceipt({id, payment, total, punched, printed, datetime, taxes, discounts}){
 
   return  (dispatch, getState) => {
 
     const { settingsPrinter, settings } = getState()
 
-    dispatch(printReceiptUSB({id, settings, punched, datetime, total, printed, payment, taxes}))
+    // dispatch(printReceiptUSB({id, settings, punched, datetime, total, printed, payment, taxes}))
 
-    // if(settingsPrinter.connectionType == CONNECTION_TYPE_BT){
-    //   dispatch(printReceiptBT({id, settings, punched, datetime, total, printed, payment, taxes}))
-    //   dispatch({ type: PRINT_RECEIPT_SUCCESS })
-    // }
+    if(settingsPrinter.connectionType == CONNECTION_TYPE_BT){
+      dispatch(printReceiptBT({id, settings, punched, datetime, total, printed, payment, taxes, discounts}))
+      dispatch({ type: PRINT_RECEIPT_SUCCESS })
+    }
 
-    // if(settingsPrinter.connectionType == CONNECTION_TYPE_USB){
-    //   dispatch(printReceiptUSB({id, settings, punched, datetime, total, printed, payment, taxes}))
-    //   dispatch({ type: PRINT_RECEIPT_SUCCESS })
-    // }
+    if(settingsPrinter.connectionType == CONNECTION_TYPE_USB){
+      dispatch(printReceiptUSB({id, settings, punched, datetime, total, printed, payment, taxes, discounts}))
+      dispatch({ type: PRINT_RECEIPT_SUCCESS })
+    }
     
     if(settingsPrinter.connectionType == null){
       ToastAndroid.show('Printer Not Connected!', ToastAndroid.LONG)
@@ -47,7 +50,7 @@ export function printReceipt({id, payment, total, punched, printed, datetime, ta
   }
 }
 
-export function printReceiptBT({id, settings, punched, datetime, total, printed, payment, taxes}){
+export function printReceiptBT({id, settings, punched, datetime, total, printed, payment, taxes, discounts}){
 
   return async (dispatch, getState) => {
 
@@ -81,46 +84,70 @@ export function printReceiptBT({id, settings, punched, datetime, total, printed,
       
       // iterate punched items
       punched.map(async (v, i) => {
+        name = String(v.name.slice(0, 11))
+        count = 'x'+String(v.count)
+        price = String(accounting.formatMoney(v.sellPrice, 'P'))
+        tprice = String(accounting.formatMoney(v.sellPrice * v.count, 'P'))
+
         await BluetoothEscposPrinter.printColumn(columnWidths, [leftAlign, centerAlign, rightAlign, rightAlign],
-          [String(v.name.slice(0, 11)), 'x'+String(v.count), String(accounting.formatMoney(v.sellPrice, 'P')), String(accounting.formatMoney(v.sellPrice * v.count, 'P'))],{})
+          [name, count, price, tprice],{})
       })
+
+      // iterate refund items
+      refunds = punched.find((p) => p.refund)
+      if(refunds){
+        await BluetoothEscposPrinter.printText("\n\r",{})
+        await BluetoothEscposPrinter.printText("Refunds\n\r",{})
+        columnWidths = [15, 4, 13]
+        punched.forEach(async (v, i) => {
+          if(v.refund){
+            name = String(v.name.slice(0, 14))
+            count = 'x'+String(v.count)
+            tprice = '-'+String(accounting.formatMoney(v.sellPrice * v.count, 'P'))
+
+            await BluetoothEscposPrinter.printColumn(columnWidths, [leftAlign, rightAlign, rightAlign],
+              [name, count, tprice],{})
+          }
+        })
+        await BluetoothEscposPrinter.printText("\n\r",{})
+      }
       
       columnWidths = [16, 16]
       await BluetoothEscposPrinter.printText("\n\r",{})
       await BluetoothEscposPrinter.printColumn(columnWidths, [leftAlign, rightAlign],
         ["TOTAL", String(accounting.formatMoney(total, 'P'))],{})
       await BluetoothEscposPrinter.printText("\n\r",{})
-
       await BluetoothEscposPrinter.printText("\n\r",{})
+      
       // iterate taxes items
       columnWidths = [12, 10, 10]
-      found = taxes.find((f) => (f.net) || (f.amount) || (f.enabled == true) )
-      if(found){
+      foundVal = taxes.find((f) => (f.net) || (f.amount))
+      foundEnb = taxes.find((f) => f.enabled)
+      if(foundVal && foundEnb){
         await BluetoothEscposPrinter.printColumn(columnWidths, [leftAlign, rightAlign, rightAlign],
           ["", "Net", "Amt"],{})
         taxes.map(async (v, i) => {
-          if(v.net || v.amount){
+          if(v.enabled){
             await BluetoothEscposPrinter.printColumn(columnWidths, [leftAlign, rightAlign, rightAlign],
               [String(v.name.slice(0, 10)), String(accounting.formatMoney(v.net, 'P')), String(accounting.formatMoney(v.amount, 'P'))],{})}
         })
+        await BluetoothEscposPrinter.printText("\n\r",{})
       }
 
-      await BluetoothEscposPrinter.printText("\n\r",{})
       // iterate discounts
       columnWidths = [12, 10, 10]
-      found = discount.discountCharges.find((f) => (f.net) || (f.amount) )
+      found = discounts.find((f) => (f.net) || (f.amount) )
       if(found){
         await BluetoothEscposPrinter.printColumn(columnWidths, [leftAlign, rightAlign, rightAlign],
           ["", "Net", "Amt"],{})
-        discount.discountCharges.map(async (v, i) => {
+        discounts.map(async (v, i) => {
           if(v.net || v.amount){
             await BluetoothEscposPrinter.printColumn(columnWidths, [leftAlign, rightAlign, rightAlign],
               [String(v.name.slice(0, 10)), String(accounting.formatMoney(v.net, 'P')), String(accounting.formatMoney(v.amount, 'P'))],{})
           }
         })
+        await BluetoothEscposPrinter.printText("\n\r",{})
       }
-
-      await BluetoothEscposPrinter.printText("\n\r",{})
 
       columnWidths = [16, 16]
       await BluetoothEscposPrinter.printColumn(columnWidths, [leftAlign, rightAlign],
@@ -147,7 +174,7 @@ export function printReceiptBT({id, settings, punched, datetime, total, printed,
   }
 }
 
-export function printReceiptUSB({id, settings, punched, datetime, total, printed, payment, taxes}) {
+export function printReceiptUSB({id, settings, punched, datetime, total, printed, payment, taxes, discounts}) {
 
   return async (dispatch, getState) => {
 
@@ -180,9 +207,30 @@ export function printReceiptUSB({id, settings, punched, datetime, total, printed
         accruePrice = textDelimiter(String(accounting.formatMoney(v.sellPrice * v.count, 'P')), 8, 'RIGHT')
         
         USBPrinter.printText(name + count + sellPrice + accruePrice +'\n')
+        USBPrinter.printText("\n")
       })
       
-      USBPrinter.printText("\n")
+      // iterate refund items
+      refunds = punched.find((p) => p.refund)
+      if(refunds){
+        await sleep(6)
+        USBPrinter.printText("\n")
+        await sleep(6)
+        USBPrinter.printText("Refunds\n")
+        columnWidths = [15, 4, 13]
+        punched.forEach(async (v, i) => {
+          if(v.refund){
+            name = textDelimiter(String(v.name.slice(0, 14)), 15, 'LEFT')
+            count = textDelimiter('x'+String(v.count), 4, 'RIGHT')
+            tprice = textDelimiter('-'+String(accounting.formatMoney(v.sellPrice * v.count, 'P')), 13, 'RIGHT')
+      
+            USBPrinter.printText(name + count + tprice + "\n\n")
+          }
+        })
+        await BluetoothEscposPrinter.printText("\n\r",{})
+      }
+      
+      
       await sleep(6)
       h5 = textDelimiter('Total', 16, 'LEFT')
       h6 = textDelimiter(String(accounting.formatMoney(total, 'P')), 16, 'RIGHT')
@@ -198,18 +246,20 @@ export function printReceiptUSB({id, settings, punched, datetime, total, printed
       await sleep(6)
       USBPrinter.printText("\n")
 
-      found = taxes.find((f) => (f.net) || (f.amount) )
+      found = taxes.find((f) => ((f.net) || (f.amount)) && (f.enabled))
       if(found){
         await sleep(6)
         USBPrinter.printText(h1 + h2 + h3 + "\n")
         taxes.map(async (v, i) => {
-          if(v.net || v.amount){
+          if((v.net || v.amount) && v.enabled){
             name = textDelimiter(String(v.name), 12, 'LEFT')
             net = textDelimiter(String(accounting.formatMoney(v.net, 'P')), 10, 'RIGHT')
             amount = textDelimiter(String( accounting.formatMoney(v.amount, 'P')), 10, 'RIGHT')
             USBPrinter.printText(name2 + net + amount +'\n')
           }
         })
+        await sleep(6)
+        USBPrinter.printText(h5 + h6 + "\n\n")
       }
 
       await sleep(6)
@@ -219,10 +269,10 @@ export function printReceiptUSB({id, settings, punched, datetime, total, printed
       h3 = textDelimiter('Amt', 10, 'RIGHT')
 
       columnWidths = [12, 10, 10]
-      found = discount.discountCharges.find((f) => (f.net) || (f.amount) )
+      found = discounts.find((f) => (f.net) || (f.amount) )
       if(found){
         USBPrinter.printText(h1 + h2 + h3 + "\n")
-        discount.discountCharges.map(async (v, i) => {
+        discount.map(async (v, i) => {
           if(v.net || v.amount){
             name = textDelimiter(String(v.name), 12, 'LEFT')
             net = textDelimiter(String(accounting.formatMoney(v.net, 'P')), 10, 'RIGHT')
@@ -230,11 +280,10 @@ export function printReceiptUSB({id, settings, punched, datetime, total, printed
             USBPrinter.printText(name + net + amount +'\n')
           }
         })
+        await sleep(6)
+        USBPrinter.printText("\n")
       }
 
-      await sleep(6)
-      USBPrinter.printText("\n")
-      
       cashLabel = textDelimiter(' cash', 16, 'LEFT')
       paymentCount = textDelimiter(String(accounting.formatMoney(payment, 'P')), 16, 'RIGHT')
       await sleep(6)
@@ -325,3 +374,55 @@ export function deleteReceipt(pin) {
       dispatch({type: DELETE_RECEIPT_ERROR})
     });
 }}
+
+export function receiptPunchVisible(v){
+  return {
+    type: RECEIPT_PUNCH_VISIBLE,
+    visible: v
+  }
+}
+
+export function saveReceiptPunch(){
+
+  return (dispatch, getState) => {
+
+    const { transactions, database } =  getState() 
+
+    punched = t.punched.map((p) => {
+      p.refund = true
+      return p
+    })
+
+    t.punched = punched
+    
+    transactions_ = []
+    transactions_ = transactions.transactions.map((d) => {
+      if(d.id == t.id){
+        d.punched = punched
+      }
+      return d
+    })
+
+    database.db.transaction(function(txn){
+      txn.executeSql('UPDATE transactions SET punched =? WHERE id = ?',
+      [JSON.stringify(punched), t.id],
+      function(tx, res){
+        dispatch({type: SAVE_RECEIPT_PUNCH_SUCCESS, transactions: transactions_})
+        dispatch({type: RECEIPT_MODAL_INVISIBLE})
+        console.log('success adding transaction');
+      });
+    },
+    function(err){
+      console.log(err)
+    })
+
+  }
+
+}
+
+export function selectReceiptPunch(p){
+  return {
+    type: SELECT_RECEIPT_PUNCH,
+    selected: p
+  }
+}

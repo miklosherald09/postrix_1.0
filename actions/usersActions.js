@@ -100,9 +100,6 @@ export function updateUserType(type){
       txn.executeSql(`UPDATE users SET type = ? WHERE id = ?`,
       [ type, users.selectedUser.id ],
       function(_, res){
-        console.log('shit: ')
-        console.log(user)
-        console.log(type)
         dispatch({type: UPDATE_UTYPE_SUCCESS, userType: type})
         dispatch(getUsers())
       });
@@ -124,16 +121,12 @@ export function saveUserDetails(field, value){
       txn.executeSql(`UPDATE users SET name = ? WHERE id = ?`,
       [ value, users.selectedUser.id ],
       function(_, res){
-        console.log('field: '+field)
-        console.log('value: '+value)
-        console.log(users)
         dispatch({type: SAVE_USER_SUCCESS })
         dispatch(getUsers())
       })
     },
     function(err){
       console.log(err)
-      alert(err)
     })
   }
 }

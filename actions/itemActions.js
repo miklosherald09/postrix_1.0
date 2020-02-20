@@ -67,7 +67,7 @@ export function syncGoogleSheet() {
               exists = res.rows.item(0) ? true:false
               existsItem = res.rows.item(0)
 
-              console.log(exists?'true':'false')
+              // console.log(exists?'true':'false')
 
               if(!exists){
                 // INSERT NEW ITEM
@@ -98,7 +98,7 @@ export function syncGoogleSheet() {
                   function(_, res){
                     
                     dispatch({type: SYNCED_ITEM, item: item})
-                    console.log('index < items.length - 1: ' + index + ' < ' + items.length - 1)
+                    // console.log('index < items.length - 1: ' + index + ' < ' + items.length - 1)
 
                     if(index < items.length - 1){
                       resolve({
@@ -142,7 +142,7 @@ export function syncGoogleSheet() {
       csvArray = csvJSON(text)
       // items = JSON.parse(csvArray).slice(0, 100)
       items = JSON.parse(csvArray)
-      console.log(items)
+      // console.log(items)
 
       async function synchronizeItems() {
 
@@ -152,8 +152,6 @@ export function syncGoogleSheet() {
 
           const result = await _syncItem(items, item, i)
 
-          console.log('watasiht')
-          
           finalValue = {}
           finalValue.item = result.item;
           return finalValue; // important to return the value
@@ -196,7 +194,6 @@ export function trimItems(items) {
               }
             });
 
-            console.log('exists: '+exists+ ' i: '+i+ ' itemLength: '+itemLength)
             if(!exists){
               tx.executeSql(
                 `DELETE FROM items WHERE id = ? `,
@@ -313,7 +310,7 @@ export function getItems(){
           delete item.buy_price
           itemsList.push(item)
         }
-        console.log(itemsList)
+        // console.log(itemsList)
         dispatch({type: GET_ITEMS_SUCCESS, items: itemsList})
       });
     },
@@ -333,7 +330,6 @@ export function saveItem(){
       //create item 
       database.db.transaction(function(txn){
         console.log('trying save item..')
-        console.log(item)
         txn.executeSql('INSERT INTO items(name, buy_price, sell_price, barcode, tax_type) VALUES(?, ?, ?, ?, ?)',
         [ items.selectedItem.name, 
           items.selectedItem.buyPrice, 
@@ -341,7 +337,6 @@ export function saveItem(){
           items.selectedItem.barcode,
           items.selectedItem.tax_type ],
         function(tx, res){
-          console.log(item)
           dispatch({type: SAVE_ITEM_SUCCESS, item: item})
           dispatch(saveItemModalVisible(false))
           console.log('item successfully saved');
@@ -454,7 +449,6 @@ export function searchItems(text){
 
             dispatch({ type: REFRESH_ITEM_LIST })
             dispatch({ type: SEARCH_ITEM_SUCCESS, items: items })
-            console.log(text)
             console.log('search items successful..')
           });
       },

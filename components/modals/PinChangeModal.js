@@ -15,15 +15,11 @@ const PinChangeModal = (props) => {
   const { selected, pinChangeVisible } = props.pin
   
   const submitField = (field, value) => {
-    console.log('field: '+field)
-    console.log('field: '+value)
   
     errors = []
     if(value == ''){
       errors.push('Pin must have a value')    
     }
-
-    console.log(errors)
   
     if(errors.length){
       alert(errors.join(', '))

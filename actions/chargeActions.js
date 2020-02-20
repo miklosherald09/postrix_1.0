@@ -14,9 +14,6 @@ export function saveCharge(values){
   
   return (dispatch, getState) => {
 
-  console.log('input charge')
-  console.log(values)
-    
     const { database, charge } = getState()
     exists = false
     
@@ -38,7 +35,6 @@ export function saveCharge(values){
     else{
       // update charge
       console.log('trying to update charge')
-      console.log(charge.selected)
       database.db.transaction(function(txn){
         txn.executeSql('UPDATE charges SET name=?, price=? WHERE id=?',
         [values.name, values.price, charge.selected.id],
@@ -81,23 +77,18 @@ export function getCharges(){
   return ( dispatch, getState ) => {
 
     dispatch({type: GET_CHARGES_BEGIN})
-    console.log('xdk')
     
     const { database, charge } = getState()
-    console.log('xx`1')
 
     query = `SELECT * FROM charges`
     database.db.transaction( function(txn){
       txn.executeSql(query,
       [],
       function(_, res){
-        console.log('xx`2')
         charges = []
         for (i = 0; i < res.rows.length; ++i) {
           charges.push(res.rows.item(i))
         }
-        console.log('charges')
-        console.log(charges)
         console.log('charges successfully fetch...')
         dispatch({type: GET_CHARGES_SUCCESS, charges: charges})
         

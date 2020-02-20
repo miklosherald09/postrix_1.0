@@ -101,9 +101,6 @@ export default function shelvesReducer(state = initialState, action) {
     case ADD_SHELVE_SUCCESS: {
 
       items = appendShelveButtonBox([], action.shelve)
-      console.log('shitxx')
-      console.log(action.shelve)
-      console.log(items)
 
       return {
         ...state,
@@ -215,9 +212,6 @@ export default function shelvesReducer(state = initialState, action) {
       temp = [...state.items, ...action.items]
       items = appendShelveButtonBox(temp, state.activeShelve)
 
-      console.log('GSIS')
-      console.log(items)
-  
       return {
         ...state,
         request: {

@@ -51,7 +51,6 @@ const AddShelveItemsModal = (props) => {
     item => {
       const newSelected = new Map(selectedOptions)
       newSelected.set(item.id, !selectedOptions.get(item.id))
-      console.log(newSelected)
 			props.setSelected(newSelected)
 			props.selectShelveItem(item)
     },

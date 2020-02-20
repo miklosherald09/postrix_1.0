@@ -22,12 +22,8 @@ const onSubmit = (values, dispatch) => {
 const ItemColorsModal = (props) => {
  
   const { itemColorsModalVisible, colors, selectedColor } = props.itemColors
-  
-  // useEffect(() => {
-  //   console.log(colors)
-  // }, [])
-	
-	return (
+
+  return (
 		<View style={styles.wrapper}>
 			<Modal
 				animationType="none"

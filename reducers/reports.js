@@ -86,23 +86,24 @@ export default function reportsReducer(state = initialState, action) {
             totalCharges += punched.accruePrice
           }
           else{
-            
-            itemAdded = false,
-            items.forEach((v, i) => {
-              if(v.id == punched.id){
-                items[i].count += punched.count
-                items[i].accruePrice += punched.accruePrice
-                itemAdded = true
-              }
-            })
+            if(!punched.refund){
+              itemAdded = false,
+              items.forEach((v, i) => {
+                if(v.id == punched.id){
+                  items[i].count += punched.count
+                  items[i].accruePrice += punched.accruePrice
+                  itemAdded = true
+                }
+              })
 
-            if(!itemAdded)
-              items.push(punched)
-            
-            // computing total sales
-            itemSales = punched.sellPrice * punched.count
-            totalSales += itemSales
-            totalProfit += itemSales - (punched.count * punched.buyPrice)
+              if(!itemAdded)
+                items.push(punched)
+              
+              // computing total sales
+              itemSales = punched.sellPrice * punched.count
+              totalSales += itemSales
+              totalProfit += itemSales - (punched.count * punched.buyPrice)
+            }
           }
         })
       })

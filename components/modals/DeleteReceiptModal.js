@@ -1,5 +1,5 @@
 import React from 'react'
-import { Dimensions, StyleSheet, Text, View, TouchableHighlight, TouchableOpacity, Modal, FlatList } from 'react-native'
+import { Dimensions, StyleSheet, Text, TextInput, View, TouchableHighlight, TouchableOpacity, Modal } from 'react-native'
 import { connect } from 'react-redux'
 import { ListItem, Button, Input } from 'react-native-elements'
 import { CloseButton } from '../../components/Common'
@@ -8,6 +8,7 @@ import Icon from 'react-native-vector-icons/FontAwesome5'
 import NumberFormat from 'react-number-format'
 import { currency } from '../../constants/constants'
 import { receiptModalInvisible, printReceipt, deleteReceiptModalVisible, deleteReceipt } from '../../actions/receiptActions'
+import { deleteTransaction } from '../../actions/transactionActions'
 
 
 const screenWidth = Math.round(Dimensions.get('window').width);
@@ -60,16 +61,22 @@ const DeleteReceiptModal = (props) => {
                 </View>
               </View>
               <View style={styles.content}>
-                <Input
-                  label={"ENTER ADMIN/ROOT PIN"}
-                  type={"default"}
-                  keyboardType={"numeric"}
-                  labelStyle={myStyles.label1}
-                  containerStyle={{marginTop: 15}}
-                  inputStyle={{}}
+                <UselessField 
+                  style={myStyles.input1} 
+                  label={'ADMINISTRATOR PIN'} 
+                  onSubmitEditing={(e) => props.deleteTransaction(e.nativeEvent.text)} 
+                  keyboardType="numeric"
                   secureTextEntry={true}
-                  onSubmitEditing={({nativeEvent})=> props.deleteReceipt(nativeEvent.text)}
-                />
+                  />
+                  {/* <Input
+                    placeholder={"ENTER ADxxxMIN/ROOT PIN"}
+                    keyboardType={"numeric"}
+                    inputContainerStyle={{backgroundColor: 'blue' }}
+                    inputStyle={{fontSize: 30}}
+                    secureTextEntry={false}
+                    onSubmitEditing={({nativeEvent})=> props.deleteReceipt(nativeEvent.text)}
+                  /> */}
+                {/* </View> */}
               </View>
             </View>
           </TouchableOpacity>
@@ -79,46 +86,19 @@ const DeleteReceiptModal = (props) => {
 	);
 }
 
-export class DeleteButton extends React.Component{
+export class UselessField extends React.Component{
 
   render(){
     return (
-      (this.props.userType == 'ROOT' || this.props.userType == 'ADMIN')?
-      <Button
-        onPress={this.props.onPress} style={styles.opacity}
-        containerStyle={{}}
-        type="clear"
-        titleStyle={{color: '#333', marginLeft: 5}}
-        icon={
-          <Icon 
-            name="minus-circle"
-            size={30}
-            color="#666"
-          />
-        }
-      />:null
-    )
-  }
-}
-
-export class PrintButton extends React.Component{
-
-  render(){
-    return (
-      (this.props.userType == 'ROOT' || this.props.userType == 'ADMIN')?
-      <Button
-        onPress={this.props.onPress} style={styles.opacity}
-        containerStyle={{}}
-        type="clear"
-        titleStyle={{color: '#333', marginLeft: 5}}
-        icon={
-          <Icon 
-            name="print"
-            size={30}
-            color="#666"
-          />
-        }
-      />:null
+      <View style={{borderColor: '#CCC', borderBottomWidth: 1}}>
+        <Text style={myStyles.label1}>{this.props.label}</Text>
+        <TextInput 
+          style={this.props.style}
+          defaultValue={this.props.defaultValue} 
+          onSubmitEditing={this.props.onSubmitEditing} 
+          secureTextEntry={this.props.secureTextEntry}
+          keyboardType={this.props.keyboardType}/>
+      </View>
     )
   }
 }
@@ -136,7 +116,7 @@ function mapDispatchToProps(dispatch) {
     deleteReceiptModalVisible: (visible) => dispatch(deleteReceiptModalVisible(visible)),
     receiptModalInvisible: () => dispatch(receiptModalInvisible()),
     printReceipt: (transaction) => dispatch(printReceipt(transaction)),
-    deleteReceipt: (pin) => dispatch(deleteReceipt(pin))
+    deleteTransaction: (pin) => dispatch(deleteTransaction(pin))
 	}
 }
 
@@ -165,6 +145,9 @@ const styles = StyleSheet.create({
   wrap: {
 		flex: 1,
     justifyContent: 'center',
+    backgroundColor: 'blue',
+    borderWidth: 1,
+    borderColor: 'yellow'
   },
   touchable: {
     flex: 1, 
@@ -217,8 +200,7 @@ const styles = StyleSheet.create({
 		marginLeft: 10
 	},
 	content: {
-		flex: 1,
-		margin: 20,
+    margin: 20,
   },
   invalid: {
     marginLeft: 10,
@@ -260,7 +242,6 @@ const styles = StyleSheet.create({
     height: 37,
     width: 250
   },
-
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(DeleteReceiptModal);

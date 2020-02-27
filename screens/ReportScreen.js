@@ -6,7 +6,7 @@ import TransactionSearch from '../components/TransactionSearch'
 import SalesReport from '../components/SalesReport'
 import ReceiptModal from '../components/modals/ReceiptModal'
 import { Button } from 'react-native-elements'
-import { changeStartDate, changeEndDate, generateSalesReport , changeStartTime, changeEndTime, printReport } from '../actions/reportsActions'
+import { changeStartDate, changeEndDate, generateSalesReport , changeStartTime, changeEndTime, printReport, printReportSummary } from '../actions/reportsActions'
 import { formatDate } from '../functions'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import moment from 'moment'
@@ -129,13 +129,18 @@ const ReportScreen = (props) => {
           </ScrollView>
 				</View>
 				<View style={styles.rightContent}>
-					<View style={{height: 50, flexDirection: 'row', marginLeft: 10, marginTop: 10}}>
-						<DatePicker title={formatDate(startDate, 3)} onPress={ () => this.openStartDatePicker() }/>
-						<TimePicker title={moment(startTime).format('hh:mm a')} onPress={ () => this.openStartTimePicker() }/>
-						<Icon name="arrows-alt-h" color="#CCC" size={20} style={{marginTop: 10}}/>
-						<DatePicker title={formatDate(endDate, 3)} onPress={ () => this.openEndDatePicker() }/>
-						<TimePicker title={moment(endTime).format('hh:mm a')} onPress={ () => this.openEndTimePicker() }/>
-						<PrintButton onPress={() => props.printReport()} />
+					<View style={{height: 50, flexDirection: 'row'}}>
+						<View style={{flex: 3, flexDirection: 'row', marginLeft: 10, marginTop: 10}}>
+							<DatePicker title={formatDate(startDate, 3)} onPress={ () => this.openStartDatePicker() }/>
+							<TimePicker title={moment(startTime).format('hh:mm a')} onPress={ () => this.openStartTimePicker() }/>
+							<Icon name="arrows-alt-h" color="#CCC" size={20} style={{marginTop: 10}}/>
+							<DatePicker title={formatDate(endDate, 3)} onPress={ () => this.openEndDatePicker() }/>
+							<TimePicker title={moment(endTime).format('hh:mm a')} onPress={ () => this.openEndTimePicker() }/>
+						</View>
+						<View style={{flex:1, flexDirection: 'row', justifyContent: 'flex-end'}}>
+							<PrintSummaryButton onPress={() => props.printReportSummary()} />
+							<PrintButton onPress={() => props.printSReport()} />
+						</View>
 					</View>
 					<View style={{flex: 1}}>
 						{ !processing ? <SalesReport />: <Loading /> }
@@ -196,9 +201,28 @@ class Loading extends React.Component{
 class PrintButton extends React.Component{
 	render(){
 		return (
-			<View style={{ width: 50, height: 50, position: 'absolute', right: 10}}>
+			<View style={{marginRight: 10, marginTop: 5, marginLeft: 10}}>
 				<Button
-					style={{marginLeft: 10, alignSelf: 'flex-end', position: 'absolute', right: 0}}
+					onPress={this.props.onPress}
+					type="clear"
+					icon={
+						<Icon
+							name="print"
+							size={30}
+							color="#2089dc"
+						/>
+					}
+				/>
+			</View>
+		)
+	}
+}
+
+class PrintSummaryButton extends React.Component{
+	render(){
+		return (
+			<View style={{marginRight: 5, marginTop: 10, marginLeft: 10}}>
+				<Button
 					onPress={this.props.onPress}
 					type="clear"
 					icon={
@@ -224,6 +248,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
 		printReport: () => { dispatch(printReport()) },
+		printReportSummary: () => { dispatch(printReportSummary()) },
 		changeStartDate: (date) => { dispatch(changeStartDate(date)) },
 		changeEndDate: (date) => dispatch(changeEndDate(date)),
 		generateSalesReport: () => dispatch(generateSalesReport()), 

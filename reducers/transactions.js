@@ -80,17 +80,8 @@ export default function transactionsReducer(state = initialState, action) {
 
     case DELETE_TRANSACTION_SUCCESS: {
 
-      console.log('DELETE_TRANSACTION_SUCCESS')
-
-      transactions = state.transactions.filter((v) => {
-        return typeof(v.empty) !== 'undefined'
-      })
-
-      _transactions = transactions.filter((v) => {
-        return v.id != action.transId
-      })
-
-      transactionFinal = appendTransactionEmptyBox(_transactions) 
+      _transactions = [...state.transactions].filter(v => v.id != action.id)
+      transactionFinal = appendTransactionEmptyBox(_transactions)
 
       return {
         ...state,

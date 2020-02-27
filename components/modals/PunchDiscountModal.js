@@ -104,36 +104,6 @@ function mapDispatchToProps(dispatch) {
 	}
 }
 
-export const UTypeButton = (props) => {
-  return (
-    <Button
-      type={props.selectedUType == props.title?'solid':'outline'}
-      onPress={props.onPress}
-      title={capitalize(props.title)}
-      titleStyle={{fontSize: 20}}
-      containerStyle={{marginRight: 10, borderRadius: 20}}
-    />
-  )
-} 
-
-export class UselessField extends React.Component{
-
-  render(){
-    return (
-      <View style={{borderColor: '#CCC', borderBottomWidth: 1}}>
-        <Text style={myStyles.label1}>{this.props.label}</Text>
-        <TextInput 
-          style={this.props.style}
-          defaultValue={this.props.defaultValue} 
-          onSubmitEditing={this.props.onSubmitEditing}
-          onBlur={this.props.onBlur}
-          onChange={this.props.onChange}
-          secureTextEntry={this.props.secureTextEntry}
-          keyboardType={this.props.keyboardType}/>
-      </View>
-    )
-  }
-}
 
 const styles = StyleSheet.create({
   wrapper: {

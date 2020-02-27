@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { StyleSheet, View, TouchableOpacity, ScrollView } from 'react-native'
+import { StyleSheet, View, TouchableOpacity, ScrollView, Text } from 'react-native'
 import { connect } from 'react-redux'
 import { MenuButton } from '../components/MenuButton'
 import SettingsNav from '../navigation/SettingsNav'
@@ -7,6 +7,7 @@ import { discountModalVisible, selectDiscount, addDiscountPrompt, getDiscounts }
 import { Card, Avatar, ListItem } from 'react-native-elements'
 import { AddButton } from '../components/Common'
 import DiscountModal from  '../components/modals/DiscountModal'
+import { currency } from '../constants/constants'
 
 const SettingsDiscountScreen = props => {
 
@@ -41,20 +42,18 @@ const SettingsDiscountScreen = props => {
             <ScrollView>
             {
               discounts.map((u, i) => {
+                preValue = u.type == 'BILL'?currency:''
+                postValue = u.type == 'PERCENTAGE'?'%':''
+                title = u.name + ' - ' + preValue + u.value + postValue
+
                 return (
-                  <TouchableOpacity key={'tax-' + i} onPress={() => props.selectDiscount(u)}>
-                  <ListItem
-                    title={u.name + ' - ' + u.value}
-                    titleStyle={{fontSize: 20}}
-                    leftAvatar = {
-                      <Avatar
-                        rounded
-                        title={u.name.slice(0, 1)}
-                        size="small"
-                      />
-                    }
+                  <Discount
+                    key={'d'+i}
+                    avatarTitle={u.name.slice(0, 1)}
+                    title={title}
+                    type={u.type}
+                    onPress={() => props.selectDiscount(u)} 
                   />
-                  </TouchableOpacity>
                 );
               })
             }
@@ -87,6 +86,22 @@ function mapDispatchToProps(dispatch) {
     addDiscountPrompt: () => dispatch(addDiscountPrompt())
   }
 }
+
+const Discount = ({onPress, title, avatarTitle, type}) => {
+  return (
+    <TouchableOpacity key={'tax-' + i} onPress={onPress}>
+      <View style={{flex: 1, flexDirection: 'row', margin: 10}}>
+        <Avatar
+          rounded
+          title={avatarTitle}
+          size="small"
+        />
+        <Text style={{fontSize: 20, marginLeft: 10, marginTop: 2}}>{title}{}</Text>
+      </View>
+    </TouchableOpacity>
+  )
+}
+
 
 const styles = StyleSheet.create({
   user: {

@@ -1,5 +1,5 @@
 import { ToastAndroid } from 'react-native'
-import { formatDate, textDelimiter } from '../functions'
+import { formatDate, textDelimiter, compareValues } from '../functions'
 import { currency } from '../constants/constants'
 import { BluetoothEscposPrinter } from 'react-native-bluetooth-escpos-printer'
 import { accounting } from '../accounting.min.js'
@@ -146,7 +146,7 @@ function printReportBT(reports, settings) {
   console.log('printing receipt...')
   BluetoothEscposPrinter.printerAlign(BluetoothEscposPrinter.ALIGN.CENTER)
   BluetoothEscposPrinter.setBlob(0)
-  BluetoothEscposPrinter.printText(settings.shopName+"\n\r",{
+  BluetoothEscposPrinter.printText(settings.SHOP_NAME.value+"\n\r",{
     encoding:'GBK',
     codepage:0,
     widthtimes:2,
@@ -217,7 +217,7 @@ function printReportUSB(reports, settings) {
   startDateTime = reports.startDate + reports.startTime - offset
   endDateTime = reports.endDate + reports.endTime - offset
 
-  USBPrinter.printText("<C><B>"+settings.shopName+"</B></C>\n")
+  USBPrinter.printText("<C><B>"+settings.SHOP_NAME.value+"</B></C>\n")
   USBPrinter.printText("\n")
   USBPrinter.printText("From: "+formatDate(startDateTime, 2)+"\n")
   USBPrinter.printText("To: "+formatDate(endDateTime, 2)+"\n")
@@ -281,3 +281,190 @@ function printReportUSB(reports, settings) {
   USBPrinter.printText("\n")
 
 }
+
+export function printReportSummary(){
+
+  return (dispatch, getState) => {
+
+    const { settingsPrinter } = getState()
+
+    if(settingsPrinter.connectionType == CONNECTION_TYPE_BT){
+      dispatch(printReportSummaryBT(reports, settings))
+    }
+    
+    if(settingsPrinter.connectionType == CONNECTION_TYPE_USB){
+      dispatch(printReportSummaryUSB(reports, settings))
+    }
+    
+    if(settingsPrinter.connectionType == null){
+      ToastAndroid.show('Printer not connected', ToastAndroid.LONG)
+    }
+  }
+}
+
+export function printReportSummaryBT() {
+  
+  return (dispatch, getState) => {
+
+    const { reports, settings } = getState()
+
+    console.log(reports.itemSales)
+
+    itemSales = JSON.parse(JSON.stringify(reports.itemSales))
+    itemSales = itemSales.sort(compareValues('count', 'desc')).slice(0, 9)
+
+    date = new Date;
+    columnWidths = [17, 5, 10];
+    date = new Date()
+    offset = date.getTimezoneOffset() * 60 * 1000
+    startDateTime = reports.startDate + reports.startTime - offset
+    endDateTime = reports.endDate + reports.endTime - offset
+
+    console.log('printing receipt...')
+    BluetoothEscposPrinter.printerAlign(BluetoothEscposPrinter.ALIGN.CENTER)
+    BluetoothEscposPrinter.setBlob(0)
+    BluetoothEscposPrinter.printText(settings.SHOP_NAME.value+"\n\r",{
+      encoding:'GBK',
+      codepage:0,
+      widthtimes:2,
+      heigthtimes:1,
+      fonttype:1
+    })
+    BluetoothEscposPrinter.printText("\n\r",{});
+    BluetoothEscposPrinter.printerAlign(BluetoothEscposPrinter.ALIGN.LEFT)
+    BluetoothEscposPrinter.printText("From: "+formatDate(startDateTime, 2)+"\n\r",{});
+    BluetoothEscposPrinter.printText("To: "+formatDate(endDateTime, 2)+"\n\r",{});
+    BluetoothEscposPrinter.printText("\n\r",{});
+    BluetoothEscposPrinter.printText("--------------------------------\n\r",{});
+    
+    BluetoothEscposPrinter.printColumn(columnWidths, [BluetoothEscposPrinter.ALIGN.LEFT,BluetoothEscposPrinter.ALIGN.CENTER,BluetoothEscposPrinter.ALIGN.RIGHT],
+      ["Item",'Qty', 'Total'], {});
+    
+    // iterate punched items
+    itemSales.map((v, i) => {
+      BluetoothEscposPrinter.printColumn(columnWidths, [BluetoothEscposPrinter.ALIGN.LEFT,BluetoothEscposPrinter.ALIGN.CENTER,BluetoothEscposPrinter.ALIGN.RIGHT],
+        [String(v.name.slice(0, 16)), 'x'+String(v.count), String(accounting.formatMoney(v.accruePrice, ''))],{});
+    })
+    
+    BluetoothEscposPrinter.printText("\n\r",{});
+    BluetoothEscposPrinter.printColumn(columnWidths, [BluetoothEscposPrinter.ALIGN.LEFT,BluetoothEscposPrinter.ALIGN.CENTER,BluetoothEscposPrinter.ALIGN.RIGHT],
+      ["Total Sales", "", String(accounting.formatMoney(reports.totalSales, ''))],{});
+
+    BluetoothEscposPrinter.printText("\n\r",{});
+    BluetoothEscposPrinter.printText("\n\r",{});
+    BluetoothEscposPrinter.printText("\n\r",{});  
+    BluetoothEscposPrinter.printText("--------------------------------\n\r",{});
+
+    BluetoothEscposPrinter.printColumn(columnWidths, [BluetoothEscposPrinter.ALIGN.LEFT,BluetoothEscposPrinter.ALIGN.CENTER,BluetoothEscposPrinter.ALIGN.RIGHT],
+      ["Item",'Qty', 'Total'], {});
+
+    // iterate charges
+    reports.charges.map((v, i) => {
+      BluetoothEscposPrinter.printColumn(columnWidths, [BluetoothEscposPrinter.ALIGN.LEFT,BluetoothEscposPrinter.ALIGN.CENTER,BluetoothEscposPrinter.ALIGN.RIGHT],
+        [String(v.name.slice(0, 16)), 'x'+String(v.count), String(accounting.formatMoney(v.accruePrice, ''))],{});
+    })
+
+    BluetoothEscposPrinter.printText("\n\r",{});
+    BluetoothEscposPrinter.printColumn(columnWidths, [BluetoothEscposPrinter.ALIGN.LEFT,BluetoothEscposPrinter.ALIGN.CENTER,BluetoothEscposPrinter.ALIGN.RIGHT],
+      ["Total Charges", "", String(accounting.formatMoney(reports.totalCharges, ''))],{});
+
+    BluetoothEscposPrinter.printText("\n\r",{});
+    BluetoothEscposPrinter.printText("\n\r",{});
+    BluetoothEscposPrinter.printText("\n\r",{}); 
+    BluetoothEscposPrinter.printText("--------------------------------\n\r",{});
+    BluetoothEscposPrinter.printerAlign(BluetoothEscposPrinter.ALIGN.CENTER);
+    BluetoothEscposPrinter.setBlob(1);
+    BluetoothEscposPrinter.printText("Date: "+moment().format('LLL')+"\n\r",{});
+    BluetoothEscposPrinter.printText("Sales Report!\n\r",{});
+    BluetoothEscposPrinter.printText("\n\r",{});
+    BluetoothEscposPrinter.printText("\n\r",{});
+    BluetoothEscposPrinter.printText("\n\r",{});
+    BluetoothEscposPrinter.printText("\n\r",{});
+
+    
+    dispatch({ type: PRINT_REPORT_SUCCESS })
+  }
+
+}
+
+export function printReportSummaryUSB(reports, settings) {
+
+  return (getState, dispatch) => {
+
+    const { reports, settings } = getState()
+
+    date = new Date;
+    columnWidths = [17, 5, 10]
+    date = new Date()
+    offset = date.getTimezoneOffset() * 60 * 1000
+    startDateTime = reports.startDate + reports.startTime - offset
+    endDateTime = reports.endDate + reports.endTime - offset
+
+    USBPrinter.printText("<C><B>"+settings.SHOP_NAME.value+"</B></C>\n")
+    USBPrinter.printText("\n")
+    USBPrinter.printText("From: "+formatDate(startDateTime, 2)+"\n")
+    USBPrinter.printText("To: "+formatDate(endDateTime, 2)+"\n")
+    USBPrinter.printText("\n")
+    USBPrinter.printText("--------------------------------\n")
+    
+    h1 = textDelimiter('Item', columnWidths[0], 'LEFT')
+    h2 = textDelimiter('Qty', columnWidths[1], 'LEFT')
+    h3 = textDelimiter('Total', columnWidths[2], 'RIGHT')
+    USBPrinter.printText( h1 + h2 + h3 + '\n' )
+    
+    // iterate punched items
+    reports.itemSales.map((v, i) => {
+      name = textDelimiter(String(v.name.slice(0, 16)), columnWidths[0], 'LEFT')
+      count = textDelimiter(String(v.count), columnWidths[1], 'LEFT')
+      price = textDelimiter(String(accounting.formatMoney(v.accruePrice, '')), columnWidths[2], 'RIGHT')
+      USBPrinter.printText(name + count + price + '\n') 
+    })
+    
+    USBPrinter.printText("\n")
+    label1 = textDelimiter('Total Sales', columnWidths[0], 'LEFT')
+    label2 = textDelimiter(' ', columnWidths[1], 'LEFT')
+    label3 = textDelimiter(String(accounting.formatMoney(reports.totalSales, '')), columnWidths[2], 'RIGHT')
+
+    USBPrinter.printText("\n")
+    USBPrinter.printText(label1 + label2 + label3 + '\n')
+
+    USBPrinter.printText("\n")
+    USBPrinter.printText("\n")
+    USBPrinter.printText("\n")
+    USBPrinter.printText("--------------------------------\n")
+
+    // iterate charges
+    if(charges.totalCharges != 0){
+      reports.charges.map((v, i) => {
+
+        label1 = textDelimiter(String(v.name.slice(0, 16)), columnWidths[0], 'LEFT')
+        label2 = textDelimiter('x'+String(v.count), columnWidths[1], 'LEFT')
+        label3 = textDelimiter(String(accounting.formatMoney(v.accruePrice, '')), columnWidths[2], 'RIGHT')
+      
+        USBPrinter.printText(label1 + label2 + label3 + '\n')
+      })
+
+      label4 = textDelimiter("Total Charges", columnWidths[0], 'LEFT')
+      label5 = textDelimiter("", columnWidths[1], 'LEFT')
+      label6 = textDelimiter(String(accounting.formatMoney(reports.totalCharges, '')), columnWidths[2], 'RIGHT')
+
+      USBPrinter.printText("\n")
+      USBPrinter.printText(label4 + label5 + label6 + "\n")
+    }
+
+    USBPrinter.printText("\n")
+    USBPrinter.printText("\n")
+    USBPrinter.printText("\n")
+    USBPrinter.printText("--------------------------------\n")
+    USBPrinter.printText("Date: "+moment().format('LLL')+"\n")
+    USBPrinter.printText("<C>Sales Report</C>\n")
+    USBPrinter.printText("\n")
+    USBPrinter.printText("\n")
+    USBPrinter.printText("\n")
+    USBPrinter.printText("\n")
+
+    dispatch({ type: PRINT_REPORT_SUCCESS })
+  }
+
+}
+

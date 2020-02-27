@@ -29,7 +29,7 @@ export function printReceipt({id, payment, total, punched, printed, datetime, ta
 
     const { settingsPrinter, settings } = getState()
 
-    // dispatch(printReceiptUSB({id, settings, punched, datetime, total, printed, payment, taxes}))
+    // dispatch(printReceiptBT({id, settings, punched, datetime, total, printed, payment, taxes, discounts}))
 
     if(settingsPrinter.connectionType == CONNECTION_TYPE_BT){
       dispatch(printReceiptBT({id, settings, punched, datetime, total, printed, payment, taxes, discounts}))
@@ -65,17 +65,21 @@ export function printReceiptBT({id, settings, punched, datetime, total, printed,
       
       await BluetoothEscposPrinter.printerAlign(centerAlign);
       await BluetoothEscposPrinter.setBlob(0);
-      settings.SHOP_NAME?
-      await BluetoothEscposPrinter.printText(settings.SHOP_NAME+"\n\r\n\r\n\r",{
-        encoding:'GBK',
-        codepage:0,
-        widthtimes:2,
-        heigthtimes:1,
-        fonttype:1
-      }):null
+      if(settings.SHOP_NAME.enabled){
+        settings.SHOP_NAME?
+        await BluetoothEscposPrinter.printText(settings.SHOP_NAME.value+"\n\r\n\r\n\r",{
+          encoding:'GBK',
+          codepage:0,
+          widthtimes:2,
+          heigthtimes:1,
+          fonttype:1
+        }):null
+      }
       await BluetoothEscposPrinter.printerAlign(leftAlign)
-      settings.RECEIPT_HEADER?
-      await BluetoothEscposPrinter.printText(settings.RECEIPT_HEADER+"\n\r",{}):null
+      if(settings.RECEIPT_HEADER.enabled){
+        settings.RECEIPT_HEADER?
+        await BluetoothEscposPrinter.printText(settings.RECEIPT_HEADER.value+"\n\r",{}):null
+      }
       await BluetoothEscposPrinter.printText(moment(datetime).format('LLL')+"\n\r",{})
       await BluetoothEscposPrinter.printText("Receipt No. "+ String(id).padStart(6, '0') +"\n\r", {})
       await BluetoothEscposPrinter.printText("--------------------------------\n\r",{})
@@ -157,8 +161,10 @@ export function printReceiptBT({id, settings, punched, datetime, total, printed,
       
       await BluetoothEscposPrinter.printText("--------------------------------\n\r",{})
       await BluetoothEscposPrinter.printerAlign(leftAlign)
-      settings.RECEIPT_FOOTER?
-      await BluetoothEscposPrinter.printText(settings.RECEIPT_FOOTER+"\n\r\n\r",{}):null
+      if(settings.RECEIPT_FOOTER.enabled){
+        settings.RECEIPT_FOOTER?
+        await BluetoothEscposPrinter.printText(settings.RECEIPT_FOOTER.value+"\n\r\n\r",{}):null
+      }
       await BluetoothEscposPrinter.printerAlign(centerAlign)
       if(printed){
         await BluetoothEscposPrinter.printText("RECEIPT REPRINTED"+"\n\r",{})
@@ -182,9 +188,13 @@ export function printReceiptUSB({id, settings, punched, datetime, total, printed
 
     try{
 
-      USBPrinter.printText("<C><B>"+settings.SHOP_NAME+"</B></C>\n\n\n")
-      await sleep(6)
-      USBPrinter.printText(settings.RECEIPT_HEADER+"\n")
+      if(settings.SHOP_NAME.enabled){
+        USBPrinter.printText("<C><B>"+settings.SHOP_NAME.value+"</B></C>\n\n\n")
+      }
+      if(settings.RECEIPT_HEADER.enabled){
+        await sleep(6)
+        USBPrinter.printText(settings.RECEIPT_HEADER.value+"\n")
+      }
       await sleep(6)
       USBPrinter.printText(moment(datetime).format('LLL')+"\n")
       await sleep(6)
@@ -300,8 +310,11 @@ export function printReceiptUSB({id, settings, punched, datetime, total, printed
       if(printed){
         USBPrinter.printText("RECEIPT REPRINTED: "+moment().format('LLL'),{})
       }
-      await sleep(6)
-      USBPrinter.printText(settings.RECEIPT_FOOTER+"\n\n\n\n\n\n")
+
+      if(settings.RECEIPT_HEADER.enabled){
+        await sleep(6)
+        USBPrinter.printText(settings.RECEIPT_FOOTER.value+"\n\n\n\n\n\n")
+      }
 
       dispatch(resetTaxValues())
       dispatch(resetChargeDiscountValues())
@@ -337,43 +350,6 @@ export function deleteReceiptModalVisible(visible){
     visible: visible
   }
 }
-
-export function deleteReceipt(pin) {
-
-  console.log('trying to delete receipt...')
-  
-  return ( dispatch, getState ) => {
-    
-    // check if pin is from ADMIN or ROOT
-    const { database, receipt } = getState()
-    database.db.transaction( function(txn){
-      txn.executeSql(`SELECT * FROM users WHERE pin = ?`,
-      [pin],
-      function(tx, res){
-        
-        if(res.rows.length){
-          tx.executeSql(`DELETE FROM transactions WHERE id = ?`,
-            [receipt.selected.id],
-            function (_, res) {
-              dispatch({type: DELETE_TRANSACTION_SUCCESS, transId: receipt.selected.id })
-              dispatch({type: DELETE_RECEIPT_SUCCESS })
-              console.log('delete receipt done!')
-            },
-            function (err){
-              console.log('delete receipt error!')
-            }
-          )
-        }
-        else{
-          alert('invalid PIN')
-        }
-      });
-    },
-    function(err){
-      reject(err.message);
-      dispatch({type: DELETE_RECEIPT_ERROR})
-    });
-}}
 
 export function receiptPunchVisible(v){
   return {

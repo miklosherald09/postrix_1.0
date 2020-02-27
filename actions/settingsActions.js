@@ -14,6 +14,11 @@ export const UPDATE_RECEIPT_FOOTER_SUCCESS = 'UPDATE_RECEIPT_FOOTER_SUCCESS'
 export const UPDATE_SETTINGS = 'UPDATE_SETTINGS'
 export const RECEIPT_HEADER = 'RECEIPT_HEADER'
 export const RECEIPT_FOOTER = 'RECEIPT_FOOTER'
+export const SETTINGS_RECEIPT_MODAL_VISIBLE = 'SETTINGS_RECEIPT_MODAL_VISIBLE'
+export const EDIT_RECEIPT_SETTINGS = 'EDIT_RECEIPT_SETTINGS'
+export const SAVE_RECEIPT_SETTINGS_INPUT = 'SAVE_RECEIPT_SETTINGS_INPUT'
+export const UPDATE_RECEIPT_SETTINGS_SUCCESS = 'UPDATE_RECEIPT_SETTINGS_SUCCESS'
+export const TOGGLE_ENABLED_RECEIPT_SETTINGS = 'TOGGLE_ENABLED_RECEIPT_SETTINGS'
 
 export function initSettings() {
 
@@ -28,9 +33,14 @@ export function initSettings() {
       txn.executeSql(`SELECT * FROM settings`,
       [],
       function(tx, res){
-        var settings = {};
+        var settings = {}
         for (let i = 0; i < res.rows.length; ++i) {
-          settings[res.rows.item(i).name] = res.rows.item(i).value;
+          settings[res.rows.item(i).name] = {
+            name: res.rows.item(i).name,
+            value: res.rows.item(i).value,
+            enabled: res.rows.item(i).enabled,
+            datetime: res.rows.item(i).datetime
+          }
         }
         dispatch({ type: INIT_SETTINGS, settings: settings })
       });
@@ -201,7 +211,77 @@ export function updateReceiptFooter(text){
   
 }
 
+export function settingsReceiptModalVisible(v){
+  return {
+    type: SETTINGS_RECEIPT_MODAL_VISIBLE,
+    visible: v
+  }
+}
 
+export function editReceiptSettings(value){
+  return {
+    type: EDIT_RECEIPT_SETTINGS,
+    selectedReceiptSettings: value
+  }
+}
 
+export function saveReceiptSettingsInput(name, value){
 
+  return {
+    type: SAVE_RECEIPT_SETTINGS_INPUT,
+    name: name,
+    value: value
+  }
+}
 
+export function saveReceiptSettings() {
+
+  return (dispatch, getState) => {
+   
+    const { database, settings } = getState()
+
+    database.db.transaction(function(txn){
+      // UPDATE ITEM
+      console.log('saving shop name..')
+      txn.executeSql(`UPDATE settings set value = ? WHERE name = ?`,
+      [settings.selectedReceiptSettings.value, settings.selectedReceiptSettings.name],
+      function(tx, res){
+        // UDPATE STORE
+        dispatch({type: UPDATE_RECEIPT_SETTINGS_SUCCESS})
+        console.log('update shopname done!')
+      });
+    },
+    function(err){
+      console.log('update shopname error' + err.message);
+    });
+  }
+ 
+}
+
+export function toggleEnabledReceiptSettings(v, e){
+
+  return (dispatch, getState) => {
+   
+    const { database, settings } = getState()
+
+    database.db.transaction(function(txn){
+      // UPDATE ITEM
+      console.log('saving shop name..')
+      txn.executeSql(`UPDATE settings set enabled = ? WHERE name = ?`,
+      [e?1:0, v.name],
+      function(tx, res){
+        // UDPATE STORE
+        dispatch({
+          type: TOGGLE_ENABLED_RECEIPT_SETTINGS,
+          setting: v,
+          enabled: e
+        })
+        console.log('update shopname done!')
+      });
+    },
+    function(err){
+      console.log('update shopname error' + err.message);
+    });
+  }
+  
+}

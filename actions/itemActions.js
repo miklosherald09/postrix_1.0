@@ -127,7 +127,7 @@ export function syncGoogleSheet() {
       })
     }
 
-    fetch(settings.GOOGLE_SHEET_URL_CSV, {
+    fetch(settings.GOOGLE_SHEET_URL_CSV.value, {
       method: 'GET',
       headers: {
         Accept: 'application/json',

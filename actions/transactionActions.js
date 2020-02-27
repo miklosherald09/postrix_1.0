@@ -1,5 +1,5 @@
 import { ToastAndroid } from 'react-native';
-import { printReceipt as printReceiptAction, RECEIPT_MODAL_INVISIBLE, RECEIPT_PUNCH_VISIBLE } from './receiptActions'
+import { printReceipt as printReceiptAction, RECEIPT_MODAL_INVISIBLE, RECEIPT_PUNCH_VISIBLE, DELETE_RECEIPT_MODAL_VISIBLE } from './receiptActions'
 import { resetTaxValues } from './taxActions'
 import { resetChargeDiscountValues } from './discountActions'
 import { sleep } from '../functions'
@@ -276,3 +276,43 @@ export function refundPunch(p){
 
   }
 }
+
+export function deleteTransaction(pin) {
+
+  console.log('trying to delete receipt...')
+  
+  return ( dispatch, getState ) => {
+    
+    // check if pin is from ADMIN or ROOT
+    const { database, receipt } = getState()
+
+    database.db.transaction( function(txn){
+      txn.executeSql(`SELECT * FROM users WHERE pin = ?`,
+      [pin],
+      function(tx, res){
+        
+        if(res.rows.length){
+          tx.executeSql(`DELETE FROM transactions WHERE id = ?`,
+            [receipt.selected.id],
+            function (_, res) {
+              dispatch({type: DELETE_TRANSACTION_SUCCESS, id: receipt.selected.id })
+              dispatch({type: RECEIPT_MODAL_INVISIBLE })
+              dispatch({type: DELETE_RECEIPT_MODAL_VISIBLE, visible: false })
+              ToastAndroid.show('Receipt Deleted Successfully!', ToastAndroid.LONG)
+              console.log('delete receipt done!')
+            },
+            function (err){
+              console.log('delete receipt error!')
+            }
+          )
+        }
+        else{
+          alert('invalid PIN')
+        }
+      });
+    },
+    function(err){
+      reject(err.message);
+      dispatch({type: DELETE_RECEIPT_ERROR})
+    });
+}}

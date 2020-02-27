@@ -6,7 +6,6 @@ import {
   PRINT_RECEIPT_ERROR,
   SELECT_RECEIPT,
   SELECT_RECEIPT_PUNCH,
-  DELETE_RECEIPT_SUCCESS,
   RECEIPT_PUNCH_VISIBLE,
   SAVE_RECEIPT_PUNCH_SUCCESS,
 } from '../actions/receiptActions'
@@ -67,14 +66,6 @@ export default function receiptReducer(state = initialState, action) {
       return {
         ...state,
         selected: action.transaction
-      }
-    }
-
-    case DELETE_RECEIPT_SUCCESS: {
-      return {
-        ...state,
-        receiptModalVisible: false,
-        deleteReceiptModalVisible: false,
       }
     }
 

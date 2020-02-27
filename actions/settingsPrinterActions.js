@@ -36,17 +36,17 @@ export function reconnectPrinter(){
 
     const { settings } = getState()
 
-    settingsPrinter = JSON.parse(settings.SETTINGS_PRINTER)
-    // alert('reconn...!')
-    // alert(JSON.stringify(settings))
-    // console.warn(settingsPrinter)
+    if(settings.SETTINGS_PRINTER.value){
+      settingsPrinter = JSON.parse(settings.SETTINGS_PRINTER.value)
 
-    if(settingsPrinter){
-      if(settingsPrinter.connectionType == CONNECTION_TYPE_BT)
-        dispatch(connectBTPrinter(settingsPrinter))
-      if(settingsPrinter.connectionType == CONNECTION_TYPE_USB)
-        dispatch(connectUSBPrinter(settingsPrinter))
+      if(settingsPrinter){
+        if(settingsPrinter.connectionType == CONNECTION_TYPE_BT.value)
+          dispatch(connectBTPrinter(settingsPrinter))
+        if(settingsPrinter.connectionType == CONNECTION_TYPE_USB.value)
+          dispatch(connectUSBPrinter(settingsPrinter))
+      }
     }
+
   }
 }
 

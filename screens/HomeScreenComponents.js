@@ -109,6 +109,19 @@ export class PayButton extends React.Component {
   }
 };
 
+export const CustomerButton = ({onPress}) => {
+  return (
+    <Button
+      type='clear'
+      onPress={onPress}
+      icon={<Icon
+        name='user-tag'
+        size={33}
+        color='#039BE5' />}
+    />
+  )
+}
+
 export const DiscountButton = ({onPress}) => {
   return (
     <Button
@@ -121,6 +134,7 @@ export const DiscountButton = ({onPress}) => {
     />
   )
 }
+
 
 export const TaxList = ({taxes}) => {
   

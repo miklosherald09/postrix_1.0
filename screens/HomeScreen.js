@@ -16,7 +16,7 @@ import AddShelveItemsModal from '../components/modals/AddShelveItemsModal'
 import ItemColorsModal from '../components/modals/ItemColorsModal'
 import SaveChargeModal from '../components/modals/SaveChargeModal'
 import ChargeDiscountModal from '../components/modals/ChargeDiscountModal'
-import { AddShelveButton, ChargeButton, ShelveButton, ItemSearchButton, PayButton, TaxList, DiscountList, DiscountButton } from './HomeScreenComponents'
+import { AddShelveButton, ChargeButton, ShelveButton, ItemSearchButton, PayButton, TaxList, DiscountList, DiscountButton, CustomerButton } from './HomeScreenComponents'
 import { CONTENT_SHELVES, CONTENT_CHARGE, changeActiveContent, taxDetailsToggle } from '../actions/homeActions'
 import { addModalVisible, getShelveItems, selectShelve, deleteShelve, getShelveItemsRefresh, shelveModalVisible } from '../actions/shelvesActions'
 import { modalVisible } from '../actions/itemSearchActions'
@@ -86,6 +86,9 @@ const HomeScreen = props => {
       </View>
       <View style={{flex: 1, borderLeftColor: 'black'}}>
         <View style={styles.rightTopBar}>
+          <View style={{flex: 1, flexDirection: 'row', marginTop: 3}}>
+            <CustomerButton onPress={() => props.chargeDiscountModalVisible(true)} />
+          </View>
           <View style={{flex: 1, flexDirection: 'row', justifyContent: 'flex-end', marginTop: 3}}>
             <DiscountButton onPress={() => props.chargeDiscountModalVisible(true)} />
             <ChargeButton onPress={() => props.changeActiveContent(CONTENT_CHARGE)} />
@@ -215,6 +218,7 @@ const styles = StyleSheet.create({
   rightTopBar: {
 		width: '100%',
     height: 60,
+    flexDirection: 'row',
     borderLeftColor: '#CCCCCC',
     backgroundColor: 'white',
 		borderLeftWidth: 1,

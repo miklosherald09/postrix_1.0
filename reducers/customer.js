@@ -4,17 +4,23 @@ import {
   SAVE_TAG_CUSTOMER_INPUT,
   SAVE_TAG_CUSTOMER_SUCCESS,
   ADD_TAG_CUSTOMER_PROMPT,
-  GET_TAG_CUSTOMERS_SUCCESS,
   DELETE_CUSTOMER_SUCCESS,
   SAVE_CUSTOMER_SUCCESS,
   SET_CUSTOMER_MODAL_VISIBLE,
   SET_SELECTED_TAG_CUSTOMER,
-  GET_CUSTOMERS_SUCCESS
+  GET_TAG_CUSTOMERS_BEGIN,
+  GET_TAG_CUSTOMERS_SUCCESS,
+  REFRESH_TAG_CUSTOMERS
 } from '../actions/customerActions'
 
 const initialState = {
   tagCustomers: [],
   tagCustomerModalVisible: false,
+  tagCustomerList: {
+    refreshing: false,
+    limit: 10,
+    page: 1
+  },
   selectedTagCustomer: {
     name: '',
     tin: '',
@@ -25,7 +31,8 @@ const initialState = {
     // {name: 'shit2', tin: '34', address: 'calorado shit'},
     // {name: 'shit3', tin: '34', address: 'calorado shit'},
   ],
-  setCustomerModalVisible: false
+  tagCustomerListModalVisible: false,
+  
 }
 
 export default function usersReducer(state = initialState, action) {
@@ -68,18 +75,26 @@ export default function usersReducer(state = initialState, action) {
         ...state
       }
     }
-
-    case GET_CUSTOMERS_SUCCESS: {
+    
+    case GET_TAG_CUSTOMERS_BEGIN: {
       return {
         ...state,
-        customers: action.customers
+        tagCustomerList: {
+          ...state.tagCustomerList,
+          refreshing: true,
+          page: state.tagCustomerList.page + 1
+        }
       }
     }
 
     case GET_TAG_CUSTOMERS_SUCCESS: {
       return {
         ...state,
-        tagCustomers: action.tagCustomers
+        tagCustomers: action.tagCustomers,
+        tagCustomerList: {
+          ...state.tagCustomerList,
+          refreshing: false,
+        }
       }
     }
 
@@ -93,7 +108,7 @@ export default function usersReducer(state = initialState, action) {
     case SET_CUSTOMER_MODAL_VISIBLE: {
       return {
         ...state,
-        setCustomerModalVisible: action.visible 
+        tagCustomerListModalVisible: action.visible 
       }
     }
 
@@ -101,6 +116,29 @@ export default function usersReducer(state = initialState, action) {
       return {
         ...state,
         selectedTagCustomer: action.customer
+      }
+    }
+
+    case GET_TAG_CUSTOMERS_BEGIN: {
+      return {
+        ...state,
+      }
+    }
+
+    case GET_TAG_CUSTOMERS_SUCCESS: {
+      return {
+        ...state,
+      }
+    }
+
+    case REFRESH_TAG_CUSTOMERS: {
+      return {
+        ...state,
+        tagCustomerList: {
+          ...state.tagCustomerList,
+          page: 1,
+        },
+        tagCustomer: []
       }
     }
     

@@ -1,6 +1,6 @@
 import { csvJSON } from '../functions'
 import { ToastAndroid } from 'react-native';
-import { SET_SHELVE_ITEMS, SELECT_SHELVE_ITEM } from './shelvesActions'
+import { SET_SHELVE_ITEMS } from './shelvesActions'
 
 export const SAVE_ITEM_SUCCESS = 'SAVE_ITEM_SUCCESS'
 export const SAVE_ITEM_ERROR = 'SAVE_ITEM_ERROR'

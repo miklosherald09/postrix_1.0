@@ -6,16 +6,17 @@ import Icon from 'react-native-vector-icons/FontAwesome5'
 import { CloseButton, CheckButton } from '../../components/Common'
 import myStyles from '../../constants/styles'
 import { saveInput, deleteTax } from '../../actions/taxActions'
-import { setCustomerModalVisible, setSelectedTagCustomer, saveTagCustomer, getCustomers } from '../../actions/customerActions'
+import { tagCustomerListModalVisible, setSelectedTagCustomer, saveTagCustomer, getTagCustomers, refreshTagCustomers } from '../../actions/customerActions'
 
 
-const SetCustomerModal = (props) => {
+const TagCustomerModal = (props) => {
 
   useEffect(() => {
-    props.getCustomers()
+    props.getTagCustomers()
   }, [])
  
-  const { setCustomerModalVisible, customers } = props.customer
+  const FlatListItemSeparator = () => <View style={styles.line} />;
+  const { tagCustomerListModalVisible, tagCustomers, tagCustomerList } = props.customer
 
   renderItem = ({item}) => (
     <TouchableOpacity onPress={() => props.setSelectedTagCustomer(item)} >
@@ -42,14 +43,14 @@ const SetCustomerModal = (props) => {
 			<Modal
 				animationType="none"
 				transparent={true}
-				visible={setCustomerModalVisible}
-				onRequestClose={() => { props.setCustomerModalVisible(false)	}}>
-				<TouchableOpacity activeOpacity={0} style={styles.touchable} onPress={ () => {props.setCustomerModalVisible(false)}}>
+				visible={tagCustomerListModalVisible}
+				onRequestClose={() => { props.tagCustomerListModalVisible(false)	}}>
+				<TouchableOpacity activeOpacity={0} style={styles.touchable} onPress={ () => {props.tagCustomerListModalVisible(false)}}>
 					<TouchableOpacity activeOpacity={0} style={styles.container} >
 						<View style={styles.wrap} >
 							<View style={myStyles.headerPan}>
 								<View style={myStyles.headerLeft}>
-									<CloseButton onPress={ () => props.setCustomerModalVisible(false) }/>
+									<CloseButton onPress={ () => props.tagCustomerListModalVisible(false) }/>
 								</View>
 								<View style={myStyles.headerMiddle}>
 									<Text style={myStyles.headerModal}>Customer</Text>
@@ -62,8 +63,14 @@ const SetCustomerModal = (props) => {
                 <FlatList
                   style={{flex: 1}}
                   keyExtractor={(item, index) => index.toString()}
-                  data={customers}
+                  data={tagCustomers}
                   renderItem={renderItem}
+                  onEndReached={() => props.getTagCustomers()}
+                  onEndReachedThreshold={0.1}
+                  onRefresh={() => props.refreshTagCustomers()}
+                  refreshing={tagCustomerList.refreshing}
+                  // extraData={selectedOptions}
+                  ItemSeparatorComponent={FlatListItemSeparator}
                 />
 							</View>
 						</View>
@@ -84,9 +91,9 @@ function mapDispatchToProps(dispatch) {
 	return {
     saveTagCustomer: () => {
       dispatch(saveTagCustomer())
-      dispatch(setCustomerModalVisible(false))
+      dispatch(tagCustomerListModalVisible(false))
     },
-    setCustomerModalVisible: (val) => dispatch(setCustomerModalVisible(val)),
+    tagCustomerListModalVisible: (val) => dispatch(tagCustomerListModalVisible(val)),
     saveInput: (name, value) => dispatch(saveInput(name, value)),
     deleteTax: (id) => {
       Alert.alert( 'Delete Tax', 'Are you sure?', 
@@ -99,9 +106,10 @@ function mapDispatchToProps(dispatch) {
     },
     setSelectedTagCustomer: (v) => {
       dispatch(setSelectedTagCustomer(v))
-      dispatch(setCustomerModalVisible(false))
+      dispatch(tagCustomerListModalVisible(false))
     },
-    getCustomers: () => dispatch(getCustomers())
+    getTagCustomers: () => dispatch(getTagCustomers()),
+    refreshTagCustomers: () => dispatch(refreshTagCustomers())
 	}
 }
 
@@ -189,4 +197,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(SetCustomerModal)
+export default connect(mapStateToProps, mapDispatchToProps)(TagCustomerModal)

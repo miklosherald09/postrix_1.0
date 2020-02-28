@@ -3,10 +3,10 @@ import { StyleSheet, Text, View, TouchableOpacity, Modal, Dimensions, Alert, Tex
 import { connect } from 'react-redux'
 import { Button } from 'react-native-elements'
 import Icon from 'react-native-vector-icons/FontAwesome5'
-import SetCustomerModal from './SetCustomerModal'
+import TagCustomerListModal from './TagCustomerListModal'
 import { CloseButton, CheckButton } from '../../components/Common'
 import myStyles from '../../constants/styles'
-import { tagCustomerModalVisible, setCustomerModalVisible, saveTagCustomerInput, saveTagCustomer } from '../../actions/customerActions'
+import { tagCustomerModalVisible, tagCustomerListModalVisible, saveTagCustomerInput, saveTagCustomer } from '../../actions/customerActions'
 
 
 
@@ -43,7 +43,7 @@ const TagCustomerModal = (props) => {
                 </View>
                 <View style={{height: 50 }}>
                   <View style={{flex: 1, flexDirection: 'row', justifyContent: 'flex-end'}}>
-                    <SetCustomerButton onPress={() => props.setCustomerModalVisible(true)} color={'#666'}/>
+                    <SetCustomerButton onPress={() => props.tagCustomerListModalVisible(true)} color={'#666'}/>
                   </View>
                 </View>
 							</View>
@@ -51,7 +51,7 @@ const TagCustomerModal = (props) => {
 					</TouchableOpacity>
 				</TouchableOpacity>
 			</Modal>
-      <SetCustomerModal />
+      <TagCustomerListModal />
 		</View>
 	);
 }
@@ -70,7 +70,7 @@ function mapDispatchToProps(dispatch) {
     },
     tagCustomerModalVisible: (val) => dispatch(tagCustomerModalVisible(val)),
     saveTagCustomerInput: (name, value) => dispatch(saveTagCustomerInput(name, value)),
-    setCustomerModalVisible: (v) => dispatch(setCustomerModalVisible(v))
+    tagCustomerListModalVisible: (v) => dispatch(tagCustomerListModalVisible(v))
 	}
 }
 

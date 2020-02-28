@@ -18,7 +18,9 @@ export const SET_CUSTOMER_MODAL_VISIBLE = 'SET_CUSTOMER_MODAL_VISIBLE'
 export const SET_SELECTED_TAG_CUSTOMER = 'SET_SELECTED_TAG_CUSTOMER'
 export const SAVE_TAG_CUSTOMER_SUCCESS = 'SAVE_TAG_CUSTOMER_SUCCESS'
 export const GET_CUSTOMERS_SUCCESS = 'GET_CUSTOMERS_SUCCESS'
-
+export const GET_TAG_CUSTOMERS_BEGIN = 'GET_TAG_CUSTOMERS_BEGIN'
+export const GET_TAG_CUSTOMERS_SUCCESS = 'GET_TAG_CUSTOMERS_SUCCESS'
+export const REFRESH_TAG_CUSTOMERS = 'REFRESH_TAG_CUSTOMERS'
 
 
 export function tagCustomerModalVisible(visible) {
@@ -86,24 +88,68 @@ export function addTaxPrompt(){
   }
 }
 
-export function getCustomers(){
+export function getTagCustomers(){
 
+  console.log('getTagCustomers!!')
   return (dispatch, getState) => {
 
-    const { database } = getState()
+    const { database, customer } = getState()
+
+    dispatch({type: GET_TAG_CUSTOMERS_BEGIN})
+
+    limit = customer.tagCustomerList.limit
+    page = customer.tagCustomerList.page
+    offset = (page-1) * limit
 
     database.db.transaction( function(txn){
-      txn.executeSql(`SELECT * FROM customers`,
-      [],
+      txn.executeSql(`SELECT * FROM customers ORDER BY name ASC LIMIT ? OFFSET ?`,
+      [limit, offset],
       function(_, res){
-        customers = extractSqlData(res)
-        dispatch({type: GET_CUSTOMERS_SUCCESS, customers: customers })
+        tagCustomers = extractSqlData(res)
+        dispatch({type: GET_TAG_CUSTOMERS_SUCCESS, tagCustomers: tagCustomers })
       })
     },
     function(err){
       console.log(err)
-      alert(err)
     })
+  }
+}
+
+export function getItems(){
+  
+  console.log('trying to fetch items...')
+  
+  return ( dispatch, getState ) => {
+    
+    dispatch({type: GET_ITEMS_BEGIN})
+
+    const { database, items } = getState()
+    
+    limit = items.limit
+    page = items.page
+    offset = (page-1) * limit
+
+    database.db.transaction( function(txn){
+      txn.executeSql(`SELECT * FROM items ORDER BY name ASC LIMIT ? OFFSET ?`,
+      [limit, offset],
+      function(tx, res){
+        
+        itemsList = []
+        for (i = 0; i < res.rows.length; ++i) {
+          item = res.rows.item(i)
+          item.sellPrice = res.rows.item(i).sell_price
+          item.buyPrice = res.rows.item(i).buy_price
+          delete item.sell_price
+          delete item.buy_price
+          itemsList.push(item)
+        }
+        // console.log(itemsList)
+        dispatch({type: GET_ITEMS_SUCCESS, items: itemsList})
+      });
+    },
+    function(err){
+      dispatch({type: GET_ITEMS_ERROR})
+    });
   }
 }
 
@@ -126,7 +172,7 @@ export function deleteTax(id){
  } 
 }
 
-export function setCustomerModalVisible(v){
+export function tagCustomerListModalVisible(v){
   return {
     type: SET_CUSTOMER_MODAL_VISIBLE,
     visible: v
@@ -137,5 +183,11 @@ export function setSelectedTagCustomer(c){
   return {
     type: SET_SELECTED_TAG_CUSTOMER,
     customer: c
+  }
+}
+
+export function refreshTagCustomers(){
+  return {
+    type: REFRESH_TAG_CUSTOMERS
   }
 }

@@ -25,6 +25,8 @@ import cloud from './cloud'
 import settingsBackup from './settingsBackup'
 import tax from './tax'
 import discount from './discount'
+import customer from './customer'
+
 
 const rootReducer = combineReducers({
     home: home,
@@ -51,7 +53,8 @@ const rootReducer = combineReducers({
     cloud: cloud,
     settingsBackup: settingsBackup,
     tax: tax,
-    discount: discount
+    discount: discount,
+    customer: customer
 })
 
 export default rootReducer;

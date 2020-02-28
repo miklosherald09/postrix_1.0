@@ -16,9 +16,11 @@ import AddShelveItemsModal from '../components/modals/AddShelveItemsModal'
 import ItemColorsModal from '../components/modals/ItemColorsModal'
 import SaveChargeModal from '../components/modals/SaveChargeModal'
 import ChargeDiscountModal from '../components/modals/ChargeDiscountModal'
+import TagCustomerModal from '../components/modals/TagCustomerModal'
 import { AddShelveButton, ChargeButton, ShelveButton, ItemSearchButton, PayButton, TaxList, DiscountList, DiscountButton, CustomerButton } from './HomeScreenComponents'
 import { CONTENT_SHELVES, CONTENT_CHARGE, changeActiveContent, taxDetailsToggle } from '../actions/homeActions'
 import { addModalVisible, getShelveItems, selectShelve, deleteShelve, getShelveItemsRefresh, shelveModalVisible } from '../actions/shelvesActions'
+import { tagCustomerModalVisible } from '../actions/customerActions'
 import { modalVisible } from '../actions/itemSearchActions'
 import { chargeDiscountModalVisible } from '../actions/discountActions'
 import { payModalVisible } from '../actions/payActions'
@@ -36,6 +38,7 @@ const HomeScreen = props => {
   const { activeContent, taxDetailsVisible } = props.home
   const { taxes, vatableAmount } = props.tax
   const { discountCharges } = props.discount
+  const { selectedTagCustomer } = props.customer
 
   searchText = '' 
   timeout = null
@@ -87,7 +90,8 @@ const HomeScreen = props => {
       <View style={{flex: 1, borderLeftColor: 'black'}}>
         <View style={styles.rightTopBar}>
           <View style={{flex: 1, flexDirection: 'row', marginTop: 3}}>
-            <CustomerButton onPress={() => props.chargeDiscountModalVisible(true)} />
+            <CustomerButton onPress={() => props.tagCustomerModalVisible(true)} />
+            <Text style={{fontSize: 20, marginTop: 10}}>{selectedTagCustomer.name.slice(0, 10)}</Text>
           </View>
           <View style={{flex: 1, flexDirection: 'row', justifyContent: 'flex-end', marginTop: 3}}>
             <DiscountButton onPress={() => props.chargeDiscountModalVisible(true)} />
@@ -126,6 +130,7 @@ const HomeScreen = props => {
         <ShelveModal />
         <SaveChargeModal />
         <ChargeDiscountModal />
+        <TagCustomerModal />
       </View>
     </View>
   );
@@ -155,7 +160,8 @@ function mapStateToProps(state) {
     home: state.home,
     settingsPrinter: state.settingsPrinter,
     tax: state.tax,
-    discount: state.discount
+    discount: state.discount,
+    customer: state.customer
 	}
 }
 
@@ -190,7 +196,8 @@ function mapDispatchToProps(dispatch) {
     },
     shelveModalVisible: (v) => dispatch(shelveModalVisible(v)),
     taxDetailsToggle: () => dispatch(taxDetailsToggle()),
-    chargeDiscountModalVisible: (val) => dispatch(chargeDiscountModalVisible(val))
+    chargeDiscountModalVisible: (v) => dispatch(chargeDiscountModalVisible(v)),
+    tagCustomerModalVisible: (v) => dispatch(tagCustomerModalVisible(v))
   }
 }
 

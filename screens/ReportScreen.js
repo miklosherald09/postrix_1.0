@@ -10,6 +10,7 @@ import { changeStartDate, changeEndDate, generateSalesReport , changeStartTime, 
 import { formatDate } from '../functions'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import moment from 'moment'
+import ReportsNav from '../navigation/ReportsNav'
 
 const ReportScreen = (props) => {
 	
@@ -122,9 +123,7 @@ const ReportScreen = (props) => {
 				<View style={styles.leftContent}>
 					<ScrollView>
             <View style={styles.navLinks}>
-							{navLink('Reports', 'Reports')}
-							{/* {navLink('ReportSetup', 'Setup')} */}
-							<Button title="download" onPress={() => alert('shit')}/>
+							<ReportsNav />
             </View>
           </ScrollView>
 				</View>

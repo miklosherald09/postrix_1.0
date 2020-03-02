@@ -1,8 +1,8 @@
 import { ToastAndroid } from 'react-native';
 import { printReceipt as printReceiptAction, RECEIPT_MODAL_INVISIBLE, RECEIPT_PUNCH_VISIBLE, DELETE_RECEIPT_MODAL_VISIBLE } from './receiptActions'
 import { resetTaxValues } from './taxActions'
+import { resetTagCustomerValues } from './customerActions'
 import { resetChargeDiscountValues } from './discountActions'
-import { sleep } from '../functions'
 
 export const ADD_TRANSACTION = 'ADD_TRANSACTION'
 export const ADD_TRANSACTION_SUCCESS = 'ADD_TRANSACTION_SUCCESS'
@@ -16,87 +16,38 @@ export const REFUND_TRANSACTION_SUCCESS = 'REFUND_TRANSACTION_SUCCESS'
 export const REFUND_PUNCH_SUCCESS = 'REFUND_PUNCH_SUCCESS'
 
 
-export const addTransaction2 = ({payment, total, punched, printReceipt }) => {
-
-  return (dispatch, getState) => {
-
-    const { users } = getState()
-
-    console.log('addTransack')
-    const uid = users.account.user.id?users.account.user.id:"1"
-    firestore()
-      .collection("transactions")
-      .doc()
-      .set({
-        number: punched[0].count,
-        punched: punched
-      })
-    .then(function() {
-      console.log("Document successfully written!");
-    })
-    .catch(function(error) {
-      console.error("Error writing document: ", error);
-    });
-  }
-}
-
-export const addTransaction1 = ({payment, total, punched, printReceipt }) => {
-
-  return (dispatch, getState) => {
-
-    const { users } = getState()
-
-    const uid = users.account.user.id?users.account.user.id:"1"
-    firestore()
-      .collection("users")
-      .doc(uid)
-      .collection("transactions")
-      .doc()
-      .set({
-        name: "223",
-        state: "x232x",
-        country: "xx",
-        punched: punched
-      })
-    .then(function() {
-      console.log("Document successfully written!");
-    })
-    .catch(function(error) {
-      console.error("Error writing document: ", error);
-    });
-  }
-}
-
 export const addTransaction = ({payment, total, punched, printReceipt, taxes, discountCharges}) => {
 
   return async (dispatch, getState) => {
 
-    const { database, tax } = getState()
-
+    const { database, customer } = getState()
+    
     printed = printReceipt?1:0
+
+    taxes = JSON.stringify(taxes)
+    discountCharges = JSON.stringify(discountCharges)
+    selectedTagCustomer = JSON.stringify(customer.selectedTagCustomer)
 
     await new Promise((resolve, reject) => {
       database.db.transaction(function(txn){
-        txn.executeSql('INSERT INTO transactions(payment, punched, total, printed, taxes, discounts, datetime) VALUES(?, ?, ?, ?, ?, ?, ?)',
-        [payment, JSON.stringify(punched), total, printed, JSON.stringify(taxes), JSON.stringify(discountCharges), Date.now()],
+        txn.executeSql('INSERT INTO transactions(payment, punched, total, printed, taxes, discounts, customer, datetime) VALUES(?, ?, ?, ?, ?, ?, ?, ?)',
+        [payment, JSON.stringify(punched), total, printed, taxes, discountCharges, selectedTagCustomer, Date.now()],
         function(tx, res){
 
-          taxes = tax.taxes.map((t) => t)
-  
-          console.log(taxes)
           transaction = {
             id: res.insertId,
             payment: payment,
             total: total,
             punched: punched,
             printed: 0,
-            taxes: JSON.parse(JSON.stringify(taxes)),
-            discounts: JSON.parse(JSON.stringify(discountCharges)),
+            taxes: JSON.parse(taxes),
+            discounts: JSON.parse(discountCharges),
+            customer: JSON.parse(selectedTagCustomer),
             datetime: Date.now(),
           }
 
-          console.log('xxsuccess adding transaction')
-          resolve('xxsuccess adding transaction!!!')
+          console.log('Success adding transaction')
+          resolve('Success adding transaction!!!')
           dispatch({type: ADD_TRANSACTION_SUCCESS, transaction: transaction})
 
           
@@ -109,21 +60,15 @@ export const addTransaction = ({payment, total, punched, printReceipt, taxes, di
       })
     }).done((result, error) => {
       
-        console.log(result)
-        console.log('dispacthing shit...')
         if(printReceipt == true){
-          console.log('trying to print recipt')
           dispatch(printReceiptAction(transaction))
         }
         else{
           dispatch(resetTaxValues())
           dispatch(resetChargeDiscountValues())
+          dispatch(resetTagCustomerValues())
         }
-         
     })
-
-    
-      
   }
 }
 
@@ -153,10 +98,10 @@ export function getTransactions(){
           var temp = []
           for(let i = 0; i < res.rows.length; ++i){
             var item = res.rows.item(i)
-            console.log(item)
             item.punched = JSON.parse(res.rows.item(i).punched)
             item.taxes = JSON.parse(res.rows.item(i).taxes)
             item.discounts = JSON.parse(res.rows.item(i).discounts)
+            item.customer = JSON.parse(res.rows.item(i).customer)
             temp.push(item)
           }
           console.log('transactions successfully fetch..')

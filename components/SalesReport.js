@@ -4,10 +4,11 @@ import { connect } from 'react-redux'
 import NumberFormat from 'react-number-format'
 import { currency, USER_TYPE_ADMIN, USER_TYPE_ROOT } from '../constants/constants'
 import myStyles from '../constants/styles'
+import { Divider } from 'react-native-elements';
 
 const SalesReport = (props) => {
 
-  const { startDate, endDate, totalSales, totalProfit, itemSales, charges, totalCharges } = props.reports
+  const { startDate, endDate, totalSales, totalProfit, itemSales, charges, totalCharges, totalDiscount, totalTax } = props.reports
   const { userType } = props.pin
 
   renderItem = ({item}) => (
@@ -45,14 +46,16 @@ const SalesReport = (props) => {
               renderItem={renderItem}
             />
           </View>
-          <SalesSummary totalSales={totalSales} />
+          <TotalTax totalTax={totalTax} />
+          <TotalDiscount totalDiscount={totalDiscount} />
+          <TotalSales totalSales={totalSales} />
           {
             (userType == USER_TYPE_ADMIN || userType == USER_TYPE_ROOT)?
-            <ProfitSummary totalProfit={totalProfit}/>:null
+            <TotalProfit totalProfit={totalProfit}/>:null
           }
         </View>
+        <Divider style={{margin: 10}}/>
         <View style={styles.chargesPan}>
-          {/* <Text style={myStyles.header}>CHARGES</Text> */}
           <FlatList
             style={{flex: 1}}
             keyExtractor={(item, index) => index.toString()}
@@ -83,56 +86,83 @@ const Header = () => {
     <View style={{flexDirection: 'row', height: 40}}>
       <View style={{flex: 3, flexDirection: 'row'}}>
         <View style={{flex: 9}}>
-          <Text style={styles.itemName}>ITEM</Text>
+          <Text style={myStyles.header1}>ITEM</Text>
         </View>
         <View style={{flex: 2}}>
-          <Text style={styles.itemName}>PRICE</Text>
+          <Text style={myStyles.header1}>PRICE</Text>
         </View>
         <View style={{flex: 2, alignItems: 'flex-end'}}>
-          <Text style={styles.itemName}>QTY</Text>
+          <Text style={myStyles.header1}>QTY</Text>
         </View>
       </View>
       <View style={{flex: 1, alignItems: 'flex-end'}}>
-        <Text style={styles.itemName}>TOTAL</Text>
+        <Text style={myStyles.header1}>TOTAL</Text>
       </View>
     </View>
   )
 }
 
-const SalesSummary = ({totalSales}) => {
+const TotalSales = ({totalSales}) => {
   return (
-    <View style={{flexDirection: 'row', marginTop: 20, height: 40}}>
+    <View style={{flexDirection: 'row'}}>
       <View style={{flex: 3, flexDirection: 'row'}}>
-        <Text style={styles.itemName}>TOTAL SALES</Text>
+        <Text style={myStyles.header2}>TOTAL SALES</Text>
       </View>
       <View style={{flex: 1, alignItems: 'flex-end'}}>
-        <NumberFormat renderText={value => <Text style={{fontSize: 20, color: 'black'}}>{value}</Text>} fixedDecimalScale={true} decimalScale={2} value={totalSales} displayType={'text'} thousandSeparator={true} prefix={currency} />
+        <NumberFormat renderText={value => <Text style={myStyles.header2}>{value}</Text>} fixedDecimalScale={true} decimalScale={2} value={totalSales} displayType={'text'} thousandSeparator={true} prefix={currency} />
       </View>
     </View>
   )
 }
 
-const ProfitSummary = ({totalProfit}) => {
+const TotalProfit = ({totalProfit}) => {
   return (
-    <View style={{flexDirection: 'row', height: 40}}>
+    <View style={{flexDirection: 'row'}}>
       <View style={{flex: 3, flexDirection: 'row'}}>
-        <Text style={styles.itemName}>TOTAL PROFIT</Text>
+        <Text style={myStyles.header2}>TOTAL PROFIT</Text>
       </View>
       <View style={{flex: 1, alignItems: 'flex-end'}}>
-        <NumberFormat renderText={value => <Text style={{fontSize: 20, color: 'black'}}>{value}</Text>} fixedDecimalScale={true} decimalScale={2} value={totalProfit} displayType={'text'} thousandSeparator={true} prefix={currency} />
+        <NumberFormat renderText={value => <Text style={myStyles.header2}>{value}</Text>} fixedDecimalScale={true} decimalScale={2} value={totalProfit} displayType={'text'} thousandSeparator={true} prefix={currency} />
       </View>
     </View>
   )
 }
+
+const TotalTax = ({totalTax}) => {
+  return (
+    <View style={{flexDirection: 'row'}}>
+      <View style={{flex: 3, flexDirection: 'row'}}>
+        <Text style={myStyles.header2}>TOTAL TAX</Text>
+      </View>
+      <View style={{flex: 1, alignItems: 'flex-end'}}>
+        <NumberFormat renderText={value => <Text style={myStyles.header2}>{value}</Text>} fixedDecimalScale={true} decimalScale={2} value={totalTax} displayType={'text'} thousandSeparator={true} prefix={currency} />
+      </View>
+    </View>
+  )
+}
+
+const TotalDiscount = ({totalDiscount}) => {
+  return (
+    <View style={{flexDirection: 'row'}}>
+      <View style={{flex: 3, flexDirection: 'row'}}>
+        <Text style={myStyles.header2}>TOTAL DISCOUNT</Text>
+      </View>
+      <View style={{flex: 1, alignItems: 'flex-end'}}>
+        <NumberFormat renderText={value => <Text style={myStyles.header2}>{value}</Text>} fixedDecimalScale={true} decimalScale={2} value={totalDiscount} displayType={'text'} thousandSeparator={true} prefix={currency} />
+      </View>
+    </View>
+  )
+}
+
 
 const ChargesSummary = ({totalCharges}) => {
   return (
     <View style={{flexDirection: 'row'}}>
       <View style={{flex: 3, flexDirection: 'row'}}>
-        <Text style={styles.itemName}>TOTAL CHARGES</Text>
+        <Text style={myStyles.header2}>TOTAL CHARGES</Text>
       </View>
       <View style={{flex: 1, alignItems: 'flex-end'}}>
-        <NumberFormat renderText={value => <Text style={{fontSize: 20, color: 'black'}}>{value}</Text>} fixedDecimalScale={true} decimalScale={2} value={totalCharges} displayType={'text'} thousandSeparator={true} prefix={currency} />
+        <NumberFormat renderText={value => <Text style={myStyles.header2}>{value}</Text>} fixedDecimalScale={true} decimalScale={2} value={totalCharges} displayType={'text'} thousandSeparator={true} prefix={currency} />
       </View>
     </View>
   )
@@ -172,9 +202,6 @@ const styles = StyleSheet.create({
   },
   chargesPan: {
     flex: 1,
-    borderTopColor: '#EEE',
-    borderTopWidth: 1,
-    paddingTop: 15,
   },
 });
 

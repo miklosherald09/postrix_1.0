@@ -8,6 +8,7 @@ import {
   SELECT_RECEIPT_PUNCH,
   RECEIPT_PUNCH_VISIBLE,
   SAVE_RECEIPT_PUNCH_SUCCESS,
+  RECEIPT_DETAILS_MODAL_VISIBLE,
 } from '../actions/receiptActions'
 
 const initialState = {
@@ -17,9 +18,11 @@ const initialState = {
   selected: {
     total: "",
     punched: [],
-    payment: ""
+    payment: "",
+    customer: {}
   },
   receiptPunchVisible: false,
+  receiptDetailsModalVisible: false,
   selectedReceiptPunch: {}
 }
 
@@ -86,6 +89,13 @@ export default function receiptReducer(state = initialState, action) {
       return {
         ...state,
         selectedReceiptPunch: action.selected
+      }
+    }
+
+    case RECEIPT_DETAILS_MODAL_VISIBLE: {
+      return {
+        ...state,
+        receiptDetailsModalVisible: action.visible
       }
     }
 

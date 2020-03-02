@@ -10,7 +10,8 @@ import {
   SET_SELECTED_TAG_CUSTOMER,
   GET_TAG_CUSTOMERS_BEGIN,
   GET_TAG_CUSTOMERS_SUCCESS,
-  REFRESH_TAG_CUSTOMERS
+  REFRESH_TAG_CUSTOMERS,
+  RESET_TAG_CUSTOMER_VALUES
 } from '../actions/customerActions'
 
 const initialState = {
@@ -26,13 +27,8 @@ const initialState = {
     tin: '',
     address: ''
   },
-  customers: [
-    // {name: 'shit1', tin: '34', address: 'calorado shit'},
-    // {name: 'shit2', tin: '34', address: 'calorado shit'},
-    // {name: 'shit3', tin: '34', address: 'calorado shit'},
-  ],
+  customers: [],
   tagCustomerListModalVisible: false,
-  
 }
 
 export default function usersReducer(state = initialState, action) {
@@ -72,7 +68,8 @@ export default function usersReducer(state = initialState, action) {
 
     case SAVE_TAG_CUSTOMER_SUCCESS: {
       return {
-        ...state
+        ...state,
+        tagCustomerModalVisible: false
       }
     }
     
@@ -90,7 +87,7 @@ export default function usersReducer(state = initialState, action) {
     case GET_TAG_CUSTOMERS_SUCCESS: {
       return {
         ...state,
-        tagCustomers: action.tagCustomers,
+        tagCustomers: [...state.tagCustomers, ...action.tagCustomers],
         tagCustomerList: {
           ...state.tagCustomerList,
           refreshing: false,
@@ -142,6 +139,13 @@ export default function usersReducer(state = initialState, action) {
       }
     }
     
+    case RESET_TAG_CUSTOMER_VALUES: {
+      return {
+        ...state,
+        selectedTagCustomer: {name: '', tin: '', address: ''},
+      }
+    }
+
     default:
       // ALWAYS have a default case in a reducer
       return state;

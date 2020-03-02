@@ -57,13 +57,13 @@ const SaveItemModal = (props) => {
                 <View style={{flex: 1, flexDirection: 'row'}}>
                   <TaxButton
                     onPress={() => props.saveField('tax_type', '')}
-                    itemTax={selectedItem.tax_type}
+                    itemTax={selectedItem.tax_type || ''}
                     key={-1}
                     percent={""}
-                    name=""
+                    name="none"
                     title={"None"}
                   />
-                  {
+                  {/* {
                     taxes.map((tax, i) => {
                       return (
                         <TaxButton
@@ -76,7 +76,7 @@ const SaveItemModal = (props) => {
                         />
                       )
                     })
-                  }
+                  } */}
                 </View>
                 <View style={{width: 100}}>
 									<DeleteButton onPress={() => props.deleteItem(input)}/>

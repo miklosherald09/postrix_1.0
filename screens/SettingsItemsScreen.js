@@ -41,7 +41,7 @@ const SettingsItemsScreen = props => {
                       style={{fontSize: 20, flex: 5, marginTop: 5, borderBottomWidth: 1, borderColor: '#999'}}
                       placeholder="enter published google sheet csv link"
                       onChangeText={(text) => props.updateGoogleSheetUrlCsv(text)}
-                      defaultValue={GOOGLE_SHEET_URL_CSV}
+                      defaultValue={GOOGLE_SHEET_URL_CSV.value}
                     />
                     <View style={{flex: 1, flexDirection: 'row', justifyContent: 'flex-start'}}>
                       { SyncItemButton(props) }

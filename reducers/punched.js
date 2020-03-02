@@ -10,7 +10,8 @@ import {
   PUNCH_DISCOUNT_MODAL_VISIBLE,
   GET_PUNCH_DISCOUNTS_SUCCESS,
   TOGGLE_PUNCH_DISCOUNT,
-  CHARGE_PUNCH_DISCOUNT
+  CHARGE_PUNCH_DISCOUNT,
+  COMPUTE_TOTAL_SALES_SUCCESS
 } from '../actions/punchedActions'
 
 const initialState = {
@@ -32,9 +33,9 @@ export default function punchedReducer(state = initialState, action) {
       
       return {
         ...state,
-        punched: action.itemToPush,
-        total: state.total + action.item.accruePrice,
-        taxes: action.taxes
+        punched: action.punched,
+        // total: state.total + action.itemPrice
+        // taxes: action.taxes
       }
     }
 
@@ -61,7 +62,7 @@ export default function punchedReducer(state = initialState, action) {
       // update punched items count
       newPunch = []
       newPunchItem = {}
-      newTotal = 0
+      // newTotal = 0
       punchItemVisible = true
 
       state.punched.map((v, i) => {
@@ -76,9 +77,7 @@ export default function punchedReducer(state = initialState, action) {
         }
         else
           punchItemVisible = false
-
-        newTotal += newPunchItem.sellPrice * newPunchItem.count
-
+        // newTotal += newPunchItem.sellPrice * newPunchItem.count
       })
 
       return {
@@ -89,7 +88,7 @@ export default function punchedReducer(state = initialState, action) {
         },
         punched: newPunch,
         punchItemVisible: punchItemVisible,
-        total: newTotal
+        // total: newTotal
       }
     }
 
@@ -170,6 +169,12 @@ export default function punchedReducer(state = initialState, action) {
       }
     }
         
+    case COMPUTE_TOTAL_SALES_SUCCESS: {
+      return {
+        ...state,
+        total: action.total
+      }
+    }
 
     default:
       // ALWAYS have a default case in a reducer

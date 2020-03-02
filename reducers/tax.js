@@ -15,6 +15,8 @@ const initialState = {
   taxes: [],
   taxModalVisible: false,
   selectedTax: {
+    name: '',
+    tax_type: '',
     enabled: true
   },
   vatableAmount: 0

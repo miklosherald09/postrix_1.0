@@ -10,6 +10,7 @@ import { USBPrinter, NetPrinter, BLEPrinter } from 'react-native-printer'
 import { CONNECTION_TYPE_USB, CONNECTION_TYPE_BT } from './settingsPrinterActions'
 import { resetTaxValues } from './taxActions'
 import { resetChargeDiscountValues } from './discountActions'
+import { resetTagCustomerValues } from './customerActions'
 
 export const RECEIPT_MODAL_VISIBLE = 'RECEIPT_MODAL_VISIBLE'
 export const RECEIPT_MODAL_INVISIBLE = 'RECEIPT_MODAL_INVISIBLE'
@@ -22,14 +23,14 @@ export const DELETE_RECEIPT_SUCCESS = 'DELETE_RECEIPT_SUCCESS'
 export const DELETE_RECEIPT_ERROR = 'DELETE_RECEIPT_ERROR'
 export const RECEIPT_PUNCH_VISIBLE = 'RECEIPT_PUNCH_VISIBLE'
 export const SAVE_RECEIPT_PUNCH_SUCCESS = 'SAVE_RECEIPT_PUNCH_SUCCESS'
+export const RECEIPT_DETAILS_MODAL_VISIBLE = 'RECEIPT_DETAILS_MODAL_VISIBLE'
 
-export function printReceipt({id, payment, total, punched, printed, datetime, taxes, discounts}){
+
+export function printReceipt({id, payment, total, punched, printed, datetime, taxes, discounts, customer}){
 
   return  (dispatch, getState) => {
 
     const { settingsPrinter, settings } = getState()
-
-    // dispatch(printReceiptBT({id, settings, punched, datetime, total, printed, payment, taxes, discounts}))
 
     if(settingsPrinter.connectionType == CONNECTION_TYPE_BT){
       dispatch(printReceiptBT({id, settings, punched, datetime, total, printed, payment, taxes, discounts}))
@@ -46,17 +47,16 @@ export function printReceipt({id, payment, total, punched, printed, datetime, ta
       dispatch({ type: PRINT_RECEIPT_ERROR })
       dispatch(resetTaxValues())
       dispatch(resetChargeDiscountValues())
+      dispatch(resetTagCustomerValues())
     }
   }
 }
 
-export function printReceiptBT({id, settings, punched, datetime, total, printed, payment, taxes, discounts}){
+export function printReceiptBT({id, settings, punched, datetime, total, printed, payment, taxes, discounts, customer}){
 
   return async (dispatch, getState) => {
 
     try{
-
-      const { discount } = getState()
 
       columnWidths = [12, 4, 8, 8];
       rightAlign = BluetoothEscposPrinter.ALIGN.RIGHT
@@ -78,8 +78,18 @@ export function printReceiptBT({id, settings, punched, datetime, total, printed,
       await BluetoothEscposPrinter.printerAlign(leftAlign)
       if(settings.RECEIPT_HEADER.enabled){
         settings.RECEIPT_HEADER?
-        await BluetoothEscposPrinter.printText(settings.RECEIPT_HEADER.value+"\n\r",{}):null
+        await BluetoothEscposPrinter.printText(settings.RECEIPT_HEADER.value+"\n\r\n\r",{}):null
       }
+
+      // print customer
+      if(customer.name){
+        await BluetoothEscposPrinter.printText("Sold to: "+ customer.name +"\n\r", {})
+        if(customer.tin)
+          await BluetoothEscposPrinter.printText("Tin: "+ customer.tin +"\n\r", {})
+        if(customer.address)
+          await BluetoothEscposPrinter.printText("Address: "+ customer.address +"\n\r", {})
+      }
+
       await BluetoothEscposPrinter.printText(moment(datetime).format('LLL')+"\n\r",{})
       await BluetoothEscposPrinter.printText("Receipt No. "+ String(id).padStart(6, '0') +"\n\r", {})
       await BluetoothEscposPrinter.printText("--------------------------------\n\r",{})
@@ -173,6 +183,7 @@ export function printReceiptBT({id, settings, punched, datetime, total, printed,
       await BluetoothEscposPrinter.printText("\n\r\n\r\n\r",{})
       dispatch(resetTaxValues())
       dispatch(resetChargeDiscountValues())
+      dispatch(resetTagCustomerValues())
     }
     catch(e){
       console.log(e.message)
@@ -183,8 +194,6 @@ export function printReceiptBT({id, settings, punched, datetime, total, printed,
 export function printReceiptUSB({id, settings, punched, datetime, total, printed, payment, taxes, discounts}) {
 
   return async (dispatch, getState) => {
-
-    const { discount } = getState()
 
     try{
 
@@ -201,12 +210,26 @@ export function printReceiptUSB({id, settings, punched, datetime, total, printed
       USBPrinter.printText("Receipt No. " + String(id).padStart(6, '0') + "\n\n")
       await sleep(6)
       USBPrinter.printText("--------------------------------\n")
+
+      // print customer
+      if(customer.name){
+        await sleep(6)
+        USBPrinter.printText("Sold to: " + customer.name + "\n\n")
+        if(customer.tin){
+          await sleep(6)
+          USBPrinter.printText("Tin: " + customer.tin + "\n\n")
+        }
+        if(customer.address){
+          await sleep(6)
+          USBPrinter.printText("Address: "+ customer.address +"\n\r", {})
+        }
+      }
+
       await sleep(6)
       h1 = textDelimiter('Item', 12, 'LEFT')
       h2 = textDelimiter('Qty', 4, 'LEFT')
       h3 = textDelimiter('Price', 8, 'RIGHT')
       h4 = textDelimiter('Total', 8, 'RIGHT')
-
       USBPrinter.printText(h1 + h2 + h3 + h4 +"\n")
       // iterate punched items
       await sleep(50)
@@ -239,7 +262,6 @@ export function printReceiptUSB({id, settings, punched, datetime, total, printed
         })
         await BluetoothEscposPrinter.printText("\n\r",{})
       }
-      
       
       await sleep(6)
       h5 = textDelimiter('Total', 16, 'LEFT')
@@ -282,7 +304,7 @@ export function printReceiptUSB({id, settings, punched, datetime, total, printed
       found = discounts.find((f) => (f.net) || (f.amount) )
       if(found){
         USBPrinter.printText(h1 + h2 + h3 + "\n")
-        discount.map(async (v, i) => {
+        discounts.map(async (v, i) => {
           if(v.net || v.amount){
             name = textDelimiter(String(v.name), 12, 'LEFT')
             net = textDelimiter(String(accounting.formatMoney(v.net, 'P')), 10, 'RIGHT')
@@ -318,6 +340,7 @@ export function printReceiptUSB({id, settings, punched, datetime, total, printed
 
       dispatch(resetTaxValues())
       dispatch(resetChargeDiscountValues())
+      dispatch(resetTagCustomerValues())
     }
     catch(e){
       console.log(e.message)
@@ -400,5 +423,12 @@ export function selectReceiptPunch(p){
   return {
     type: SELECT_RECEIPT_PUNCH,
     selected: p
+  }
+}
+
+export function receiptDetailsModalVisible(v){
+  return {
+    type: RECEIPT_DETAILS_MODAL_VISIBLE,
+    visible: v
   }
 }

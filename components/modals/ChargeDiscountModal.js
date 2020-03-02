@@ -6,6 +6,7 @@ import Icon from 'react-native-vector-icons/FontAwesome5'
 import { CloseButton, CheckButton } from '../../components/Common'
 import myStyles from '../../constants/styles'
 import { chargeDiscountModalVisible, toggleChargeDiscount, getDiscountCharges, computeDiscount } from '../../actions/discountActions'
+import { computeTotalSales } from '../../actions/punchedActions'
 import { capitalize } from '../../functions'
 import { currency } from '../../constants/constants'
 
@@ -17,7 +18,6 @@ const ChargeDiscountModal = (props) => {
   useEffect(() => {
     props.getDiscountCharges()
   }, [])
- 
  
   const { chargeDiscountModalVisible, discountCharges } = props.discount
   const { selectedItem } = props.punched
@@ -92,9 +92,10 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
 	return {
-    toggleChargeDiscount: (v) => {
+    toggleChargeDiscount: (v) => { 
       dispatch(toggleChargeDiscount(v))
       dispatch(computeDiscount())
+      dispatch(computeTotalSales())
     },
     chargeDiscountModalVisible: (v) => dispatch(chargeDiscountModalVisible(v)),
     getDiscountCharges: () => dispatch(getDiscountCharges()),

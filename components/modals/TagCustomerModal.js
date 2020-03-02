@@ -66,7 +66,6 @@ function mapDispatchToProps(dispatch) {
 	return {
     saveTagCustomer: () => {
       dispatch(saveTagCustomer())
-      dispatch(tagCustomerModalVisible(false))
     },
     tagCustomerModalVisible: (val) => dispatch(tagCustomerModalVisible(val)),
     saveTagCustomerInput: (name, value) => dispatch(saveTagCustomerInput(name, value)),

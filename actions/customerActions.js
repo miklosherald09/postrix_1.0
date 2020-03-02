@@ -3,16 +3,8 @@ import { ToastAndroid } from 'react-native'
 import { setSelectedItem } from './punchedActions'
 import { extractSqlData } from '../functions'
 
-export const ADD_TAX_PROMPT = 'ADD_TAX_PROMPT'
-export const SELECT_TAX = 'SELECT_TAX'
-export const TAX_MODAL_VISIBLE = 'TAX_MODAL_VISIBLE'
+export const ADD_CUSTOMER_PROMPT = 'ADD_CUSTOMER_PROMPT'
 export const SAVE_TAG_CUSTOMER_INPUT = 'SAVE_INPUT'
-export const SAVE_TAX_SUCCESS = 'SAVE_TAX_SUCCESS'
-export const GET_TAXES_SUCCESS = 'GET_TAXES_SUCCESS'
-export const DELETE_TAX_SUCCESS = 'DELETE_TAX_SUCCESS'
-export const SAVE_TAXES_SUCCESS = 'SAVE_TAXES_SUCCESS'
-export const COMPUTE_TAX_VALUES_SUCCESS = 'COMPUTE_TAX_VALUES_SUCCESS'
-export const RESET_TAX_VALUES_SUCCESS = 'RESET_TAX_VALUES_SUCCESS'
 export const TAG_CUSTOMER_MODAL_VISIBLE = 'TAG_CUSTOMER_MODAL_VISIBLE'
 export const SET_CUSTOMER_MODAL_VISIBLE = 'SET_CUSTOMER_MODAL_VISIBLE'
 export const SET_SELECTED_TAG_CUSTOMER = 'SET_SELECTED_TAG_CUSTOMER'
@@ -21,7 +13,7 @@ export const GET_CUSTOMERS_SUCCESS = 'GET_CUSTOMERS_SUCCESS'
 export const GET_TAG_CUSTOMERS_BEGIN = 'GET_TAG_CUSTOMERS_BEGIN'
 export const GET_TAG_CUSTOMERS_SUCCESS = 'GET_TAG_CUSTOMERS_SUCCESS'
 export const REFRESH_TAG_CUSTOMERS = 'REFRESH_TAG_CUSTOMERS'
-
+export const RESET_TAG_CUSTOMER_VALUES = 'RESET_TAG_CUSTOMER_VALUES'
 
 export function tagCustomerModalVisible(visible) {
   return {
@@ -47,11 +39,14 @@ export function saveTagCustomerInput(field, value){
 
 export function saveTagCustomer(){
 
-  console.log('saving shit!!!!')
-  
   return (dispatch, getState) => {
 
     const { database, customer } = getState()
+
+    if(!customer.selectedTagCustomer.name){
+      ToastAndroid.show('Name field required', ToastAndroid.LONG)
+      return
+    }
 
     console.log('customer: '+customer.selectedTagCustomer.name.trim())
     // insert item
@@ -59,8 +54,6 @@ export function saveTagCustomer(){
       txn.executeSql(`SELECT * FROM customers WHERE name = ?`,
       [ customer.selectedTagCustomer.name.trim() ],
       function(tx, res){
-        console.log(res)
-        console.log("res.res.rows.length: "+res.rows.length)
         if(!res.rows.length){
           tx.executeSql(`INSERT INTO customers(name, tin, address) VALUES(?, ?, ?)`,
             [ customer.selectedTagCustomer.name, 
@@ -73,6 +66,9 @@ export function saveTagCustomer(){
             function(err){
               console.log(err)
             })
+        }
+        else{
+          dispatch({ type: SAVE_TAG_CUSTOMER_SUCCESS })
         }
       })
     },
@@ -189,5 +185,11 @@ export function setSelectedTagCustomer(c){
 export function refreshTagCustomers(){
   return {
     type: REFRESH_TAG_CUSTOMERS
+  }
+}
+
+export function resetTagCustomerValues(){
+  return {
+    type: RESET_TAG_CUSTOMER_VALUES
   }
 }

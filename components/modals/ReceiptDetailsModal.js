@@ -2,23 +2,21 @@ import React from 'react'
 import { Dimensions, StyleSheet, Text, View, TouchableOpacity, Modal, FlatList, Alert } from 'react-native'
 import { connect } from 'react-redux'
 import { ListItem, Button } from 'react-native-elements'
-import { CloseButton } from '../../components/Common'
+import { CloseButton, SaveButton } from '../../components/Common'
 import myStyles from '../../constants/styles'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import NumberFormat from 'react-number-format'
 import { currency } from '../../constants/constants'
-import ReceiptPunchModal from './ReceiptPunchModal'
-import ReceiptDetailsModal from './ReceiptDetailsModal'
 import { receiptDetailsModalVisible, receiptModalInvisible, printReceipt, deleteReceiptModalVisible, selectReceiptPunch, receiptPunchVisible } from '../../actions/receiptActions'
 import { updateTransactionByID, refundTransaction } from '../../actions/transactionActions'
 
 const screenWidth = Math.round(Dimensions.get('window').width);
 const screenHeight = Math.round(Dimensions.get('window').height);
 
-const ReceiptModal = (props) => {
+const ReceiptDetailsModal = (props) => {
  
-  const { receiptModalVisible, selected } = props.receipt
-  const { shopName } = props.settings
+  const { receiptDetailsModalVisible, selected } = props.receipt
+  const { SHOP_NAME } = props.settings
   const { userType } = props.pin
 
   renderItem = ({ item, index }) => {
@@ -26,16 +24,16 @@ const ReceiptModal = (props) => {
       <TouchableOpacity onPress={() => props.selectReceiptPunch(item)}>
         <View style={{marginBottom: 10}}>
           <View style={{flexDirection: 'row'}}>
-            <View style={{flex: 3}}>
-              <Text style={{fontSize: 20, color: (item.refund?'gray':'black') }}>{item.name} {item.refund?' (refunded)':null} </Text>
-              <Text style={{fontSize: 20, color: '#2089dc' }}>{currency + item.sellPrice + ' x ' + item.count}</Text>
+            <View style={{flex: 1}}>
+              <Text style={{fontSize: 20, color: (item.refund?'gray':'black') }}>{item.name} </Text>
+              {/* <Text style={{fontSize: 20, color: '#2089dc' }}>{currency + item.sellPrice + ' x ' + item.count}</Text> */}
             </View>
             <View style={{flex: 1, alignItems: 'flex-end'}}>
               <NumberFormat 
               renderText={value => <Text style={{fontSize: 20, color: (item.refund?'gray':'black')}}>{value}</Text>} 
               fixedDecimalScale={true} 
               decimalScale={2} 
-              value={item.sellPrice * item.count} 
+              value={item.amount} 
               displayType={'text'} 
               thousandSeparator={true} 
               prefix={currency} />
@@ -51,45 +49,75 @@ const ReceiptModal = (props) => {
       <Modal
         animationType="none"
         transparent={true}
-        visible={receiptModalVisible}
+        visible={receiptDetailsModalVisible}
         onRequestClose={() => {
-          props.receiptModalInvisible()
+          props.receiptDetailsModalVisible(false)
         }}>
-        <TouchableOpacity activeOpacity={1} style={styles.touchable} onPress={ () => {props.receiptModalInvisible()}}>
-          <TouchableOpacity activeOpacity={1} style={styles.container} >
+        <TouchableOpacity style={styles.touchable} onPress={ () => {props.receiptDetailsModalVisible(false)}}>
+          <TouchableOpacity style={styles.container} >
             <View style={styles.wrap} >
               <View style={myStyles.headerPan}>
                 <View style={myStyles.headerLeft}>
-                  
                 </View>
                 <View style={myStyles.headerMiddle}>
                 <Text style={myStyles.headerModal}>Receipt No. {String(selected.id).padStart(6, '0')}</Text>
                 </View>
                 <View style={myStyles.headerRight}>
-                  <CloseButton onPress={ () => props.receiptModalInvisible() }/>
-                  {/* <SaveButton userType={userType} onPress={() => props.saveCharge()}/> */}
+                  <CloseButton onPress={ () => props.receiptDetailsModalVisible(false) }/>
                 </View>
               </View>
               <View style={styles.content}>
-                <View style={{height: 50, flexDirection: 'row'}}>
-                  <View style={{flex: 1, flexDirection: 'row'}}>
-                    <DetailsButton userType={userType} onPress={() => props.receiptDetailsModalVisible(true)}/>
+                {/* <View style={{height: 50, flexDirection: 'row', justifyContent: 'flex-end' }}> */}
+                  {/* <PrintButton userType={userType} onPress={() => props.printReceipt(selected)}/>
+                  <RefundTransButton userType={userType} onPress={() => props.refundTransaction(selected)}/>
+                  <DeleteButton userType={userType} onPress={() => props.deleteReceiptModalVisible(true)}/> */}
+                {/* </View> */}
+                <View style={{flex: 3, flexDirection: 'row', alignContent: 'center', justifyContent: 'center'}}>
+
+                  <View style={{flex: 1}}>
+                    <Text style={styles.companyName}>Discounts</Text>
+                    <View style={{flex: 2, textAlign: 'center', padding: 15, borderRightWidth: 1, borderRightColor: '#CCC'}}>
+                      <FlatList
+                        keyExtractor={(item, index) => index.toString()}
+                        data={selected.discounts}
+                        style={{}}
+                        renderItem={this.renderItem}
+                      />
+                    </View>
                   </View>
-                  <View style={{flex: 1, flexDirection: 'row', justifyContent: 'flex-end' }}>
-                    <PrintButton userType={userType} onPress={() => props.printReceipt(selected)}/>
-                    <RefundTransButton userType={userType} onPress={() => props.refundTransaction(selected)}/>
-                    <DeleteButton userType={userType} onPress={() => props.deleteReceiptModalVisible(true)}/>
+                  <View style={{flex: 1}}>
+                    <Text style={styles.companyName}>Taxes</Text>
+                    <View style={{flex: 2, textAlign: 'center', padding: 15, borderRightWidth: 1, borderRightColor: '#CCC'}}>
+                      <FlatList
+                        keyExtractor={(item, index) => index.toString()}
+                        data={selected.taxes}
+                        style={{}}
+                        renderItem={this.renderItem}
+                      />
+                    </View>
                   </View>
-                </View>
-                <View style={{flex: 3, alignContent: 'center', justifyContent: 'center'}}>
-                  <Text style={styles.companyName}>{shopName}</Text>
-                  <View style={{flex: 2, textAlign: 'center'}}>
-                    <FlatList
-                      keyExtractor={(item, index) => index.toString()}
-                      data={selected.punched}
-                      style={{}}
-                      renderItem={this.renderItem}
-                    />
+                  <View style={{flex: 1}}>
+                    <Text style={styles.companyName}>Customer</Text>
+                    <View style={{flex: 2, textAlign: 'center', padding: 15}}>
+                      <View style={{flexDirection: 'row'}}>
+                        <View style={{flex: 1}}>
+                          <Text style={{fontSize: 20, color: 'gray' }}>Name</Text>
+                        </View>
+                        <Text style={{fontSize: 20, color: 'gray'}}>{selected.customer.name}</Text>
+                      </View>
+                      <View style={{flexDirection: 'row'}}>
+                        <View style={{flex: 1}}>
+                          <Text style={{fontSize: 20}}>TIN</Text>
+                        </View>
+                        <Text style={{fontSize: 20}}>{selected.customer.tin}</Text>
+                      </View>
+                      <View style={{flexDirection: 'row'}}>
+                        <View style={{flex: 1}}>
+                          <Text style={{fontSize: 20}}>Address</Text>
+                        </View>
+                        <Text style={{fontSize: 20}}>{selected.customer.address}</Text>
+                      </View>
+                    </View>
                   </View>
                 </View>
                 <View style={{height: 50, flexDirection: 'row', alignItems: 'flex-end'}}>
@@ -112,13 +140,11 @@ const ReceiptModal = (props) => {
           </TouchableOpacity>
         </TouchableOpacity>
       </Modal>
-      <ReceiptPunchModal />
-      <ReceiptDetailsModal />
     </View>
 	);
 }
 
-class DeleteButton extends React.Component{
+export class DeleteButton extends React.Component{
 
   render(){
     return (
@@ -140,7 +166,7 @@ class DeleteButton extends React.Component{
   }
 }
 
-class PrintButton extends React.Component{
+export class PrintButton extends React.Component{
 
   render(){
     return (
@@ -162,7 +188,7 @@ class PrintButton extends React.Component{
   }
 }
 
-class RefundTransButton extends React.Component{
+export class RefundTransButton extends React.Component{
 
   render(){
     return (
@@ -184,25 +210,6 @@ class RefundTransButton extends React.Component{
   }
 }
 
-const DetailsButton = (props) => {
-  return (
-    (props.userType == 'ROOT' || props.userType == 'ADMIN')?
-      <Button
-        onPress={props.onPress} style={styles.opacity}
-        containerStyle={{}}
-        type="clear"
-        titleStyle={{color: '#333', marginLeft: 5}}
-        icon={
-          <Icon 
-            name="info-circle"
-            size={35}
-            color="#2089dc"
-          />
-        }
-      />:null
-  )
-}
-
 function mapStateToProps(state) {
 	return {
     receipt: state.receipt,
@@ -214,6 +221,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
 	return {
     receiptModalInvisible: () => dispatch(receiptModalInvisible()),
+    receiptDetailsModalVisible: (v) => dispatch(receiptDetailsModalVisible(v)),
     deleteReceiptModalVisible: (v) => { 
       dispatch(deleteReceiptModalVisible(v))
     },
@@ -233,8 +241,7 @@ function mapDispatchToProps(dispatch) {
           {text: 'OK', onPress: () => dispatch(refundTransaction(t))}],
           {cancelable: false}
       )
-    },
-    receiptDetailsModalVisible: (v) => dispatch(receiptDetailsModalVisible(v))
+    }
   }
 }
 
@@ -251,7 +258,7 @@ const styles = StyleSheet.create({
   },
   touchable: {
     flex: 1, 
-    backgroundColor: 'rgba(0, 0, 0, .5)',
+    backgroundColor: 'blue',
   },
   container: {
     // width: screenWidth/2,
@@ -346,5 +353,5 @@ const styles = StyleSheet.create({
 
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(ReceiptModal);
+export default connect(mapStateToProps, mapDispatchToProps)(ReceiptDetailsModal);
 

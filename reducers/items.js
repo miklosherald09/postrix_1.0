@@ -45,7 +45,10 @@ const initialState = {
   searchText: '',
   sync_percentage: 0,
   syncedItem: {Name: ''},
-  selectedItem: {},
+  selectedItem: {
+    name: '',
+    tax_type: '',
+  },
 }
 
 export default function itemsReducer(state = initialState, action) {

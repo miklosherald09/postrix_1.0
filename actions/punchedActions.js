@@ -1,7 +1,6 @@
 import { computeTaxValues } from './taxActions'
 import { computeDiscount } from './discountActions'
-import { extractSqlData } from '../functions'
-
+import { extractSqlData, sleep } from '../functions'
 
 export const PUNCHED_ITEM_BEGIN   = 'PUNCHED_ITEM_BEGIN'
 export const PUNCH = 'PUNCH'
@@ -17,6 +16,7 @@ export const GET_PUNCH_DISCOUNTS_SUCCESS = 'GET_PUNCH_DISCOUNTS_SUCCESS'
 export const TOGGLE_PUNCH_DISCOUNT = 'TOGGLE_PUNCH_DISCOUNT'
 export const UPDATE_PUNCH_ITEM_DISCOUNT = 'UPDATE_PUNCH_ITEM_DISCOUNT'
 export const CHARGE_PUNCH_DISCOUNT = 'CHARGE_PUNCH_DISCOUNT'
+export const COMPUTE_TOTAL_SALES_SUCCESS = 'COMPUTE_TOTAL_SALES_SUCCESS'
 
 export function punchItemBegin() {
   return {
@@ -34,42 +34,74 @@ export function punch(item) {
 
   return (dispatch, getState) => {
 
-    const { punched, discount, tax } = getState()
+    const { punched, discount } = getState()
 
-    item.accruePrice = item.sellPrice
-    item.count =  1
+    punched_ = []
+    discounts_ = []
+    discounts_ = discount.discountCharges.filter((f) => f.selected == true)
 
-    punchedArr = []
-    doublePunch = false
-    newState = []
-    newItem = {}
-    taxType = ""
-    vatableAmount = 0
-
-    const newPunch = punched.punched.map((v, i) => {
-      if(item.id == v.id){
-        doublePunch = true
-        return {
-          ...v,
-          count: v.count + 1,
-          accruePrice: v.accruePrice + v.sellPrice
-        };
-      }
-      return v;
-    })
-  
-    if(!doublePunch){
-      // override chargeDiscount
-      item.discounts = discount.discountCharges.filter((f) => f.selected == true)
-      itemToPush = [...newPunch, item]
+    found = punched.punched.find((v) => v.id == item.id)
+    if(found){
+      punched_ = punched.punched.map((v, i) => {
+        if(item.id == v.id){
+          v.count = v.count + 1
+        }
+        return v;
+      })
     }
     else{
-      itemToPush = [...newPunch]
+      item.discounts = discounts_
+      item.count = 1
+      punched_ = [...punched.punched, item]
     }
 
-    dispatch({ type: PUNCH, itemToPush: itemToPush, item: item, taxes: taxes })
+    // total discount
+    console.log('know have: ')
+    punched.punched.forEach((v, i) => {
+      if(item.id == v.id){
+        console.log(v.discounts)
+      }
+    })
+    
+    totalItemPrice = 0
+    totalDiscount = 0
+
+    dispatch({ 
+      type: PUNCH,
+      punched: punched_,
+      itemPrice: item.sellPrice
+    })
+
     dispatch(computeTaxValues())
     dispatch(computeDiscount())
+    dispatch(computeTotalSales())
+  }
+}
+
+export function computeTotalSales(){
+
+  return async (dispatch, getState) => {
+
+    const { punched, discount } = getState()
+
+    totalSales = 0
+    totalDiscount = 0
+    
+    punched.punched.forEach(p => {
+      totalSales = totalSales + (p.count * p.sellPrice)
+    })
+
+    discount.discountCharges.forEach((d) => {
+      if(d.selected && d.amount)
+        totalDiscount = totalDiscount + d.amount
+    })
+
+    total = totalSales - totalDiscount
+
+    // try to delay dispatch since compute total discount and tax
+    // should be executed first, and dispatching is not in async mode
+    await sleep(0.9)
+    dispatch({type: COMPUTE_TOTAL_SALES_SUCCESS, total: total })
   }
 }
 

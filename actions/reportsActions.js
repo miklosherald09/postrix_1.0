@@ -72,8 +72,11 @@ export function generateSalesReport(){
           var items = [];
           for (let i = 0; i < res.rows.length; ++i) {
             var item = res.rows.item(i)
-            item.punched = JSON.parse(res.rows.item(i).punched),
-            items.push(item);
+            item.punched = JSON.parse(res.rows.item(i).punched)
+            item.discounts = JSON.parse(res.rows.item(i).discounts)
+            item.taxes = JSON.parse(res.rows.item(i).taxes)
+            item.customer = JSON.parse(res.rows.item(i).customer)
+            items.push(item)
           }
 
           console.log('transactions successfully fetch..');

@@ -21,6 +21,8 @@ const initialState = {
   totalSales: 0,
   totalProfit: 0,
   totalCharges: 0,
+  totalTax: 0,
+  totalDiscount: 0,
   itemSales: [],
   processing: false,
 
@@ -63,8 +65,25 @@ export default function reportsReducer(state = initialState, action) {
       totalProfit = 0
       charges = []
       totalCharges = 0
+      totalTax = 0
+      totalDiscount = 0
       
       action.items.forEach((item) => {
+
+        item.discounts.forEach(d => {
+          if(d.selected && d.amount)
+            totalDiscount = totalDiscount + d.value
+        })
+
+        item.taxes.forEach(t => {
+          
+          if(t.enabled && t.amount){
+            totalTax = totalTax + t.amount
+            console.log(t)
+            console.log('totalTax:' + totalTax)
+          }
+        })
+
         item.punched.forEach((punched) => {
           
           // check if item already exists, if yes, merge item
@@ -115,6 +134,8 @@ export default function reportsReducer(state = initialState, action) {
         totalProfit: totalProfit,
         charges: charges,
         totalCharges: totalCharges,
+        totalDiscount: totalDiscount,
+        totalTax: totalTax,
         processing: false,
       }
     }

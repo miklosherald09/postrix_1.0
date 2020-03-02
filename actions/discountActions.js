@@ -258,7 +258,7 @@ export function computeDiscount(){
             value = p.sellPrice * p.count * (parseInt(d.value)/100)
           }
           if(d.type == 'BILL'){
-            value = parseInt(d.value)
+            value = p.count * parseInt(d.value)
           }
           
           discountCharges.map((f, i) => {

@@ -57,6 +57,7 @@ export default function punchedReducer(state = initialState, action) {
     case PUNCH_ITEM_COUNT: {
 
       // disregard if negative punch
+      newCount = 0
       newCount = state.selectedItem.count + action.value
       
       // update punched items count

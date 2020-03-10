@@ -19,9 +19,34 @@ const ReceiptDetailsModal = (props) => {
   const { SHOP_NAME } = props.settings
   const { userType } = props.pin
 
-  renderItem = ({ item, index }) => {
+  renderDiscount = ({ item, index }) => {
     return (
-      <TouchableOpacity onPress={() => props.selectReceiptPunch(item)}>
+      <TouchableOpacity>
+        <View style={{marginBottom: 10}}>
+          <View style={{flexDirection: 'row'}}>
+            <View style={{flex: 1}}>
+              <Text style={{fontSize: 20, color: (item.refund?'gray':'black') }}>{item.name} </Text>
+              {/* <Text style={{fontSize: 20, color: '#2089dc' }}>{currency + item.sellPrice + ' x ' + item.count}</Text> */}
+            </View>
+            <View style={{flex: 1, alignItems: 'flex-end'}}>
+              <NumberFormat 
+              renderText={value => <Text style={{fontSize: 20, color: (item.refund?'gray':'black')}}>{value}</Text>} 
+              fixedDecimalScale={true} 
+              decimalScale={2} 
+              value={item.amount} 
+              displayType={'text'} 
+              thousandSeparator={true} 
+              prefix={currency} />
+            </View>
+          </View>
+        </View>
+      </TouchableOpacity>
+    )
+  }
+
+  renderTax = ({ item, index }) => {
+    return (
+      <TouchableOpacity>
         <View style={{marginBottom: 10}}>
           <View style={{flexDirection: 'row'}}>
             <View style={{flex: 1}}>
@@ -72,31 +97,29 @@ const ReceiptDetailsModal = (props) => {
                   <RefundTransButton userType={userType} onPress={() => props.refundTransaction(selected)}/>
                   <DeleteButton userType={userType} onPress={() => props.deleteReceiptModalVisible(true)}/> */}
                 {/* </View> */}
-                <View style={{flex: 3, flexDirection: 'row', alignContent: 'center', justifyContent: 'center'}}>
+                <View style={{flex: 1, flexDirection: 'row', alignContent: 'center', justifyContent: 'center'}}>
 
-                  <View style={{flex: 1}}>
+                  <View style={{flex: 4, borderRightWidth: 1, borderRightColor: '#CCC'}}>
                     <Text style={styles.companyName}>Discounts</Text>
-                    <View style={{flex: 2, textAlign: 'center', padding: 15, borderRightWidth: 1, borderRightColor: '#CCC'}}>
+                    <View style={{textAlign: 'center', padding: 15, }}>
                       <FlatList
                         keyExtractor={(item, index) => index.toString()}
                         data={selected.discounts}
                         style={{}}
-                        renderItem={this.renderItem}
+                        renderItem={this.renderDiscount}
                       />
                     </View>
-                  </View>
-                  <View style={{flex: 1}}>
                     <Text style={styles.companyName}>Taxes</Text>
-                    <View style={{flex: 2, textAlign: 'center', padding: 15, borderRightWidth: 1, borderRightColor: '#CCC'}}>
+                    <View style={{textAlign: 'center', padding: 15}}>
                       <FlatList
                         keyExtractor={(item, index) => index.toString()}
                         data={selected.taxes}
                         style={{}}
-                        renderItem={this.renderItem}
+                        renderItem={this.renderTax}
                       />
                     </View>
                   </View>
-                  <View style={{flex: 1}}>
+                  <View style={{flex: 3}}>
                     <Text style={styles.companyName}>Customer</Text>
                     <View style={{flex: 2, textAlign: 'center', padding: 15}}>
                       <View style={{flexDirection: 'row'}}>
@@ -342,7 +365,8 @@ const styles = StyleSheet.create({
     fontWeight: 'bold', 
     color: '#333',
     marginBottom: 10,
-    textAlign: 'center'
+    marginLeft: 13
+    // textAlign: 'center'
   },
   input: {
     borderColor: 'black',

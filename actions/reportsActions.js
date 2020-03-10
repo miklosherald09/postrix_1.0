@@ -84,7 +84,7 @@ export function generateSalesReport(){
     
           dispatch({
             type: GENERATE_SALES_REPORT_SUCCESS,
-            items: items
+            transactions: items
           })
         
         });

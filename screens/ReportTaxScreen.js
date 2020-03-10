@@ -3,7 +3,7 @@ import { StyleSheet, View, Text, DatePickerAndroid, TimePickerAndroid, ScrollVie
 import { connect } from 'react-redux'
 import { MenuButton } from '../components/MenuButton'
 import TransactionSearch from '../components/TransactionSearch'
-import SalesReport from '../components/SalesReport'
+import TaxReport from '../components/TaxReport'
 import ReceiptModal from '../components/modals/ReceiptModal'
 import { Button } from 'react-native-elements'
 import { changeStartDate, changeEndDate, generateSalesReport , changeStartTime, changeEndTime, printReport, printReportSummary } from '../actions/reportsActions'
@@ -12,18 +12,10 @@ import Icon from 'react-native-vector-icons/FontAwesome5'
 import moment from 'moment'
 import ReportsNav from '../navigation/ReportsNav'
 
-const ReportScreen = (props) => {
+const ReportTaxScreen = (props) => {
 	
 	const { startDate, endDate, startTime, endTime, processing } = props.reports
-	
-	const navLink = (nav, text) => {
-		return(
-			<TouchableOpacity style={{padding: 15}} onPress={() => props.navigation.navigate(nav)}>
-				<Text style={styles.link}>{text}</Text>
-			</TouchableOpacity>
-		)
-	}
-	
+
 	openMenu = () => {
   	props.navigation.openDrawer();
 	}
@@ -138,7 +130,7 @@ const ReportScreen = (props) => {
 						</View>
 					</View>
 					<View style={{flex: 1}}>
-						{ !processing ? <SalesReport />: <Loading /> }
+						{ !processing ? <TaxReport />: <Loading /> }
 					</View>
 				</View>
 			</View>
@@ -310,4 +302,4 @@ const styles = StyleSheet.create({
 	}
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(ReportScreen)
+export default connect(mapStateToProps, mapDispatchToProps)(ReportTaxScreen)

@@ -21,8 +21,10 @@ const ReportsNav = (props) => {
   return(
     <ScrollView>
       <View style={styles.navLinks}>
-        {linkPermission('Settings_Basic', userType)?navLink('Reports', 'Sales Reports'):null}
-        {/* {linkPermission('Settings_Items', userType)?navLink('Customer Reports', 'Customers'):null} */}
+        {linkPermission('Settings_Basic', userType)?navLink('Reports', 'Sales'):null}
+        {linkPermission('ReportTax', userType)?navLink('ReportTax', 'Taxes'):null}
+        {linkPermission('ReportRefund', userType)?navLink('ReportRefund', 'Refunds'):null}
+        {linkPermission('ReportDiscount', userType)?navLink('ReportDiscount', 'Discounts'):null}
       </View>
     </ScrollView>
   )

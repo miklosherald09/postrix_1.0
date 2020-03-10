@@ -1,9 +1,9 @@
-import React, { useEffect } from 'react'
-import { StyleSheet, View, Text, DatePickerAndroid, TimePickerAndroid, ScrollView, TouchableOpacity, TextInput, ActivityIndicator } from 'react-native'
+import React from 'react'
+import { StyleSheet, View, DatePickerAndroid, TimePickerAndroid, ActivityIndicator } from 'react-native'
 import { connect } from 'react-redux'
 import { MenuButton } from '../components/MenuButton'
 import TransactionSearch from '../components/TransactionSearch'
-import SalesReport from '../components/SalesReport'
+import DiscountReport from '../components/DiscountReport'
 import ReceiptModal from '../components/modals/ReceiptModal'
 import { Button } from 'react-native-elements'
 import { changeStartDate, changeEndDate, generateSalesReport , changeStartTime, changeEndTime, printReport, printReportSummary } from '../actions/reportsActions'
@@ -12,18 +12,10 @@ import Icon from 'react-native-vector-icons/FontAwesome5'
 import moment from 'moment'
 import ReportsNav from '../navigation/ReportsNav'
 
-const ReportScreen = (props) => {
+const ReportDiscountScreen = (props) => {
 	
 	const { startDate, endDate, startTime, endTime, processing } = props.reports
-	
-	const navLink = (nav, text) => {
-		return(
-			<TouchableOpacity style={{padding: 15}} onPress={() => props.navigation.navigate(nav)}>
-				<Text style={styles.link}>{text}</Text>
-			</TouchableOpacity>
-		)
-	}
-	
+
 	openMenu = () => {
   	props.navigation.openDrawer();
 	}
@@ -138,7 +130,7 @@ const ReportScreen = (props) => {
 						</View>
 					</View>
 					<View style={{flex: 1}}>
-						{ !processing ? <SalesReport />: <Loading /> }
+						{ !processing ? <DiscountReport />: <Loading /> }
 					</View>
 				</View>
 			</View>
@@ -310,4 +302,4 @@ const styles = StyleSheet.create({
 	}
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(ReportScreen)
+export default connect(mapStateToProps, mapDispatchToProps)(ReportDiscountScreen)

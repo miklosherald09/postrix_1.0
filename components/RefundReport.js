@@ -1,14 +1,14 @@
 import React from 'react';
-import { StyleSheet, View, ScrollView, FlatList, Text } from 'react-native';
+import { StyleSheet, View, FlatList, Text } from 'react-native';
 import { connect } from 'react-redux'
 import NumberFormat from 'react-number-format'
 import { currency, USER_TYPE_ADMIN, USER_TYPE_ROOT } from '../constants/constants'
 import myStyles from '../constants/styles'
 import { Divider } from 'react-native-elements';
 
-const SalesReport = (props) => {
+const RefundReport = (props) => {
 
-  const { startDate, endDate, totalSales, totalProfit, itemSales, charges, totalCharges, totalDiscount, totalTax } = props.reports
+  const { totalSales, itemSales, charges, totalCharges, totalDiscount, totalTax, refunds, totalRefunds } = props.reports
   const { userType } = props.pin
 
   renderItem = ({item}) => (
@@ -37,22 +37,15 @@ const SalesReport = (props) => {
     <View style={styles.wrapper}>
       <View style={{flexDirection: 'row'}}>
         <View style={{flex: 1}}>
-          <TotalSales totalSales={totalSales} />
-        </View>
-        {
-          (userType == USER_TYPE_ADMIN || userType == USER_TYPE_ROOT)?
-          <View style={{flex: 1}}>
-            <TotalProfit totalProfit={totalProfit}/>
-          </View>:null
-        }
-        <View style={{flex: 1}}>
-          <TotalDiscount totalDiscount={totalDiscount} />
+          <TotalRefund totalRefunds={totalRefunds} />
         </View>
         <View style={{flex: 1}}>
-          <ChargesSummary totalCharges={totalCharges}/>
         </View>
         <View style={{flex: 1}}>
-          <TotalTax totalTax={totalTax} />
+        </View>
+        <View style={{flex: 1}}>
+        </View>
+        <View style={{flex: 1}}>
         </View>
       </View>
       <View style={{flex: 1, marginVertical: 30}}>
@@ -60,7 +53,7 @@ const SalesReport = (props) => {
         <FlatList
           style={{flex: 1}}
           keyExtractor={(item, index) => index.toString()}
-          data={[...itemSales || [], ...charges || []]}
+          data={refunds}
           renderItem={renderItem}
         />
       </View>
@@ -85,7 +78,7 @@ const Header = () => {
     <View style={{flexDirection: 'row', height: 40}}>
       <View style={{flex: 3, flexDirection: 'row'}}>
         <View style={{flex: 9}}>
-          <Text style={styles.header}>ITEM</Text>
+          <Text style={styles.header}>NAME</Text>
         </View>
         <View style={{flex: 2}}>
           <Text style={styles.header}>PRICE</Text>
@@ -101,50 +94,15 @@ const Header = () => {
   )
 }
 
-const TotalSales = ({totalSales}) => {
+const TotalRefund = ({totalRefunds}) => {
   return (
     <View style={{}}>
-      <Text style={styles.label}>SALES</Text>
-      <NumberFormat renderText={value => <Text style={myStyles.header2}>{value}</Text>} fixedDecimalScale={true} decimalScale={2} value={totalSales} displayType={'text'} thousandSeparator={true} prefix={currency} />
+      <Text style={styles.label}>REFUNDS</Text>
+      <NumberFormat renderText={value => <Text style={myStyles.header2}>{value}</Text>} fixedDecimalScale={true} decimalScale={2} value={totalRefunds} displayType={'text'} thousandSeparator={true} prefix={currency} />
     </View>
   )
 }
 
-const TotalProfit = ({totalProfit}) => {
-  return (
-    <View>
-      <Text style={styles.label}>PROFIT</Text>
-      <NumberFormat renderText={value => <Text style={myStyles.header2}>{value}</Text>} fixedDecimalScale={true} decimalScale={2} value={totalProfit} displayType={'text'} thousandSeparator={true} prefix={currency} />
-    </View>
-  )
-}
-
-const TotalTax = ({totalTax}) => {
-  return (
-    <View>
-      <Text style={styles.label}>TOTAL TAX</Text>
-      <NumberFormat renderText={value => <Text style={myStyles.header2}>{value}</Text>} fixedDecimalScale={true} decimalScale={2} value={totalTax} displayType={'text'} thousandSeparator={true} prefix={currency} />
-    </View>
-  )
-}
-
-const TotalDiscount = ({totalDiscount}) => {
-  return (
-    <View>
-      <Text style={styles.label}>DISCOUNT</Text>
-      <NumberFormat renderText={value => <Text style={myStyles.header2}>{value}</Text>} fixedDecimalScale={true} decimalScale={2} value={totalDiscount} displayType={'text'} thousandSeparator={true} prefix={currency} />
-    </View>
-  )
-}
-
-const ChargesSummary = ({totalCharges}) => {
-  return (
-    <View>
-      <Text style={styles.label}>CHARGES</Text>
-      <NumberFormat renderText={value => <Text style={myStyles.header2}>{value}</Text>} fixedDecimalScale={true} decimalScale={2} value={totalCharges} displayType={'text'} thousandSeparator={true} prefix={currency} />
-    </View>
-  )
-}
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -183,4 +141,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(SalesReport);
+export default connect(mapStateToProps, mapDispatchToProps)(RefundReport);

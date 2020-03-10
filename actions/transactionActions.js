@@ -41,7 +41,7 @@ export const addTransaction = ({payment, total, punched, printReceipt, taxes, di
             punched: punched,
             printed: 0,
             taxes: JSON.parse(taxes),
-            discounts: JSON.parse(discountCharges),
+            // discounts: JSON.parse(discountCharges),
             customer: JSON.parse(selectedTagCustomer),
             datetime: Date.now(),
           }

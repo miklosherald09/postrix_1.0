@@ -1,10 +1,9 @@
 import React from 'react'
-import { Dimensions} from 'react-native'
+import { Dimensions, Text } from 'react-native'
 import {  createAppContainer, createDrawerNavigator, createStackNavigator } from 'react-navigation'
 import HomeScreen from '../screens/HomeScreen'
 import ItemsScreen from '../screens/ItemsScreen'
 import ItemAdvanceScreen from '../screens/ItemAdvanceScreen'
-import ReportScreen from '../screens/ReportScreen'
 import TransactionScreen from '../screens/TransactionScreen'
 import SettingsScreen from '../screens/SettingsScreen'
 import SettingsPrinterScreen from '../screens/SettingsPrinterScreen'
@@ -13,6 +12,10 @@ import SettingsUsersScreen from '../screens/SettingsUsersScreen'
 import SettingsBackupScreen from '../screens/SettingsBackupScreen'
 import SettingsTaxScreen from '../screens/SettingsTaxScreen'
 import SettingsDiscountScreen from '../screens/SettingsDiscountScreen'
+import ReportScreen from '../screens/ReportScreen'
+import ReportRefundScreen from '../screens/ReportRefundScreen'
+import ReportDiscountScreen from '../screens/ReportDiscountScreen'
+import ReportTaxScreen from '../screens/ReportTaxScreen'
 import DebuggerScreen from '../screens/DebuggerScreen'
 import PinScreen from '../components/MenuDrawer'
 import MenuDrawer from '../components/MenuDrawer'
@@ -26,9 +29,8 @@ const DrawerConfig = {
     // initialRouteName: 'Items',
     // initialRouteName: 'Settings',
     // initialRouteName: 'SettingsBackup',
-    initialRouteName: 'Transactions',
-    // initialRouteName: 'Reports',
-    // initialRouteName: 'ReportSetup',
+    // initialRouteName: 'Transactions',
+    initialRouteName: 'Reports',
     // initialRouteName: 'Debugger',
     // initialRouteName: 'Pin',
     contentComponent: ({ navigation }) => {
@@ -83,6 +85,53 @@ const SettingsStack = createStackNavigator({
   },
 });
 
+const config = {
+  animation: 'spring',
+  config: {
+    stiffness: 5000,
+    damping: 500,
+    mass: 3,
+    overshootClamping: true,
+    restDisplacementThreshold: 0.01,
+    restSpeedThreshold: 0.01,
+  },
+};
+
+const ReportsStack = createStackNavigator({
+  Reports: {  
+    screen: ReportScreen,
+    navigationOptions: {
+      header: null
+    }
+  },
+  ReportTax: {
+    screen: ReportTaxScreen,
+    navigationOptions: {
+      header: null,
+      animationEnabled:false,
+    },
+  },
+  ReportRefund: {
+    screen: ReportRefundScreen,
+    navigationOptions: {
+      header: null,
+      animationEnabled:false,
+      transitionConfig :() => ({
+        transitionSpec: {
+          open: config,
+          close: config,
+        },
+      })
+    },
+  },
+  ReportDiscount: {
+    screen: ReportDiscountScreen,
+    navigationOptions: {
+      header: null,
+    }
+  },
+});
+
  const DrawerNavigator = createDrawerNavigator({
    
     Pin: {
@@ -101,7 +150,18 @@ const SettingsStack = createStackNavigator({
       screen: ItemAdvanceScreen
     },
     Reports: {
-      screen: ReportScreen
+      screen: ReportsStack,
+      navigationOptions: {
+        header: null,
+        animationEnabled:false,
+        transitionConfig :() => ({
+          transitionSpec: {
+            duration: 0,
+            timing: 1,
+            easing: 8
+          }
+        })
+      },
     },
     Settings: {
       screen: SettingsStack
@@ -109,6 +169,7 @@ const SettingsStack = createStackNavigator({
     Debugger: {
       screen: DebuggerScreen
     },
+    
 
   }, DrawerConfig
 );

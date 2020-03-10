@@ -24,6 +24,10 @@ const initialState = {
   totalTax: 0,
   totalDiscount: 0,
   itemSales: [],
+  taxes: [],
+  refunds: [],
+  discounts: [],
+  totalRefunds: 0,
   processing: false,
 
 }
@@ -61,30 +65,74 @@ export default function reportsReducer(state = initialState, action) {
     case GENERATE_SALES_REPORT_SUCCESS: {
       
       items = []
+      taxes = []
+      refunds = []
+      discounts = []
+      charges = []
+      totalRefunds = 0
       totalSales = 0
       totalProfit = 0
-      charges = []
       totalCharges = 0
       totalTax = 0
       totalDiscount = 0
+
+      action.transactions.forEach((trans) => {
+
       
-      action.items.forEach((item) => {
 
-        item.discounts.forEach(d => {
-          if(d.selected && d.amount)
-            totalDiscount = totalDiscount + d.value
-        })
+        // get taxes
+        if(trans.taxes){
+          trans.taxes.forEach((t, i) => {
+            found = taxes.find(f => f.id == t.id)
+            count = t.amount?1:0
+            if(!found){
+              t.count = count
+              taxes.push(t)
+            }
+            else{
+              taxes = taxes.map((v, n) => {
+                if(t.id == v.id){
+                  v.amount = taxes[n].amount + t.amount
+                  v.count = taxes[n].count + count
+                }
+                return v
+              })
+            }
+          })
+        }
 
-        item.taxes.forEach(t => {
-          
+        trans.taxes.forEach(t => {
           if(t.enabled && t.amount){
             totalTax = totalTax + t.amount
-            console.log(t)
-            console.log('totalTax:' + totalTax)
           }
         })
 
-        item.punched.forEach((punched) => {
+        
+        trans.punched.forEach((punched) => {
+
+          // console.log(punched)r
+          // get discoutnspunched
+          punched.discounts.forEach(d => {
+            if(d.selected && d.amount && !punched.refund){
+              totalDiscount = totalDiscount + d.amount
+  
+              dup = discounts.find(f => f.id == d.id)
+              if(dup){
+                i = discounts.map(ds => ds.id).indexOf(dup.id)
+                discounts[i].amount += d.amount
+                discounts[i].count += punched.count
+              }
+              else{
+                d.count = punched.count
+                discounts.push(d)
+              }
+            }
+          })
+
+          // get refunds
+          if(punched.refund){
+            refunds.push(punched)
+          }
           
           // check if item already exists, if yes, merge item
           // separate charges items type
@@ -102,7 +150,7 @@ export default function reportsReducer(state = initialState, action) {
                 charges.push(punched)
             
             // computing total charges
-            totalCharges += punched.accruePrice
+            totalCharges += punched.count * punched.sellPrice
           }
           else{
             if(!punched.refund){
@@ -127,10 +175,37 @@ export default function reportsReducer(state = initialState, action) {
         })
       })
 
+      refunds = []
+      totalRefunds = 0
+
+      action.transactions.forEach(trans => {
+        p = trans.punched.map(p => {
+          if(p.refund){
+            totalRefunds = totalRefunds + (p.count * p.sellPrice)
+            return p
+          }
+        }).filter(f => f != null)
+
+        p.forEach((x, i) => {
+          dup = refunds.find(f => f.id == x.id)
+          if(dup){
+            ins = refunds.map(v => v.id).indexOf(dup.id)
+            refunds[ins].count += x.count
+          }
+          else{
+            refunds.push(x)
+          }
+        })
+      })
+
       return {
         ...state,
-        totalSales: totalSales,
+        totalSales: totalSales - totalDiscount,
+        totalRefunds: totalRefunds,
         itemSales: items,
+        refunds: refunds,
+        discounts: discounts,
+        taxes: taxes, 
         totalProfit: totalProfit,
         charges: charges,
         totalCharges: totalCharges,

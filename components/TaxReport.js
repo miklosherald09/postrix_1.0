@@ -1,14 +1,14 @@
 import React from 'react';
-import { StyleSheet, View, ScrollView, FlatList, Text } from 'react-native';
+import { StyleSheet, View, FlatList, Text } from 'react-native';
 import { connect } from 'react-redux'
 import NumberFormat from 'react-number-format'
 import { currency, USER_TYPE_ADMIN, USER_TYPE_ROOT } from '../constants/constants'
 import myStyles from '../constants/styles'
 import { Divider } from 'react-native-elements';
 
-const SalesReport = (props) => {
+const TaxReport = (props) => {
 
-  const { startDate, endDate, totalSales, totalProfit, itemSales, charges, totalCharges, totalDiscount, totalTax } = props.reports
+  const { totalSales, totalProfit, itemSales, charges, totalCharges, totalDiscount, totalTax, taxes } = props.reports
   const { userType } = props.pin
 
   renderItem = ({item}) => (
@@ -27,16 +27,15 @@ const SalesReport = (props) => {
         </View>
       </View>
       <View style={{flex: 1, alignItems: 'flex-end'}}>
-        <NumberFormat renderText={value => <Text style={{fontSize: 20, color: '#333'}}>{value}</Text>} fixedDecimalScale={true} decimalScale={2} value={item.count * item.sellPrice} displayType={'text'} thousandSeparator={true} prefix={''} />
+        <NumberFormat renderText={value => <Text style={{fontSize: 20, color: '#333'}}>{value}</Text>} fixedDecimalScale={true} decimalScale={2} value={item.amount} displayType={'text'} thousandSeparator={true} prefix={''} />
       </View>
     </View>
   )
 
-
   return(
     <View style={styles.wrapper}>
       <View style={{flexDirection: 'row'}}>
-        <View style={{flex: 1}}>
+        {/* <View style={{flex: 1}}>
           <TotalSales totalSales={totalSales} />
         </View>
         {
@@ -53,14 +52,14 @@ const SalesReport = (props) => {
         </View>
         <View style={{flex: 1}}>
           <TotalTax totalTax={totalTax} />
-        </View>
+        </View> */}
       </View>
-      <View style={{flex: 1, marginVertical: 30}}>
+      <View style={{flex: 1, marginVertical: 0}}>
         <Header />
         <FlatList
           style={{flex: 1}}
           keyExtractor={(item, index) => index.toString()}
-          data={[...itemSales || [], ...charges || []]}
+          data={[...taxes || []]}
           renderItem={renderItem}
         />
       </View>
@@ -84,15 +83,15 @@ const Header = () => {
   return (
     <View style={{flexDirection: 'row', height: 40}}>
       <View style={{flex: 3, flexDirection: 'row'}}>
-        <View style={{flex: 9}}>
-          <Text style={styles.header}>ITEM</Text>
-        </View>
         <View style={{flex: 2}}>
-          <Text style={styles.header}>PRICE</Text>
+          <Text style={styles.header}>NAME</Text>
         </View>
-        <View style={{flex: 2, alignItems: 'flex-end'}}>
-          <Text style={styles.header}>QTY</Text>
+        <View style={{flex: 1}}>
+          <Text style={styles.header}>DISCOUNT APPLIED</Text>
         </View>
+        {/* <View style={{flex: 2, alignItems: 'flex-end'}}>
+          <Text style={styles.header}>TOTAL</Text>
+        </View> */}
       </View>
       <View style={{flex: 1, alignItems: 'flex-end'}}>
         <Text style={styles.header}>TOTAL</Text>
@@ -183,4 +182,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(SalesReport);
+export default connect(mapStateToProps, mapDispatchToProps)(TaxReport)

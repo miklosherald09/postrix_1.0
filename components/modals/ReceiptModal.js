@@ -63,7 +63,7 @@ const ReceiptModal = (props) => {
                   
                 </View>
                 <View style={myStyles.headerMiddle}>
-                <Text style={myStyles.headerModal}>Receipt No. {String(selected.id).padStart(6, '0')}</Text>
+                  <Text style={myStyles.headerModal}>Receipt No. {selected.receipt_no}</Text>
                 </View>
                 <View style={myStyles.headerRight}>
                   <CloseButton onPress={ () => props.receiptModalInvisible() }/>

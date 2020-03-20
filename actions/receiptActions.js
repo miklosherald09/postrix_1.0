@@ -33,12 +33,12 @@ export function printReceipt({id, payment, total, punched, printed, datetime, ta
     const { settingsPrinter, settings } = getState()
 
     if(settingsPrinter.connectionType == CONNECTION_TYPE_BT){
-      dispatch(printReceiptBT({id, settings, punched, datetime, total, printed, payment, taxes, discounts}))
+      dispatch(printReceiptBT({id, settings, punched, datetime, total, printed, payment, taxes, receipt_no, discounts}))
       dispatch({ type: PRINT_RECEIPT_SUCCESS })
     }
 
     if(settingsPrinter.connectionType == CONNECTION_TYPE_USB){
-      dispatch(printReceiptUSB({id, settings, punched, datetime, total, printed, payment, taxes, discounts}))
+      dispatch(printReceiptUSB({id, settings, punched, datetime, total, printed, payment, taxes, receipt_no, discounts}))
       dispatch({ type: PRINT_RECEIPT_SUCCESS })
     }
     
@@ -52,7 +52,7 @@ export function printReceipt({id, payment, total, punched, printed, datetime, ta
   }
 }
 
-export function printReceiptBT({id, settings, punched, datetime, total, printed, payment, taxes, discounts, customer}){
+export function printReceiptBT({id, settings, punched, datetime, total, printed, payment, taxes, receipt_no, discounts, customer}){
 
   return async (dispatch, getState) => {
 
@@ -91,7 +91,7 @@ export function printReceiptBT({id, settings, punched, datetime, total, printed,
       }
 
       await BluetoothEscposPrinter.printText(moment(datetime).format('LLL')+"\n\r",{})
-      await BluetoothEscposPrinter.printText("Receipt No. "+ String(id).padStart(6, '0') +"\n\r", {})
+      await BluetoothEscposPrinter.printText("Receipt No. "+ receipt_no +"\n\r", {})
       await BluetoothEscposPrinter.printText("--------------------------------\n\r",{})
       await BluetoothEscposPrinter.printColumn(columnWidths, [leftAlign, centerAlign, rightAlign, rightAlign],
         ["Item",'Qty','Price', 'Total'],{})
@@ -191,7 +191,7 @@ export function printReceiptBT({id, settings, punched, datetime, total, printed,
   }
 }
 
-export function printReceiptUSB({id, settings, punched, datetime, total, printed, payment, taxes, discounts}) {
+export function printReceiptUSB({id, settings, punched, datetime, total, printed, payment, taxes, receipt_no, discounts}) {
 
   return async (dispatch, getState) => {
 
@@ -207,7 +207,7 @@ export function printReceiptUSB({id, settings, punched, datetime, total, printed
       await sleep(6)
       USBPrinter.printText(moment(datetime).format('LLL')+"\n")
       await sleep(6)
-      USBPrinter.printText("Receipt No. " + String(id).padStart(6, '0') + "\n\n")
+      USBPrinter.printText("Receipt No. " + receipt_no + "\n\n")
       await sleep(6)
       USBPrinter.printText("--------------------------------\n")
 

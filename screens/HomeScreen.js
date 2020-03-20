@@ -55,11 +55,13 @@ const HomeScreen = props => {
             <View style={{flex: 2}}>
               <MenuButton openMenu={this.openMenu.bind(this)} color="#333333"/>
             </View>
-            <View style={{flex: 4, alignItems: 'flex-start'}}>
+            <View style={{flex: 4, flexDirection: 'row', alignItems: 'flex-start'}}>
               <View style={{position:'absolute', marginTop: -50, width: 100, height: 20, backgroundColor: 'blue'}}>
                 <Button title={'.'} color="white"  ref={component => this._cleverBtn = component}></Button>
               </View>
-              <ItemSearchButton onPress={(e) => props.modalVisible(e)}/>
+              <View style={{flex: 3, flexDirection: 'row'}}>
+                <ItemSearchButton onPress={(e) => props.modalVisible(e)}/>
+              </View>
             </View>
             <View style={{flex: 2}}>
               {/* <BarcodeSearch /> */}

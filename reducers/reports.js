@@ -76,9 +76,30 @@ export default function reportsReducer(state = initialState, action) {
       totalTax = 0
       totalDiscount = 0
 
-      action.transactions.forEach((trans) => {
+      // remove refunded items
+      refunds_ = []
+      action.transactions.forEach((trans, i) => {
+        trans.punched.forEach((p, ii) => {
+          if(p.refund){
+            trans.punched.splice(ii, 1)
+            totalRefunds = totalRefunds + (p.count * p.sellPrice)
+            refunds_.push(p)
+          }
+        })
+      })
 
-      
+      refunds_.forEach((r, i) => {
+        dup = refunds.find(f => f.id == r.id)
+        if(dup){
+          ins = refunds.map(v => v.id).indexOf(dup.id)
+          refunds[ins].count += r.count
+        }
+        else{
+          refunds.push(r)
+        }
+      })
+
+      action.transactions.forEach((trans) => {
 
         // get taxes
         if(trans.taxes){
@@ -129,10 +150,7 @@ export default function reportsReducer(state = initialState, action) {
             }
           })
 
-          // get refunds
-          if(punched.refund){
-            refunds.push(punched)
-          }
+      
           
           // check if item already exists, if yes, merge item
           // separate charges items type
@@ -175,28 +193,7 @@ export default function reportsReducer(state = initialState, action) {
         })
       })
 
-      refunds = []
-      totalRefunds = 0
-
-      action.transactions.forEach(trans => {
-        p = trans.punched.map(p => {
-          if(p.refund){
-            totalRefunds = totalRefunds + (p.count * p.sellPrice)
-            return p
-          }
-        }).filter(f => f != null)
-
-        p.forEach((x, i) => {
-          dup = refunds.find(f => f.id == x.id)
-          if(dup){
-            ins = refunds.map(v => v.id).indexOf(dup.id)
-            refunds[ins].count += x.count
-          }
-          else{
-            refunds.push(x)
-          }
-        })
-      })
+  
 
       return {
         ...state,

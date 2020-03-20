@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, View, FlatList, Text, Dimensions, TouchableOpacity } from 'react-native'
 import { connect } from 'react-redux'
 import { receiptModalVisible, selectReceipt } from '../actions/receiptActions'
-import { formatDate,  } from '../functions'
+import { formatDate  } from '../functions'
 import { getTransactions, refreshTransactions } from '../actions/transactionActions'
 
 const numColumns = 4;
@@ -16,7 +16,7 @@ const TransactionList = (props) => {
 
   renderItem = ({ item, index }) => {
     if (item.empty === true) {
-      return <View style={[styles.item, styles.itemInvisible]} />;
+      return <View style={[styles.item, styles.itemInvisible]} />
     }
     return (
       <View style={styles.item} >
@@ -24,7 +24,7 @@ const TransactionList = (props) => {
           <View style={{flex: 1, flexDirection: 'column'}}>
             <View style={{alignItems: 'center', height: 45}}>
               <Text style={{color: '#666', fontSize: 20, textAlign: 'left'}}>{formatDate(item.datetime)}</Text>
-              <Text style={{color: '#333', fontSize: 20}}>Receipt No: {String(item.id).padStart(6, '0')}</Text>
+              <Text style={{color: '#333', fontSize: 20}}>Receipt No: {item.receipt_no}</Text>
             </View>
             <View style={{justifyContent: 'center', alignItems: 'center', flex: 1, marginTop: 5}}>
               <Text numberOfLines={3} style={{textAlign: 'center', color: '#333', fontSize: 15}}>

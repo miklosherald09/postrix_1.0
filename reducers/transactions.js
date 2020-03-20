@@ -7,15 +7,20 @@ import {
   REFRESH_TRANSACTIONS,
   DELETE_TRANSACTION_SUCCESS,
   REFUND_TRANSACTION_SUCCESS,
-  REFUND_PUNCH_SUCCESS
+  REFUND_PUNCH_SUCCESS,
+  SET_TRANS_SEARCH_TEXT,
+  GET_SEARCH_TRANS_BEGIN,
+  GET_SEARCH_TRANS_SUCCESS,
+  GET_SEARCH_TRANS_ERROR
 } from '../actions/transactionActions';
 import { appendTransactionEmptyBox } from '../functions'
 
 const initialState = {
+  searchText: "33",
   transactions: [],
   refreshing: false,
   lastId: 0,
-  limit: 15
+  limit: 15,
 }
 
 export default function transactionsReducer(state = initialState, action) {
@@ -102,7 +107,54 @@ export default function transactionsReducer(state = initialState, action) {
         transactions: action.transactions
       }
     }
+
+    case SET_TRANS_SEARCH_TEXT: {
+      return {
+        ...state,
+        searchText: action.text,
+        searchItems: [],
+        request: {
+          ...state.request,
+          page: 0
+        },
+      }
+    }
    
+    case GET_SEARCH_TRANS_BEGIN: {
+      return {
+        ...state,
+        request: {
+          ...state.request,
+          refreshing: true,
+          page: state.request.page + 1
+        },
+      }
+    }
+    
+    case GET_SEARCH_TRANS_SUCCESS: {
+
+      transactions = appendTransactionEmptyBox(action.transactions)
+      
+      return {
+        ...state,
+        transactions: transactions,
+        request: {
+          ...state.request,
+          refreshing: false
+        }
+      }
+    }
+
+    case GET_SEARCH_TRANS_ERROR: {
+      return {
+        ...state,
+        request: {
+          ...state.request,
+          refreshing: false
+        }
+      }
+    }
+
     default:
       // ALWAYS have a default case in a reducer
       return state;

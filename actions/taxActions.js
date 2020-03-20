@@ -134,43 +134,16 @@ export function computeTaxValues(){
 
     punched.punched.forEach(p => {
       p.taxes.forEach(t => {
-        
-        console.log(t)
         tax.taxes.forEach((tx, ix) => {
           if(t.id == tx.id){
-            console.log(t.id +" = "+tx.id)
             tax.taxes[ix].amount = tax.taxes[ix].amount || 0
             tax.taxes[ix].amount += t.amount
-
             tax.taxes[ix].net = tax.taxes[ix].net || 0
             tax.taxes[ix].net += t.net
           }
         })
       })
-    });
-
-    // punched.punched.map((item, i) => {
-    //   if(item.taxes){
-    //     item.taxes.map((t, i) => {
-    //       itemTotalValue = item.count * item.sellPrice
-    //       taxes[i].amount = ((itemTotalValue * (v.percent/100)) / 1.12)
-    //       taxes[i].net = punched.total - taxes[i].amount
-    //     })
-    //   }
-    // })
-    
-    // punched.punched.map((item, i) => {
-    //   if(item.taxType){
-    //     tax.taxes.map((v, i) => { 
-    //       if(v.name.toUpperCase() == item.taxType.toUpperCase()){
-    //         itemTotalValue = item.count * item.sellPrice
-    //         taxes[i].amount = ((itemTotalValue * (v.percent/100)) / 1.12)
-    //         taxes[i].net = punched.total - taxes[i].amount
-    //         console.log(taxes[i])
-    //       }
-    //     })
-    //   }
-    // })
+    })
 
     dispatch({
       type: COMPUTE_TAX_VALUES_SUCCESS, 

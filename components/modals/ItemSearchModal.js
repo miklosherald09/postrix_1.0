@@ -36,21 +36,21 @@ const ItemSearchModal = (props) => {
 						<View style={{flexDirection: 'row'}} >
 							<View style={{flex: 2}}>
 							<Input
-									inputStyle={styles.input}
-									inputContainerStyle={{borderBottomColor: 'white'}}
-									placeholder='search'
-									onChangeText={ (text) => onChangeText(text) }
-									keyboardType='default'
-									clearTextOnFocus={true}
-									focus={itemSearchModalVisible}
-									defaultValue={searchText}
-									leftIcon={
-										<Icon
-											name='search'
-											size={24}
-											color='#CCCCCC'
-										/>
-									}
+								inputStyle={styles.input}
+								inputContainerStyle={{borderBottomColor: 'white'}}
+								placeholder='search'
+								onChangeText={ (text) => onChangeText(text) }
+								keyboardType='default'
+								clearTextOnFocus={true}
+								// focus={itemSearchModalVisible}
+								defaultValue={searchText}
+								leftIcon={
+									<Icon
+										name='search'
+										size={24}
+										color='#CCCCCC'
+									/>
+								}
 								/>
 							</View>
 							<View style={styles.closeButtonPan}>
@@ -58,7 +58,7 @@ const ItemSearchModal = (props) => {
 							</View>
 						</View>
 					</View>
-					<View>
+					<View style={{flex: 1}}>
          		<ItemSearchList />
 					</View>	
 				</View>
@@ -102,7 +102,6 @@ const styles = StyleSheet.create({
   },
 	closeButtonPan: {
 		flex: 1,
-		padding: 14,
 		height: 60,
 		alignSelf: 'flex-end',
 		width: 50,

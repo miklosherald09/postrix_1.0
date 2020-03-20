@@ -1,3 +1,5 @@
+import { extractSqlData } from '../functions'
+
 export const SET_SEARCH_TEXT = 'SET_SEARCH_TEXT'
 export const ITEM_SEARCH_MODAL_VISIBLE = 'ITEM_SEARCH_MODAL_VISIBLE'
 export const ITEM_SEARCH_MODAL_INVISIBLE = 'ITEM_SEARCH_MODAL_INVISIBLE'
@@ -39,20 +41,14 @@ export function searchItem(){
         `SELECT * FROM items WHERE name LIKE ? ORDER BY name ASC LIMIT 50`,
         ['%'+itemSearch.searchText+'%'],
         function(tx, res){
-          itemsList = []
-          for (i = 0; i < res.rows.length; ++i) {
-            itemsList.push({
-              barcode: res.rows.item(i).barcode,
-              buyPrice: parseInt(res.rows.item(i).buy_price),
-              datetime: res.rows.item(i).datetime,
-              id: res.rows.item(i).id,
-              name: res.rows.item(i).name,
-              sellPrice: parseInt(res.rows.item(i).sell_price)
-            })
-          }
-        
-        dispatch({type: GET_SEARCH_ITEMS_SUCCESS, items: itemsList})
-        console.log('search items successfully fetch...')
+          itemsList = extractSqlData(res)
+          itemsList.forEach((el, i) => {
+            itemsList[i].buyPrice = el.buy_price
+            itemsList[i].sellPrice = el.sell_price
+            itemsList[i].taxType = el.tax_type
+          });
+          dispatch({type: GET_SEARCH_ITEMS_SUCCESS, items: itemsList})
+          console.log('search items successfully fetch...')
       });
     },
     function(err){

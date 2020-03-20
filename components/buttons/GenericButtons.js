@@ -6,7 +6,7 @@ export class CloseButton extends React.Component{
   render(){
     return(
       <TouchableHighlight
-        style={{alignSelf: 'flex-end'}}
+        style={{alignSelf: 'flex-end', backgroundColor: 'white', padding: 12}}
         onPress={this.props.onPress}>
         <Icon
           name="close"

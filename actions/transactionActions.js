@@ -3,6 +3,7 @@ import { printReceipt as printReceiptAction, RECEIPT_MODAL_INVISIBLE, RECEIPT_PU
 import { resetTaxValues } from './taxActions'
 import { resetTagCustomerValues } from './customerActions'
 import { resetChargeDiscountValues } from './discountActions'
+import { extractSqlData, generateTransNo } from '../functions'
 
 export const ADD_TRANSACTION = 'ADD_TRANSACTION'
 export const ADD_TRANSACTION_SUCCESS = 'ADD_TRANSACTION_SUCCESS'
@@ -14,12 +15,17 @@ export const DELETE_TRANSACTION_SUCCESS = 'DELETE_TRANSACTION_SUCCESS'
 export const UPDATE_TRANSACTION_BY_ID = 'UPDATE_STATUS_BY_ID'
 export const REFUND_TRANSACTION_SUCCESS = 'REFUND_TRANSACTION_SUCCESS'
 export const REFUND_PUNCH_SUCCESS = 'REFUND_PUNCH_SUCCESS'
+export const SET_TRANS_SEARCH_TEXT= 'SET_TRANS_SEARCH_TEXT'
+export const GET_SEARCH_TRANS_BEGIN = 'GET_SEARCH_TRANS_BEGIN'
+export const GET_SEARCH_TRANS_SUCCESS = 'GET_SEARCH_TRANS_SUCCESS'
+export const GET_SEARCH_TRANS_ERROR = 'GET_SEARCH_TRANS_ERROR'
 
 
 export const addTransaction = ({payment, total, punched, printReceipt, taxes, discountCharges}) => {
 
   return async (dispatch, getState) => {
 
+    // alert("hist")
     const { database, customer } = getState()
     
     printed = printReceipt?1:0
@@ -27,6 +33,7 @@ export const addTransaction = ({payment, total, punched, printReceipt, taxes, di
     taxes = JSON.stringify(taxes)
     discountCharges = JSON.stringify(discountCharges)
     selectedTagCustomer = JSON.stringify(customer.selectedTagCustomer)
+    receiptNo = generateTransNo()
 
     await new Promise((resolve, reject) => {
       database.db.transaction(function(txn){
@@ -41,6 +48,7 @@ export const addTransaction = ({payment, total, punched, printReceipt, taxes, di
             punched: punched,
             printed: 0,
             taxes: JSON.parse(taxes),
+            receipt_no: receiptNo,
             // discounts: JSON.parse(discountCharges),
             customer: JSON.parse(selectedTagCustomer),
             datetime: Date.now(),
@@ -48,9 +56,8 @@ export const addTransaction = ({payment, total, punched, printReceipt, taxes, di
 
           console.log('Success adding transaction')
           resolve('Success adding transaction!!!')
+          dispatch(updateTransReceiptNo(res.insertId, receiptNo))
           dispatch({type: ADD_TRANSACTION_SUCCESS, transaction: transaction})
-
-          
         })
       },
       function(err){
@@ -69,6 +76,27 @@ export const addTransaction = ({payment, total, punched, printReceipt, taxes, di
           dispatch(resetTagCustomerValues())
         }
     })
+  }
+}
+
+export const updateTransReceiptNo = (transID, receiptNo) => {
+  return (dispatch, getState) => {
+
+    const { database } = getState()
+
+    console.log('transID: '+transID)
+    console.log('generateTransNo: '+ receiptNo)
+
+    database.db.transaction(function(txn) {
+      txn.executeSql("UPDATE transactions SET receipt_no = ? WHERE id = ?",
+        [receiptNo, transID],
+        function(_, res){
+          console.log('shit to')
+        })
+    },
+    function(err){
+      console.log(err);
+    });
   }
 }
 
@@ -98,6 +126,8 @@ export function getTransactions(){
           var temp = []
           for(let i = 0; i < res.rows.length; ++i){
             var item = res.rows.item(i)
+
+            // console.log(item)
             item.punched = JSON.parse(res.rows.item(i).punched)
             item.taxes = JSON.parse(res.rows.item(i).taxes)
             item.discounts = JSON.parse(res.rows.item(i).discounts)
@@ -261,3 +291,50 @@ export function deleteTransaction(pin) {
       dispatch({type: DELETE_RECEIPT_ERROR})
     });
 }}
+
+export const setSearchText = (text) => {
+  return {
+    type: SET_TRANS_SEARCH_TEXT,
+    text: text
+  }
+}
+
+export function searchTransactions(){
+  
+  console.log('fetching search transactions...')
+  
+  return ( dispatch, getState ) => {
+
+    dispatch({type: GET_SEARCH_TRANS_BEGIN})
+    
+    const { database, transactions } = getState()
+   
+    database.db.transaction( function(txn){
+      txn.executeSql(
+        // `SELECT * FROM transactions`,
+        `SELECT * FROM transactions WHERE receipt_no LIKE ? OR punched LIKE ? OR customer LIKE ? ORDER BY datetime ASC LIMIT 50`,
+        ['%'+transactions.searchText+'%', '%'+transactions.searchText+'%', '%'+transactions.searchText+'%'],
+        // [],
+        function(tx, res){
+
+          // console.log(res)
+          data = extractSqlData(res)
+          data.forEach((el, i) => {
+            data[i].punched = JSON.parse(el.punched)
+            data[i].discounts = JSON.parse(el.discounts)
+            data[i].taxes = JSON.parse(el.taxes)
+          })
+
+          console.log(data)
+          dispatch({type: GET_SEARCH_TRANS_SUCCESS, transactions: data})
+          console.log('search transactions successfully fetch...')
+      });
+    },
+    function(err){
+      console.log('sihtfdf33')
+      console.log(err.message);
+      dispatch({type: GET_SEARCH_TRANS_ERROR})
+    });
+  }
+}
+

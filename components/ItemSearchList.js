@@ -56,18 +56,16 @@ const TransactionList = (props) => {
 
   return(
     <View style={styles.wrapper}>
-      <ScrollView contentContainerStyle={{flexWrap: null}}>
-        <FlatList
-          keyExtractor={this.keyExtractor}
-          data={formatData(searchItems, numColumns)}
-          style={styles.container}
-          renderItem={this.renderItem}
-          numColumns={numColumns}
-          onEndReachedThreshold={0.1}
-          // onEndReached={() => props.searchItem()}
-          ListFooterComponent={this.renderFooter}
-        />
-      </ScrollView>
+      <FlatList
+        keyExtractor={this.keyExtractor}
+        data={formatData(searchItems, numColumns)}
+        style={styles.container}
+        renderItem={this.renderItem}
+        numColumns={numColumns}
+        onEndReachedThreshold={0.1}
+        // onEndReached={() => props.searchItem()}
+        ListFooterComponent={this.renderFooter}
+      />
     </View>
   )
 }
@@ -94,6 +92,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(TransactionList);
 
 const styles = StyleSheet.create({
   wrapper: {
+    flex: 1
   },
   container: {
     flex: 1,
@@ -102,8 +101,6 @@ const styles = StyleSheet.create({
   },
   item: {
     backgroundColor: 'white',
-    // alignItems: 'center',
-    // justifyContent: 'center',
     flex: 1,
     margin: 5,
     padding: 10,

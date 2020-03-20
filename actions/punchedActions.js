@@ -1,6 +1,6 @@
 import { computeTaxValues } from './taxActions'
 import { computeDiscount } from './discountActions'
-import { extractSqlData, sleep } from '../functions'
+import { extractSqlData, sleep, computeTax } from '../functions'
 
 export const PUNCHED_ITEM_BEGIN   = 'PUNCHED_ITEM_BEGIN'
 export const PUNCH = 'PUNCH'
@@ -39,7 +39,8 @@ export function punch(item) {
     punched_ = []
     discounts_ = []
     discounts_ = discount.discountCharges.filter((f) => f.selected == true)
-    taxes = JSON.parse(JSON.stringify(tax.taxes)).filter((t) => t.name.toUpperCase() == item.taxType.toUpperCase())
+    if(tax.taxes)
+      taxes = JSON.parse(JSON.stringify(tax.taxes)).filter((t) => t.name.toUpperCase() == item.taxType.toUpperCase())
 
     found = punched.punched.find((v) => v.id == item.id)
     if(found){
@@ -79,23 +80,6 @@ export function punch(item) {
     dispatch(computeDiscount())
     dispatch(computeTotalSales())
   }
-}
-
-function computeTax(taxes, item){
-   // compute item tax
-   taxes_ = []
-   taxes = taxes.forEach((v) => {
-     totalPrice = item.sellPrice * item.count
-     vatAmount = ((totalPrice * (v.percent/100)) / 1.12)
-     v.amount = vatAmount
-     v.net = totalPrice - vatAmount
-
-     console.log(totalPrice + ' : ' + item.sellPrice + ' : ' + item.count)
-
-     taxes_.push(v)
-   })
-
-   return taxes_
 }
 
 export function computeTotalSales(){

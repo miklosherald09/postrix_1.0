@@ -76,7 +76,7 @@ export class ItemSearchButton extends React.Component {
     return(
       <Button
         onPress={this.props.onPress}
-        containerStyle={{height: 60, paddingTop: 5}}
+        containerStyle={{height: 60, paddingTop: 5, width: 300}}
         titleStyle={{color: 'black', fontWeight: 'normal', marginLeft: 10, color: '#666', fontSize: 20}}
         icon={
           <Icon

@@ -307,8 +307,8 @@ export function capitalize(text) {
 
 export function generateTransNo(){
   ourMax = 999999
-  ourMin = ourMin
-  no = Math.floor(Math.random() * (ourMax - ourMin + 1)) + ourMin;
+  ourMin = 2000
+  no = Math.floor(Math.random() * (ourMax - ourMin + 1)) + ourMin
   return String(no % 999999).padStart(6, '0')
 }
 
@@ -346,3 +346,16 @@ export function compareValues(key, order = 'asc') {
   };
 }
 
+export function computeTax(taxes, item){
+  // compute item tax
+  taxes_ = []
+  taxes = taxes.forEach((v) => {
+    totalPrice = item.sellPrice * item.count
+    vatAmount = ((totalPrice * (v.percent/100)) / 1.12)
+    v.amount = vatAmount
+    v.net = totalPrice - vatAmount
+    taxes_.push(v)
+  })
+
+  return taxes_
+}

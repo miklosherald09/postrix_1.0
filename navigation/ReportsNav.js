@@ -25,6 +25,7 @@ const ReportsNav = (props) => {
         {linkPermission('ReportTax', userType)?navLink('ReportTax', 'Taxes'):null}
         {linkPermission('ReportRefund', userType)?navLink('ReportRefund', 'Refunds'):null}
         {linkPermission('ReportDiscount', userType)?navLink('ReportDiscount', 'Discounts'):null}
+        {linkPermission('ReportReceipt', userType)?navLink('ReportReceipt', 'Receipts'):null}
       </View>
     </ScrollView>
   )

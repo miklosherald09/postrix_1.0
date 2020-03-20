@@ -16,6 +16,7 @@ import ReportScreen from '../screens/ReportScreen'
 import ReportRefundScreen from '../screens/ReportRefundScreen'
 import ReportDiscountScreen from '../screens/ReportDiscountScreen'
 import ReportTaxScreen from '../screens/ReportTaxScreen'
+import ReportReceiptScreen from '../screens/ReportReceiptScreen'
 import DebuggerScreen from '../screens/DebuggerScreen'
 import PinScreen from '../components/MenuDrawer'
 import MenuDrawer from '../components/MenuDrawer'
@@ -126,6 +127,12 @@ const ReportsStack = createStackNavigator({
   },
   ReportDiscount: {
     screen: ReportDiscountScreen,
+    navigationOptions: {
+      header: null,
+    }
+  },
+  ReportReceipt: {
+    screen: ReportReceiptScreen,
     navigationOptions: {
       header: null,
     }

@@ -1,23 +1,14 @@
-import React, { useEffect } from 'react'
-import { StyleSheet, Text, View, TouchableOpacity, Modal, Dimensions, Alert } from 'react-native'
+import React from 'react'
+import { StyleSheet, Text, View, TouchableOpacity, Modal, Dimensions } from 'react-native'
 import { connect } from 'react-redux'
-import { Field, reduxForm } from 'redux-form'
 import { ColorPicker } from 'react-native-color-picker'
 import { Button } from 'react-native-elements'
-import Icon from 'react-native-vector-icons/FontAwesome5'
 import { CloseButton, CheckButton } from '../../components/Common'
 import myStyles from '../../constants/styles'
 import { hideItemColorsModal, setItemColor, selectColor } from '../../actions/itemColorsActions'
-import { TouchableHighlight } from 'react-native-gesture-handler';
-// import Slider from '@react-native-community/slider'
 
 const screenWidth = Math.round(Dimensions.get('window').width)
 const screenHeight = Math.round(Dimensions.get('window').height)
-
-const onSubmit = (values, dispatch) => {
-  dispatch(saveItem(values))
-	dispatch(getItems())
-}
 
 const ItemColorsModal = (props) => {
  

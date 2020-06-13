@@ -12,10 +12,9 @@ export const CONNECTION_TYPE_USB = 'CONNECTION_TYPE_USB'
 export const CONNECTION_TYPE_BT = 'CONNECTION_TYPE_BT'
 
 import { BluetoothManager, BluetoothEscposPrinter } from 'react-native-bluetooth-escpos-printer'
-import { USBPrinter, NetPrinter, BLEPrinter } from 'react-native-printer'
+import { USBPrinter } from 'react-native-printer'
 import { ToastAndroid } from 'react-native';
 import { SUPPORTED_PRINTERS } from '../constants/constants'
-import { SETTINGS_PRINTER } from '../actions/settingsActions'
 
 export function initPrinter() {
 

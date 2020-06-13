@@ -1,5 +1,4 @@
 import { GoogleSignin, statusCodes } from '@react-native-community/google-signin'
-// import { firebase } from '@react-native-firebase/auth'
 import { getBackupList } from '../actions/settingsBackupActions'
 
 export const GOOGLE_SIGN_IN_SUCCESS = 'GOOGLE_SIGN_IN_SUCCESS'

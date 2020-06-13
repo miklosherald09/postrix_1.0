@@ -1,6 +1,5 @@
 import { ToastAndroid } from 'react-native'
 import { formatDate, textDelimiter, compareValues } from '../functions'
-import { currency } from '../constants/constants'
 import { BluetoothEscposPrinter } from 'react-native-bluetooth-escpos-printer'
 import { accounting } from '../accounting.min.js'
 import moment from 'moment'

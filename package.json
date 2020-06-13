@@ -17,7 +17,7 @@
     "react": "16.8.6",
     "react-devtools": "^3.6.3",
     "react-form": "^3.5.7",
-    "react-native": "0.61.3",
+    "react-native": "0.62.2",
     "react-native-bluetooth-escpos-printer": "0.0.5",
     "react-native-code-push": "^6.0.0",
     "react-native-color-picker": "^0.4.1",

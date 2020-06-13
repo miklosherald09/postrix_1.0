@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react'
-import { StyleSheet, Text, View, TouchableOpacity, Modal, Dimensions, Alert, TextInput, ToastAndroid } from 'react-native'
+import React from 'react'
+import { StyleSheet, Text, View, TouchableOpacity, Modal, Dimensions, Alert, TextInput } from 'react-native'
 import { connect } from 'react-redux'
 import { Button } from 'react-native-elements'
 import Icon from 'react-native-vector-icons/FontAwesome5'
@@ -13,7 +13,7 @@ const screenHeight = Math.round(Dimensions.get('window').height)
 
 const DiscountModal = (props) => {
 
-  const { discountModalVisible, selectedDiscount, discountCharges } = props.discount
+  const { discountModalVisible, selectedDiscount } = props.discount
   
 	return (
 		<View style={styles.wrapper}>

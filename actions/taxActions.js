@@ -1,6 +1,3 @@
-import { ToastAndroid } from 'react-native'
-// import { firebase } from '@react-native-firebase/auth'
-import { setSelectedItem } from './punchedActions'
 import { extractSqlData } from '../functions'
 
 export const ADD_TAX_PROMPT = 'ADD_TAX_PROMPT'

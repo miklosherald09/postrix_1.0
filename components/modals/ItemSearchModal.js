@@ -1,5 +1,5 @@
 import React from 'react'
-import { Text, StyleSheet, Modal, View, TouchableHighlight } from 'react-native'
+import { StyleSheet, Modal, View } from 'react-native'
 import { connect } from 'react-redux'
 import ItemSearchList from '../ItemSearchList'
 import { modalClose, searchItem, setSearchText } from '../../actions/itemSearchActions'

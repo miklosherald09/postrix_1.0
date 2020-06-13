@@ -1,5 +1,4 @@
 import { ToastAndroid } from 'react-native'
-import { GoogleSignin, statusCodes } from '@react-native-community/google-signin'
 
 export const USER_MODAL_VISIBLE = 'USER_MODAL_VISIBLE'
 export const SELECT_USER = 'SELECT_USER'

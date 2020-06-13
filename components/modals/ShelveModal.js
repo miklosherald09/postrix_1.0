@@ -1,11 +1,10 @@
-import React, { useEffect } from 'react'
-import { StyleSheet, Text, View, TouchableOpacity, Modal, Dimensions, Alert } from 'react-native'
+import React from 'react'
+import { StyleSheet, Text, View, TouchableOpacity, Modal, Dimensions } from 'react-native'
 import { connect } from 'react-redux'
 import { Button, Input } from 'react-native-elements'
-import Icon from 'react-native-vector-icons/FontAwesome5'
 import { CloseButton, CheckButton } from '../../components/Common'
 import myStyles from '../../constants/styles'
-import { hideItemColorsModal, setItemColor, selectColor } from '../../actions/itemColorsActions'
+import { setItemColor, selectColor } from '../../actions/itemColorsActions'
 import { shelveModalInvisible, updateModalShelve, saveShelve, deleteShelve } from '../../actions/shelvesActions'
 
 

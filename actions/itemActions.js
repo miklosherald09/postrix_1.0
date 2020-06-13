@@ -61,7 +61,7 @@ export function syncGoogleSheet() {
         database.db.transaction( function(txn){
           txn.executeSql(
             `SELECT * FROM items WHERE name = ? OR barcode = ? LIMIT 1`,
-            [item.Name, item.Barcode],
+            [item.title, item.id],
             function(tx, res){
              
               exists = res.rows.item(0) ? true:false
@@ -73,7 +73,7 @@ export function syncGoogleSheet() {
                 // INSERT NEW ITEM
                 tx.executeSql(
                   `INSERT INTO items(name, barcode, buy_price, sell_price, tax_type) VALUES(?, ?, ?, ?, ?)`,
-                  [item.Name, item.Barcode, item.BuyPrice, item.SellPrice, item.Tax],
+                  [item.title, item.id, item.buy_price, item.price, item.tax_type],
                   function(_, res){
                     dispatch({type: SYNCED_ITEM, item: item})
                     if(index < items.length - 1){
@@ -94,7 +94,7 @@ export function syncGoogleSheet() {
                 // UPDATE ITEM
                 tx.executeSql(
                   `UPDATE items set name=?, barcode=?, buy_price=? , sell_price=?, tax_type=? WHERE id=?`,
-                  [item.Name, item.Barcode, item.BuyPrice, item.SellPrice, item.Tax, existsItem.id],
+                  [item.title, item.id, item.buy_price, item.price, item.tax_type, existsItem.id],
                   function(_, res){
                     
                     dispatch({type: SYNCED_ITEM, item: item})
@@ -127,6 +127,7 @@ export function syncGoogleSheet() {
       })
     }
 
+    console.log(settings.GOOGLE_SHEET_URL_CSV.value)
     fetch(settings.GOOGLE_SHEET_URL_CSV.value, {
       method: 'GET',
       headers: {
@@ -140,9 +141,9 @@ export function syncGoogleSheet() {
     .then((text) => {
 
       csvArray = csvJSON(text)
-      // items = JSON.parse(csvArray).slice(0, 100)
+      items = JSON.parse(csvArray).slice(0, 100)
       items = JSON.parse(csvArray)
-      // console.log(items)
+      console.log(items)
 
       async function synchronizeItems() {
 
@@ -189,7 +190,7 @@ export function trimItems(items) {
             savedItem = res.rows.item(i)
             exists = false
             items.some(item => {
-              if(savedItem.barcode == item.Barcode){
+              if(savedItem.barcode == item.id){
                 exists = true
               }
             });

@@ -1,6 +1,5 @@
 import React from 'react'
 import { Dimensions, StyleSheet, Text, View, TouchableOpacity, Modal } from 'react-native'
-import { Button } from 'react-native-elements'
 import { connect } from 'react-redux'
 import { reduxForm } from 'redux-form'
 import { payChangeModalInvisible } from '../../actions/payChangeActions'

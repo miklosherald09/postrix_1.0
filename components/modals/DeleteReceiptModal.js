@@ -1,13 +1,11 @@
 import React from 'react'
 import { Dimensions, StyleSheet, Text, TextInput, View, TouchableHighlight, TouchableOpacity, Modal } from 'react-native'
 import { connect } from 'react-redux'
-import { ListItem, Button, Input } from 'react-native-elements'
+import { ListItem } from 'react-native-elements'
 import { CloseButton } from '../../components/Common'
 import myStyles from '../../constants/styles'
 import Icon from 'react-native-vector-icons/FontAwesome5'
-import NumberFormat from 'react-number-format'
-import { currency } from '../../constants/constants'
-import { receiptModalInvisible, printReceipt, deleteReceiptModalVisible, deleteReceipt } from '../../actions/receiptActions'
+import { receiptModalInvisible, printReceipt, deleteReceiptModalVisible } from '../../actions/receiptActions'
 import { deleteTransaction } from '../../actions/transactionActions'
 
 

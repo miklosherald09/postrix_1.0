@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet, Text, View, TouchableOpacity, Modal } from 'react-native'
+import { StyleSheet, Text, View, Modal } from 'react-native'
 import { connect } from 'react-redux'
 
 const PinModal = (props) => {

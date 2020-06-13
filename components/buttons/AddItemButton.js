@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet, TouchableHighlight, View, Text } from 'react-native'
+import { StyleSheet, TouchableHighlight } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome'
 
 export default class AddItemBUtton extends React.Component{

@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet, Text, TextInput, View, TouchableHighlight, Modal } from 'react-native'
+import { StyleSheet, Text, View, TouchableHighlight, Modal } from 'react-native'
 import { Icon, Input } from 'react-native-elements'
 import RemoteSubmitButton from '../remote/RemoteSubmitButton'
 import { connect } from 'react-redux'

@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet, Text, View, TouchableOpacity, Modal, Dimensions, Alert, TextInput, ToastAndroid } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, Modal, Dimensions, TextInput } from 'react-native'
 import { connect } from 'react-redux'
 import { Button } from 'react-native-elements'
 import Icon from 'react-native-vector-icons/FontAwesome5'

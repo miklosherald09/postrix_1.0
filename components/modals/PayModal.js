@@ -8,7 +8,6 @@ import { payChangeModalVisible, computeChange } from '../../actions/payChangeAct
 import { addTransaction } from '../../actions/transactionActions'
 import { togglePrintButton, resetPayment } from '../../actions/payActions'
 import { openCashDrawer } from '../../actions/cashDrawerActions'
-import { resetTaxValues } from '../../actions/taxActions'
 import { CustomKeyboard } from '../../components/natives/CustomKeyboard'
 import { currency } from '../../constants/constants'
 import { CloseButton } from '../../components/Common'

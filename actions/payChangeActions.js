@@ -1,7 +1,6 @@
 export const PAY_CHANGE_MODAL_VISIBLE = 'PAY_CHANGE_MODAL_VISIBLE'
 export const PAY_CHANGE_MODAL_INVISIBLE = 'PAY_CHANGE_MODAL_INVISIBLE'
 export const COMPUTE_CHANGE = 'COMPUTE_CHANGE'
-// import { getAmountDue } from '../reducers/pay'
 
 export function computeChange(values) {
   return {

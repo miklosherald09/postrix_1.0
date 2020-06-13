@@ -1,7 +1,7 @@
 import React from 'react'
 import { Dimensions, StyleSheet, Text, View, TouchableOpacity, Modal, FlatList, Alert } from 'react-native'
 import { connect } from 'react-redux'
-import { ListItem, Button } from 'react-native-elements'
+import { Button } from 'react-native-elements'
 import { CloseButton } from '../../components/Common'
 import myStyles from '../../constants/styles'
 import Icon from 'react-native-vector-icons/FontAwesome5'

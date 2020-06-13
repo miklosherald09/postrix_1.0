@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react'
-import { Dimensions, StyleSheet, Text, View, TouchableOpacity, Modal, FlatList, ScrollView, ActivityIndicator, VirtualizedList } from 'react-native'
+import { Dimensions, StyleSheet, Text, View, TouchableOpacity, Modal, FlatList } from 'react-native'
 import { connect } from 'react-redux'
-import { ListItem, Icon } from 'react-native-elements'
+import { Icon } from 'react-native-elements'
 import { setSelected, addShelveItemsInvisible, selectShelveItem, saveShelveItems, searchOptions, getOptions, refreshOptions, shitOptions } from '../../actions/shelvesActions'
 import { CloseButton, CheckButton } from '../../components/Common'
-import { Input, Button, Avatar } from 'react-native-elements'
+import { Input, Avatar } from 'react-native-elements'
 import myStyles from '../../constants/styles'
 
 const screenWidth = Math.round(Dimensions.get('window').width)

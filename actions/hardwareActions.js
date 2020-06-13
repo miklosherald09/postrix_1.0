@@ -1,5 +1,5 @@
 export const INIT_PRINTER = 'INIT_PRINTER'
-import { BluetoothManager, BluetoothEscposPrinter, BluetoothTscPrinter } from 'react-native-bluetooth-escpos-printer';
+import { BluetoothManager } from 'react-native-bluetooth-escpos-printer';
 
 
 export function initPrinter() {

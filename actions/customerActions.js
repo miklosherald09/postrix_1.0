@@ -1,6 +1,4 @@
 import { ToastAndroid } from 'react-native'
-// import { firebase } from '@react-native-firebase/auth'
-import { setSelectedItem } from './punchedActions'
 import { extractSqlData } from '../functions'
 
 export const ADD_CUSTOMER_PROMPT = 'ADD_CUSTOMER_PROMPT'

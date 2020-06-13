@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { StyleSheet, Text, View, TouchableOpacity, Modal, Dimensions, Alert, TextInput } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, Modal, Dimensions } from 'react-native'
 import { connect } from 'react-redux'
 import { Button } from 'react-native-elements'
 import Icon from 'react-native-vector-icons/FontAwesome5'
@@ -7,7 +7,6 @@ import { CloseButton, CheckButton } from '../../components/Common'
 import myStyles from '../../constants/styles'
 import { punchDiscountVisible, togglePunchDiscount, getPunchDiscounts } from '../../actions/punchedActions'
 import { computeDiscount } from '../../actions/discountActions'
-import { capitalize } from '../../functions'
 import { currency } from '../../constants/constants'
 
 const screenWidth = Math.round(Dimensions.get('window').width)

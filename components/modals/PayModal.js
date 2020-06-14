@@ -14,7 +14,6 @@ import { CloseButton } from '../../components/Common'
 import NumberFormat from 'react-number-format'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import myStyles from '../../constants/styles'
-import Shit 
 
 const screenWidth = Math.round(Dimensions.get('window').width);
 const screenHeight = Math.round(Dimensions.get('window').height);

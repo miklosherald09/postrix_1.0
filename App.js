@@ -55,7 +55,6 @@ class App extends Component{
     return (
       <Provider store={store}>
         <SignInGuard />
-        {/* <HomeScreen></HomeScreen> */}
       </Provider>
     );
   }

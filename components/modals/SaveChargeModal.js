@@ -1,15 +1,12 @@
 import React from 'react'
 import { StyleSheet, Text, View, TouchableOpacity, Modal, Dimensions, TextInput, Alert } from 'react-native'
 import { connect } from 'react-redux'
-import { submit } from 'redux-form'
 import { Input, Button, FormLabel, FormInput, FormValidationMessage } from 'react-native-elements'
-import Icon from 'react-native-vector-icons/FontAwesome5'
 import { CloseButton, CheckButton } from '../../components/Common'
-// import validate from '../../validations'
 import myStyles from '../../constants/styles'
 import { saveChargeModalVisible, saveCharge, deleteCharge } from '../../actions/chargeActions'
 import { Formik, useFormik } from 'formik'
-import * as Yup from 'yup';
+import * as Yup from 'yup'
 
 const screenWidth = Math.round(Dimensions.get('window').width)
 const screenHeight = Math.round(Dimensions.get('window').height)
@@ -25,7 +22,6 @@ const SignupSchema = Yup.object().shape({
     .required('Required')
     .matches(/^\d+(\.\d+)*$/, 'Must be 5 or 9 digits')
 });
-
 
 // Async Validation
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
@@ -71,8 +67,6 @@ const renderInput = ({
   )
 }
 
-
-
 const UpdateItemModal = (props) => {
  
   const { saveChargeModalVisible, selected } = props.charge
@@ -99,57 +93,57 @@ const UpdateItemModal = (props) => {
 				}}>
 				<TouchableOpacity activeOpacity={1} style={styles.touchable} onPress={ () => {props.saveChargeModalVisible(false)}}>
 					<TouchableOpacity activeOpacity={1} style={styles.container} >
-              <Formik
-                initialValues={{ name: selected.name, price: String(selected.price) }}
-                onSubmit={values => props.saveCharge(values)}
-                isValidating={true}
-                validationSchema={SignupSchema}
-                enableReinitialize={true}
-              >
-              {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
-                <View style={styles.wrap} >
-							  <View style={myStyles.headerPan}>
-								<View style={myStyles.headerLeft}>
-									<CloseButton onPress={ () => props.saveChargeModalVisible(false) }/>
-								</View>
-								<View style={myStyles.headerMiddle}>
-									<Text style={myStyles.headerModal}>CHARGE</Text>
-								</View>
-								<View style={myStyles.headerRight}>
-									<CheckButton userType={userType} onPress={handleSubmit} />
-								</View>
-							</View>
-							<View style={styles.content}>
-              
-                <View>
-                  <TextInput
-                    onChangeText={handleChange('name')}
-                    onBlur={handleBlur('name')}
-                    value={values.name}
-                  />
-                  {errors.name && touched.name ? (
-                    <Text>{errors.name}</Text>
-                  ) : null}
-                  <TextInput
-                    onChangeText={handleChange('price')}
-                    onBlur={handleBlur('price')}
-                    value={values.price}
-                    keyboardType="number-pad"
-                  />
-                  {errors.price && touched.price ? (
-                    <Text>{errors.price}</Text>
-                  ) : null}
-                {/* <Button onPress={handleSubmit} title="Submit" /> */}
+            <Formik
+              initialValues={{ name: selected.name, price: String(selected.price) }}
+              onSubmit={values => props.saveCharge(values)}
+              isValidating={true}
+              validationSchema={SignupSchema}
+              enableReinitialize={true}
+            >
+            {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
+            <View style={styles.wrap} >
+              <View style={myStyles.headerPan}>
+                <View style={myStyles.headerLeft}>
+                  <CloseButton onPress={ () => props.saveChargeModalVisible(false) }/>
                 </View>
+                <View style={myStyles.headerMiddle}>
+                  <Text style={myStyles.headerModal}>CHARGE</Text>
                 </View>
-							</View>
-              )}
-              </Formik>
-              <View style={{width: 100}}>
-              {
-                selected.id?
-                <DeleteButton userType={userType} onPress={() => props.deleteCharge()}/>:null
-              }
+                <View style={myStyles.headerRight}>
+                  <CheckButton userType={userType} onPress={handleSubmit} />
+                </View>
+            </View>
+            <View style={styles.content}>
+            
+              <View>
+                <TextInput
+                  onChangeText={handleChange('name')}
+                  onBlur={handleBlur('name')}
+                  value={values.name}
+                />
+                {errors.name && touched.name ? (
+                  <Text>{errors.name}</Text>
+                ) : null}
+                <TextInput
+                  onChangeText={handleChange('price')}
+                  onBlur={handleBlur('price')}
+                  value={values.price}
+                  keyboardType="number-pad"
+                />
+                {errors.price && touched.price ? (
+                  <Text>{errors.price}</Text>
+                ) : null}
+              {/* <Button onPress={handleSubmit} title="Submit" /> */}
+              </View>
+              </View>
+            </View>
+            )}
+            </Formik>
+            <View style={{width: 100}}>
+            {
+              selected.id?
+              <DeleteButton userType={userType} onPress={() => props.deleteCharge()}/>:null
+            }
           </View>
 					</TouchableOpacity>
 				</TouchableOpacity>

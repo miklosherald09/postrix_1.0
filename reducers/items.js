@@ -1,6 +1,7 @@
 import {
   SAVE_ITEM_MODAL_VISIBLE,
   SAVE_ITEM_SUCCESS,
+  UPDATE_ITEM_SUCCESS,
   SAVE_ITEM_ERROR,
   SELECT_ITEM,
   INPUT_NAME_SAVE,
@@ -46,6 +47,7 @@ const initialState = {
   sync_percentage: 0,
   syncedItem: {Name: ''},
   selectedItem: {
+    id: '',
     name: '',
     tax_type: '',
   },
@@ -66,6 +68,23 @@ export default function itemsReducer(state = initialState, action) {
         ...state,
         saveItemMsg: 'item successfully saved',
         items: [action.item, ...state.items]
+      }
+    }
+
+    case UPDATE_ITEM_SUCCESS: {
+
+      state.items.map(item => {
+        if(item.id == state.selectedItem.id){
+          item.name = state.selectedItem.name
+          item.id = state.selectedItem.id
+          item.buyPrice = state.selectedItem.buyPrice
+          item.sellPrice = state.selectedItem.sellPrice
+        }
+      })
+      
+      return {
+        ...state,
+        saveItemModalVisible: false
       }
     }
 
@@ -112,13 +131,13 @@ export default function itemsReducer(state = initialState, action) {
       // remove deleted item
       items = [...state.items]
       items.map((v, i) => {
-        if(state.input.id == v.id)
+        if(state.selectedItem.id == v.id)
           items.splice(i, 1)
       })
 
       return {
         ...state,
-        updateItemModalVisible: false,
+        saveItemModalVisible: false,
         items: items,
         itemsCount: state.itemsCount - 1
       }

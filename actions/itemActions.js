@@ -30,6 +30,7 @@ export const SYNCED_ITEM = 'SYNCED_ITEM'
 export const REMOVING_UNUSED_ITEM = 'REMOVING_UNUSED_ITEM'
 export const SAVE_FIELD = 'SAVE_FIELD'
 export const ADD_ITEM_PROMPT = 'ADD_ITEM_PROMPT'
+export const UPDATE_ITEM_SUCCESS = 'UPDATE_ITEM_SUCCESS'
 
 export function selectItem(item){
   return {
@@ -236,22 +237,24 @@ export function trimItems(items) {
 
 export function deleteItem() {
 
-  console.log('trying delete items..');
+  console.log('trying delete items..')
+
   return (dispatch, getState) => {
    
     const { items, database } = getState()
 
     database.db.transaction(function(txn){
       txn.executeSql(`DELETE FROM items WHERE id = ?`,
-      [items.input.id],
+      [items.selectedItem.id],
       function(tx, _){
-        dispatch({ type: DELETE_ITEM_SUCCESS });
-        console.log('delete item success...')
-      });
+        console.log('delete item xx success...')
+
+        dispatch({ type: DELETE_ITEM_SUCCESS })
+      })
     },
     function(err){
-      console.log('error deleting item:' + err.message);
-    });
+      console.log('error deleting item:' + err.message)
+    })
   }
 }
 
@@ -340,12 +343,12 @@ export function saveItem(){
         function(tx, res){
           dispatch({type: SAVE_ITEM_SUCCESS, item: item})
           dispatch(saveItemModalVisible(false))
-          console.log('item successfully saved');
+          console.log('item successfully saved')
         });
       },
       function(err){
         dispatch({type: SAVE_ITEM_ERROR, msg: err.message})
-        console.log('error saving item:' + err.message);
+        console.log('error saving item:' + err.message)
       });
     }
     else{
@@ -362,15 +365,14 @@ export function saveItem(){
           items.selectedItem.id ], 
         function(tx, res){
           console.log('success updating item')
-          dispatch(refreshItemsList())
-          dispatch(getItems())
-          dispatch(saveItemModalVisible(false))
+          // dispatch(refreshItemsList())
+          // dispatch(getItems())
+          dispatch({type: UPDATE_ITEM_SUCCESS})
         });
       },
       function(err){
-        console.log('error saving item:' + err.message);
-        Alert.alert('error saving item:' + err.message);
-      });
+        console.log('error saving item:' + err.message)
+      })
     }
   }
 }

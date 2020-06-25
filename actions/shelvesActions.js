@@ -480,7 +480,7 @@ export function deleteShelveItemByItemID(itemId){
       txn.executeSql(`DELETE FROM shelve_items WHERE item_id = ?`,
       [itemId],
       function(_, res){
-        console.log('delete si bid done!')
+        console.log('delete shelve item done!')
         dispatch({type: DELETE_SI_BY_ITEMID_SUCCESS, itemId: itemId })
       });
     },

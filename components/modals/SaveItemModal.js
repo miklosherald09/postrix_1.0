@@ -6,9 +6,25 @@ import { CloseButton, CheckButton } from '../../components/Common'
 import myStyles from '../../constants/styles'
 import { saveItem, deleteItem, saveField, saveItemModalVisible } from '../../actions/itemActions'
 import { deleteShelveItemByItemID } from '../../actions/shelvesActions'
+import * as Yup from 'yup'
+import { Formik, useFormik } from 'formik'
+
 
 const screenWidth = Math.round(Dimensions.get('window').width)
 const screenHeight = Math.round(Dimensions.get('window').height)
+
+
+const SignupSchema = Yup.object().shape({
+  name: Yup.string()
+    .min(2, 'Too Short!')
+    .max(50, 'Too Long!')
+    .required('Required'),
+  price: Yup.string()
+    .min(2, 'Too Short')
+    .max(10, 'Too Long')
+    .required('Required')
+    .matches(/^\d+(\.\d+)*$/, 'Must be 5 or 9 digits')
+});  
 
 const SaveItemModal = (props) => {
  
@@ -26,7 +42,16 @@ const SaveItemModal = (props) => {
 				}}>
 				<TouchableOpacity activeOpacity={1} style={styles.touchable} onPress={ () => {props.saveItemModalVisible(false)}}>
 					<TouchableOpacity activeOpacity={1} style={styles.container} >
-						<View style={styles.wrap} >
+            <Formik
+              initialValues={{ name: "xx" }}
+              onSubmit={values => props.saveCharge(values)}
+              isValidating={true}
+              validationSchema={SignupSchema}
+              enableReinitialize={true}
+            >
+            {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
+						  
+              <View style={styles.wrap} >
 							<View style={myStyles.headerPan}>
 								<View style={myStyles.headerLeft}>
 									<CloseButton onPress={ () => props.saveItemModalVisible(false) }/>
@@ -39,6 +64,16 @@ const SaveItemModal = (props) => {
 								</View>
 							</View>
 							<View style={styles.content}>
+              <View>
+                <TextInput
+                  onChangeText={handleChange('name')}
+                  onBlur={handleBlur('name')}
+                  value={values.name}
+                />
+                {errors.name && touched.name ? (
+                  <Text>{errors.name}</Text>
+                ) : null}
+              </View>
                 <View style={{marginBottom: 20}}>
                   <UselessField key='input-name' style={myStyles.input1} label={'NAME'} defaultValue={selectedItem.name} onChange={(e) => props.saveField('name', e.nativeEvent.text)} keyboardType="default"/>
 								</View>
@@ -62,27 +97,15 @@ const SaveItemModal = (props) => {
                     name="none"
                     title={"None"}
                   />
-                  {/* {
-                    taxes.map((tax, i) => {
-                      return (
-                        <TaxButton
-                          onPress={() => props.saveField('tax_type', tax.name)} 
-                          itemTax={selectedItem.tax_type} 
-                          key={i} 
-                          percent={tax.percent} 
-                          name={tax.name} 
-                          title={tax.name+" "+ tax.percent+"%"}
-                        />
-                      )
-                    })
-                  } */}
                 </View>
                 <View style={{width: 100}}>
-									<DeleteButton onPress={() => props.deleteItem(input)}/>
+									<DeleteButton onPress={() => props.deleteItem()}/>
                 </View>
 							</View>
 						</View>
-					</TouchableOpacity>
+            )}
+            </Formik>
+          </TouchableOpacity>
 				</TouchableOpacity>
 			</Modal>
 		</View>
@@ -101,7 +124,7 @@ function mapDispatchToProps(dispatch) {
 		saveItemModalVisible: (visible) => dispatch(saveItemModalVisible(visible)),
     saveField: (field, value) => dispatch(saveField(field, value)),
     saveItem: () => { dispatch(saveItem())  },
-    deleteItem: (item) => {
+    deleteItem: () => {
       Alert.alert(
         'Logout',
         'Are you sure?',
@@ -114,7 +137,7 @@ function mapDispatchToProps(dispatch) {
           },
           {text: 'OK', onPress: () => {
             dispatch(deleteItem()),
-            dispatch(deleteShelveItemByItemID(item.id))
+            dispatch(deleteShelveItemByItemID())
           }},
         ],
         {cancelable: false},

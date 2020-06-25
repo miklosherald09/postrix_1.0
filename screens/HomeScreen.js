@@ -97,7 +97,7 @@ const HomeScreen = props => {
           </View>
           <View style={{flex: 1, flexDirection: 'row', justifyContent: 'flex-end', marginTop: 3}}>
             <DiscountButton onPress={() => props.chargeDiscountModalVisible(true)} />
-            <ChargeButton onPress={() => props.changeActiveContent(CONTENT_CHARGE)} />
+            <ChargeButton onPress={() => props.selectCharge(CONTENT_CHARGE)} />
           </View>
         </View>
         <View style={{flex: 3, padding: 10}}>
@@ -178,7 +178,8 @@ function mapDispatchToProps(dispatch) {
       dispatch(getShelveItems(shelve))
       dispatch(changeActiveContent(CONTENT_SHELVES))
     },
-    changeActiveContent: (val) => {
+    selectCharge: (val) => {
+      dispatch(selectShelve({id: null}))
       dispatch(changeActiveContent(val))
       dispatch(getCharges())
     },

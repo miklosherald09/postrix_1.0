@@ -1,21 +1,45 @@
 import React from 'react'
-import { StyleSheet, Text, View, TouchableOpacity, Modal, Dimensions, Alert } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, Modal, Dimensions, TextInput, Alert } from 'react-native'
 import { connect } from 'react-redux'
-import { Field, reduxForm } from 'redux-form'
 import { submit } from 'redux-form'
-import { Input, Button } from 'react-native-elements'
+import { Input, Button, FormLabel, FormInput, FormValidationMessage } from 'react-native-elements'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import { CloseButton, CheckButton } from '../../components/Common'
-import validate from '../../validations'
+// import validate from '../../validations'
 import myStyles from '../../constants/styles'
 import { saveChargeModalVisible, saveCharge, deleteCharge } from '../../actions/chargeActions'
+import { Formik, useFormik } from 'formik'
+import * as Yup from 'yup';
 
 const screenWidth = Math.round(Dimensions.get('window').width)
 const screenHeight = Math.round(Dimensions.get('window').height)
 
-const onSubmit = (values, dispatch) => {
-  dispatch(saveCharge(values))
-}
+const SignupSchema = Yup.object().shape({
+  name: Yup.string()
+    .min(2, 'Too Short!')
+    .max(50, 'Too Long!')
+    .required('Required'),
+  price: Yup.string()
+    .min(2, 'Too Short')
+    .max(10, 'Too Long')
+    .required('Required')
+    .matches(/^\d+(\.\d+)*$/, 'Must be 5 or 9 digits')
+});
+
+
+// Async Validation
+const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+const validate = (values, props /* only available when using withFormik */) => {
+  return sleep(2000).then(() => {
+    const errors = {};
+    if (['admin', 'null', 'god'].includes(values.username)) {
+      errors.username = 'Nice try';
+    }
+    // ...
+    return errors;
+  });
+};
 
 const renderInput = ({
   label, 
@@ -37,7 +61,7 @@ const renderInput = ({
         labelStyle={labelStyle}
         inputContainerStyle={inputContainerStyle}
         containerStyle={containerStyle}
-        onChangeText={onChange}
+        // onChangeText={onChange}
 				inputStyle={inputStyle}
 				{...restInput}
       />
@@ -47,24 +71,44 @@ const renderInput = ({
   )
 }
 
+
+
 const UpdateItemModal = (props) => {
  
-  const { saveChargeModalVisible } = props.charge
+  const { saveChargeModalVisible, selected } = props.charge
   const { userType } = props.pin
-	
+
+   const formik = useFormik({
+    initialValues: {
+      name: '',
+      email: '',
+    },
+    onSubmit: values => {
+      alert(JSON.stringify(values, null, 2));
+    },
+  });
+
 	return (
 		<View style={styles.wrapper}>
 			<Modal
 				animationType="none"
-				transparent={true}
+        transparent={true}
 				visible={saveChargeModalVisible}
 				onRequestClose={() => {
 					props.saveChargeModalVisible(false)
 				}}>
 				<TouchableOpacity activeOpacity={1} style={styles.touchable} onPress={ () => {props.saveChargeModalVisible(false)}}>
 					<TouchableOpacity activeOpacity={1} style={styles.container} >
-						<View style={styles.wrap} >
-							<View style={myStyles.headerPan}>
+              <Formik
+                initialValues={{ name: selected.name, price: String(selected.price) }}
+                onSubmit={values => props.saveCharge(values)}
+                isValidating={true}
+                validationSchema={SignupSchema}
+                enableReinitialize={true}
+              >
+              {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
+                <View style={styles.wrap} >
+							  <View style={myStyles.headerPan}>
 								<View style={myStyles.headerLeft}>
 									<CloseButton onPress={ () => props.saveChargeModalVisible(false) }/>
 								</View>
@@ -72,23 +116,41 @@ const UpdateItemModal = (props) => {
 									<Text style={myStyles.headerModal}>CHARGE</Text>
 								</View>
 								<View style={myStyles.headerRight}>
-									<CheckButton userType={userType} onPress={() => props.saveCharge()}/>
+									<CheckButton userType={userType} onPress={handleSubmit} />
 								</View>
 							</View>
 							<View style={styles.content}>
-								<View style={{flex: 1, flexDirection: 'row'}}>
-									<View style={{flex: 1}}>
-										<Field component={renderInput} name="name" label="NAME" keyboardType="default" labelStyle={styles.label} containerStyle={{marginTop: 15}} />
-									</View>
-                  <View style={{flex: 1}}>
-										<Field component={renderInput} name="price" label="PRICE" keyboardType="numeric" labelStyle={styles.label} containerStyle={{marginTop: 15}} />
-									</View>
-								</View>
-                <View style={{width: 100}}>
-									<DeleteButton userType={userType} onPress={() => props.deleteCharge()}/>
+              
+                <View>
+                  <TextInput
+                    onChangeText={handleChange('name')}
+                    onBlur={handleBlur('name')}
+                    value={values.name}
+                  />
+                  {errors.name && touched.name ? (
+                    <Text>{errors.name}</Text>
+                  ) : null}
+                  <TextInput
+                    onChangeText={handleChange('price')}
+                    onBlur={handleBlur('price')}
+                    value={values.price}
+                    keyboardType="number-pad"
+                  />
+                  {errors.price && touched.price ? (
+                    <Text>{errors.price}</Text>
+                  ) : null}
+                {/* <Button onPress={handleSubmit} title="Submit" /> */}
+                </View>
                 </View>
 							</View>
-						</View>
+              )}
+              </Formik>
+              <View style={{width: 100}}>
+              {
+                selected.id?
+                <DeleteButton userType={userType} onPress={() => props.deleteCharge()}/>:null
+              }
+          </View>
 					</TouchableOpacity>
 				</TouchableOpacity>
 			</Modal>
@@ -111,7 +173,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
 	return {
 		saveChargeModalVisible: (v) => dispatch(saveChargeModalVisible(v)),
-    saveCharge: () => dispatch(submit('SAVE_CHARGE_FORM')),
+    saveCharge: (v) => dispatch(saveCharge(v)),
     deleteCharge: () => {
       Alert.alert( 'Charge', 'Are you sure?', [{
             text: 'Cancel',
@@ -230,10 +292,5 @@ const styles = StyleSheet.create({
   },
 });
 
-export default (connect(mapStateToProps, mapDispatchToProps)(reduxForm({
-  form: 'SAVE_CHARGE_FORM',
-	onSubmit: onSubmit,
-	validate: validate,
-  enableReinitialize: true
-})(UpdateItemModal)))
+export default connect(mapStateToProps, mapDispatchToProps)(UpdateItemModal)
 

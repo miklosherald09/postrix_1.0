@@ -13,8 +13,6 @@ const ChargeList = (props) => {
   const { charges } = props.charge
   const { userType } = props.pin
 
-  keyExtractor = (trans, index) => index.toString();
-
   renderItem = ({ item, index }) => {
 
     switch(item.type){
@@ -58,17 +56,15 @@ const ChargeList = (props) => {
 
   return(
     <View style={styles.wrapper}>
-      <ScrollView contentContainerStyle={{flexWrap: null}}>
-        <FlatList
-          keyExtractor={this.keyExtractor}
-          data={charges}
-          style={styles.container}
-          renderItem={this.renderItem}
-          numColumns={numColumns}
-          onEndReached={() => props.getCharges()}
-        />
-      </ScrollView>
-    </View>
+      <FlatList
+        keyExtractor={(trans, index) => index.toString()}
+        data={charges}
+        style={{flex: 1, margin: 10}}
+        renderItem={this.renderItem}
+        numColumns={numColumns}
+        onEndReached={() => props.getCharges()}
+      />
+  </View>
   )
 }
 
@@ -109,6 +105,7 @@ function mapDispatchToProps(dispatch) {
 
 const styles = StyleSheet.create({
   wrapper: {
+    flex: 1
   },
   container: {
     flex: 1,

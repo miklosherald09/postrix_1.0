@@ -39,9 +39,12 @@ export function punch(item) {
     punched_ = []
     discounts_ = []
     discounts_ = discount.discountCharges.filter((f) => f.selected == true)
-    if(tax.taxes)
-      taxes = JSON.parse(JSON.stringify(tax.taxes)).filter((t) => t.name.toUpperCase() == item.taxType.toUpperCase())
 
+    if(item.taxType){
+      if(tax.taxes)
+        taxes = JSON.parse(JSON.stringify(tax.taxes)).filter((t) => t.name.toUpperCase() == item.taxType.toUpperCase())
+    }
+    
     found = punched.punched.find((v) => v.id == item.id)
     if(found){
       punched_ = punched.punched.map((v, i) => {

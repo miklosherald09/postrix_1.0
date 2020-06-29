@@ -19,7 +19,7 @@ import {
   GET_OPTIONS_ERROR,
   GET_OPTIONS_REFRESH,
   DELETE_SHELVE_SUCCESS,
-  DELETE_SI_BY_ITEMID_SUCCESS,
+  DELETE_BY_ITEMID_SUCCESS,
   SEARCH_OPTIONS_BEGIN,
   SEARCH_OPTIONS_SUCCESS,
   SEARCH_OPTIONS_END,
@@ -405,7 +405,7 @@ export default function shelvesReducer(state = initialState, action) {
       }
     }
 
-    case DELETE_SI_BY_ITEMID_SUCCESS: {
+    case DELETE_BY_ITEMID_SUCCESS: {
 
       items = state.items.filter((v) => {
         return v.id != action.itemId

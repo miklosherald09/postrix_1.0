@@ -1,6 +1,6 @@
 import { computeTaxValues } from './taxActions'
 import { computeDiscount } from './discountActions'
-import { extractSqlData, sleep, computeTax } from '../functions'
+import { extractSqlData, sleep, computeTax, findWithAttr } from '../functions'
 
 export const PUNCHED_ITEM_BEGIN   = 'PUNCHED_ITEM_BEGIN'
 export const PUNCH = 'PUNCH'
@@ -40,10 +40,10 @@ export function punch(item) {
     discounts_ = []
     discounts_ = discount.discountCharges.filter((f) => f.selected == true)
 
-    if(item.taxType){
-      if(tax.taxes)
-        taxes = JSON.parse(JSON.stringify(tax.taxes)).filter((t) => t.name.toUpperCase() == item.taxType.toUpperCase())
-    }
+    // taxType = findWithAttr(tax.taxes, 'id', item.taxType )
+    console.log(tax.taxes)
+    // console.log(taxType)
+    console.log(item.taxType)
     
     found = punched.punched.find((v) => v.id == item.id)
     if(found){

@@ -31,6 +31,7 @@ export const REMOVING_UNUSED_ITEM = 'REMOVING_UNUSED_ITEM'
 export const SAVE_FIELD = 'SAVE_FIELD'
 export const ADD_ITEM_PROMPT = 'ADD_ITEM_PROMPT'
 export const UPDATE_ITEM_SUCCESS = 'UPDATE_ITEM_SUCCESS'
+export const SAVE_ITEM_TAX = 'SAVE_ITEM_TAX'
 
 export function selectItem(item){
   return {
@@ -324,24 +325,26 @@ export function getItems(){
   }
 }
 
-export function saveItem(){
+export function saveItem(val){
+  console.log(val)
   
   return (dispatch, getState) => {
 
     const { database, items} = getState()
 
-    if(!items.selectedItem.id){
+    if(!val.id){
       //create item 
       database.db.transaction(function(txn){
         console.log('trying save item..')
         txn.executeSql('INSERT INTO items(name, buy_price, sell_price, barcode, tax_type) VALUES(?, ?, ?, ?, ?)',
-        [ items.selectedItem.name, 
-          items.selectedItem.buyPrice, 
-          items.selectedItem.sellPrice, 
-          items.selectedItem.barcode,
+        [ val.name, 
+          val.buyPrice, 
+          val.sellPrice, 
+          val.barcode,
           items.selectedItem.tax_type ],
         function(tx, res){
-          dispatch({type: SAVE_ITEM_SUCCESS, item: item})
+          val.id = res.insertId
+          dispatch({type: SAVE_ITEM_SUCCESS, item: val})
           dispatch(saveItemModalVisible(false))
           console.log('item successfully saved')
         });
@@ -357,12 +360,12 @@ export function saveItem(){
         //update item
         console.log('trying sa update item..');
         txn.executeSql('UPDATE items set name=?, barcode=?, buy_price=? , sell_price=?, tax_type = ? WHERE id=?',
-        [ items.selectedItem.name,
-          items.selectedItem.barcode, 
-          items.selectedItem.buyPrice, 
-          items.selectedItem.sellPrice,
+        [ val.name,
+          val.barcode, 
+          val.buyPrice, 
+          val.sellPrice,
           items.selectedItem.tax_type,
-          items.selectedItem.id ], 
+          val.id ], 
         function(tx, res){
           console.log('success updating item')
           // dispatch(refreshItemsList())
@@ -479,6 +482,13 @@ export function saveField(field, value){
     type: SAVE_FIELD,
     field: field,
     value: value
+  }
+}
+
+export function saveItemTax(tax){
+  return {
+    type: SAVE_ITEM_TAX,
+    tax: tax
   }
 }
 

@@ -114,21 +114,25 @@ const UpdateItemModal = (props) => {
                 </View>
             </View>
             <View style={styles.content}>
-            
               <View>
-                <TextInput
+                <Input
                   onChangeText={handleChange('name')}
                   onBlur={handleBlur('name')}
                   value={values.name}
+                  label="Name"
+                  labelStyle={styles.label}
+                  containerStyle={{marginBottom: 15}}
                 />
                 {errors.name && touched.name ? (
                   <Text>{errors.name}</Text>
                 ) : null}
-                <TextInput
+                <Input
                   onChangeText={handleChange('price')}
                   onBlur={handleBlur('price')}
                   value={values.price}
+                  labelStyle={styles.label}
                   keyboardType="number-pad"
+                  label="Price"
                 />
                 {errors.price && touched.price ? (
                   <Text>{errors.price}</Text>

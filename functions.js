@@ -323,6 +323,14 @@ export function extractSqlData(sqlRes){
   return data 
 }
 
+export function getFirstSqlData(sqlRes){
+  data = extractSqlData(data)
+  if(Array.isArray(data)){
+    return data[0] 
+  }
+  return null
+}
+
 export function compareValues(key, order = 'asc') {
   return function innerSort(a, b) {
     if (!a.hasOwnProperty(key) || !b.hasOwnProperty(key)) {

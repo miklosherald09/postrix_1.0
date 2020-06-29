@@ -26,7 +26,8 @@ import {
   SYNCED_ITEM,
   REMOVING_UNUSED_ITEM,
   SAVE_FIELD,
-  ADD_ITEM_PROMPT
+  ADD_ITEM_PROMPT,
+  SAVE_ITEM_TAX
 } from '../actions/itemActions';
 
 const initialState = {
@@ -74,11 +75,13 @@ export default function itemsReducer(state = initialState, action) {
     case UPDATE_ITEM_SUCCESS: {
 
       state.items.map(item => {
-        if(item.id == state.selectedItem.id){
-          item.name = state.selectedItem.name
+        if(item.id == state.selectedItem.id)
+        {
           item.id = state.selectedItem.id
+          item.name = state.selectedItem.name
           item.buyPrice = state.selectedItem.buyPrice
           item.sellPrice = state.selectedItem.sellPrice
+          item.tax_type = state.selectedItem.tax_type
         }
       })
       
@@ -298,6 +301,15 @@ export default function itemsReducer(state = initialState, action) {
         ...state,
         saveItemModalVisible: true,
         selectedItem: {name: '', barcode: '', sellPrice: '', buyPrice: ''}
+      }
+    }
+
+    case SAVE_ITEM_TAX: {
+
+
+
+      return {
+        ...state,
       }
     }
 

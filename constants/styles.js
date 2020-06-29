@@ -107,6 +107,11 @@ export default StyleSheet.create({
 		},
 	
 		// input styles
+		label: {
+			fontWeight: 'normal', 
+			fontSize: 20, 
+			color: '#999'
+		},
 		label1: {
 			fontWeight: 'normal', 
 			fontSize: 20, 
@@ -120,5 +125,11 @@ export default StyleSheet.create({
 		input2: {
 			fontSize: 20, 
 			color: '#999',
+		},
+		fieldError: {
+			fontSize: 18,
+			margin: 10, 
+			color: '#C62121',
 		}
+
 });

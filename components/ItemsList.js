@@ -22,8 +22,8 @@ const ItemsList = (props) => {
           <NumberFormat
             renderText={value => <Text style={{fontSize: 20, color: '#333'}}>{value}</Text>} 
             fixedDecimalScale={true} 
-            decimalScale={2} 
-            value={item.sellPrice} 
+            decimalScale={2}
+            value={item.sellPrice}
             displayType={'text'} 
             thousandSeparator={true}
             prefix={currency} />}

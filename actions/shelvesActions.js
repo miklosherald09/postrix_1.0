@@ -23,7 +23,7 @@ export const SEARCH_OPTIONS_SUCCESS = 'SEARCH_OPTIONS_SUCCESS'
 export const SEARCH_OPTIONS_BEGIN = 'SEARCH_OPTIONS_BEGIN'
 export const SEARCH_OPTIONS_END = 'SEARCH_OPTIONS_END'
 export const DELETE_SHELVE_SUCCESS = 'DELETE_SHELVE_SUCCESS'
-export const DELETE_SI_BY_ITEMID_SUCCESS = 'DELETE_SI_BY_ITEMID_SUCCESS'
+export const DELETE_BY_ITEMID_SUCCESS = 'DELETE_BY_ITEMID_SUCCESS'
 export const SET_SHELVE_ITEM_COLOR = 'SET_SHELVE_ITEM_COLOR'
 export const SHELVE_MODAL_VISIBLE = 'SHELVE_MODAL_VISIBLE'
 export const SHELVE_MODAL_INVISIBLE = 'SHELVE_MODAL_INVISIBLE'
@@ -212,12 +212,17 @@ export function getShelveItems(){
       params = [limit, offset]
     }
     else{
-      query = `SELECT * 
+      query = `SELECT 
+                  items.id,
+                  items.name,
+                  items.buy_price,
+                  items.sell_price,
+                  items.tax_type
                 FROM shelve_items 
                 LEFT JOIN items 
                 ON items.id = shelve_items.item_id 
                 LEFT JOIN taxes
-                ON upper(items.tax_type) = upper(taxes.name)
+                ON items.tax_type = taxes.id
                 WHERE shelve_items.shelve_id = ? 
                 ORDER BY items.name 
                 ASC 
@@ -232,10 +237,8 @@ export function getShelveItems(){
       function(tx, res){
         itemsList = []
         for (i = 0; i < res.rows.length; ++i) {
-          
 
           item = res.rows.item(i)
-          // console.log(item)
           item.buyPrice = parseInt(res.rows.item(i).buy_price)
           item.sellPrice = parseInt(res.rows.item(i).sell_price)
           item.taxType = res.rows.item(i).tax_type
@@ -249,7 +252,7 @@ export function getShelveItems(){
 
         dispatch({type: GET_SHELVE_ITEMS_SUCCESS, items: itemsList})
         console.log('shelves items successfully fetch...')
-      });
+      })
     },
     function(err){
       console.log(err.message);
@@ -470,18 +473,18 @@ export function setSelected(newSelected){
   }
 }
 
-export function deleteShelveItemByItemID(itemId){
+export function deleteShelveItemByItemID(){
 
   return ( dispatch, getState ) => {
     
-    const { database } = getState()
+    const { database, items } = getState()
 
     database.db.transaction( function(txn){
       txn.executeSql(`DELETE FROM shelve_items WHERE item_id = ?`,
-      [itemId],
+      [items.selectedItem.id],
       function(_, res){
         console.log('delete shelve item done!')
-        dispatch({type: DELETE_SI_BY_ITEMID_SUCCESS, itemId: itemId })
+        dispatch({type: DELETE_BY_ITEMID_SUCCESS, itemId: items.selectedItem.id })
       });
     },
     function(err){

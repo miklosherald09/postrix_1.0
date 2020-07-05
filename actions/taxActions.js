@@ -124,27 +124,44 @@ export function computeTaxValues(){
 
     const { tax, punched } = getState()
     
-    await new Promise((resolve, reject) => {
-      dispatch(resetTaxValues())
-      resolve('done!')
-    })
+    // await new Promise((resolve, reject) => {
+    //   dispatch(resetTaxValues())
+    //   resolve('done!')
+    // })
 
+    taxes = []
+     
     punched.punched.forEach(p => {
-      p.taxes.forEach(t => {
-        tax.taxes.forEach((tx, ix) => {
-          if(t.id == tx.id){
-            tax.taxes[ix].amount = tax.taxes[ix].amount || 0
-            tax.taxes[ix].amount += t.amount
-            tax.taxes[ix].net = tax.taxes[ix].net || 0
-            tax.taxes[ix].net += t.net
-          }
-        })
-      })
+
+      itemTax = tax.taxes.find((t) => t.id == p.taxType)
+
+      if(itemTax){
+      
+        totalPrice = p.sellPrice * p.count
+        vatAmount = ((totalPrice * (itemTax.percent/100)) / 1.12)
+        
+        tobj = {
+          id: p.taxType,
+          net: totalPrice - vatAmount,
+          amount: vatAmount
+        }
+
+        currTax = taxes.find((t) => t.id == tobj.id)
+
+        if(currTax){
+          currTax.net += tobj.net
+          currTax.amount += tobj.amount
+        }
+        else{
+          taxes.push(tobj)
+        }
+      }
+
     })
 
     dispatch({
       type: COMPUTE_TAX_VALUES_SUCCESS, 
-      taxes: tax.taxes,
+      taxes: taxes
     })
   }
 }

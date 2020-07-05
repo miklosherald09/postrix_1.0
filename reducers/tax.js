@@ -86,9 +86,20 @@ export default function usersReducer(state = initialState, action) {
     }
 
     case COMPUTE_TAX_VALUES_SUCCESS: {
+
+      state.taxes.map((t) => {
+        action.taxes.forEach(tx => {
+          if(t.id == tx.id)
+          {
+            t.amount = tx.amount
+            t.net = tx.net
+          }
+        })
+      })
+
       return {
         ...state,
-        taxes: action.taxes,
+        // taxes: action.taxes,
       }
     }
 

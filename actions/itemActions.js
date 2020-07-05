@@ -1,4 +1,4 @@
-import { csvJSON } from '../functions'
+import { csvJSON, findWithAttr } from '../functions'
 import { ToastAndroid } from 'react-native';
 import { SET_SHELVE_ITEMS } from './shelvesActions'
 
@@ -49,12 +49,13 @@ export function saveItemModalVisible(visible){
 
 export function syncGoogleSheet() {
 
+
   return (dispatch, getState) => {
 
     console.log('trying to sync google sheet...')
     dispatch({ type: SYNC_GOOGLE_SHEET_BEGIN })
     
-    const { settings, database } = getState()
+    const { settings, database, tax } = getState()
 
     _syncItem = async (items, item, index) => {
 
@@ -69,13 +70,31 @@ export function syncGoogleSheet() {
               exists = res.rows.item(0) ? true:false
               existsItem = res.rows.item(0)
 
-              // console.log(exists?'true':'false')
+              // console.log(item)
+              // tax_type = findWithAttr(tax.taxes, 'id', item.tax_type)
+              // console.log('getting tax shit')
+              // console.log(tax_type)
+
+              // find tax
+              
+
+              found = tax.taxes.find((t) => {
+                return t.name.toUpperCase() == item.tax_type.toUpperCase()
+              })
+
+              taxTypeId = found?found.id:0  
+
+              console.log(item.title)
+              console.log(taxTypeId)
+              
+              // console.log()
+              // console.log(taxType)
 
               if(!exists){
                 // INSERT NEW ITEM
                 tx.executeSql(
                   `INSERT INTO items(name, barcode, buy_price, sell_price, tax_type) VALUES(?, ?, ?, ?, ?)`,
-                  [item.title, item.id, item.buy_price, item.price, item.tax_type],
+                  [item.title, item.id, item.buy_price, item.price, taxTypeId],
                   function(_, res){
                     dispatch({type: SYNCED_ITEM, item: item})
                     if(index < items.length - 1){
@@ -96,7 +115,7 @@ export function syncGoogleSheet() {
                 // UPDATE ITEM
                 tx.executeSql(
                   `UPDATE items set name=?, barcode=?, buy_price=? , sell_price=?, tax_type=? WHERE id=?`,
-                  [item.title, item.id, item.buy_price, item.price, item.tax_type, existsItem.id],
+                  [item.title, item.id, item.buy_price, item.price, taxTypeId, existsItem.id],
                   function(_, res){
                     
                     dispatch({type: SYNCED_ITEM, item: item})
@@ -145,7 +164,7 @@ export function syncGoogleSheet() {
       csvArray = csvJSON(text)
       items = JSON.parse(csvArray).slice(0, 100)
       items = JSON.parse(csvArray)
-      console.log(items)
+      // console.log(items)
 
       async function synchronizeItems() {
 
@@ -296,6 +315,8 @@ export function getItems(){
     dispatch({type: GET_ITEMS_BEGIN})
 
     const { database, items } = getState()
+
+    // if(items.items.length < 0)
     
     limit = items.limit
     page = items.page
@@ -317,7 +338,7 @@ export function getItems(){
         }
         // console.log(itemsList)
         dispatch({type: GET_ITEMS_SUCCESS, items: itemsList})
-      });
+      })
     },
     function(err){
       dispatch({type: GET_ITEMS_ERROR})

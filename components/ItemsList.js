@@ -1,5 +1,5 @@
-import React from 'react'
-import { StyleSheet, View, FlatList, ActivityIndicator, Text } from 'react-native'
+import React, { useEffect } from 'react'
+import { StyleSheet, View, FlatList, ActivityIndicator, Text, SafeAreaView,TouchableOpacity } from 'react-native'
 import { connect } from 'react-redux'
 import { saveItemModalVisible, setItemInput, selectItem, getItems, refreshItemsList } from '../actions/itemActions'
 import { ListItem } from 'react-native-elements'
@@ -7,6 +7,10 @@ import { currency } from '../constants/constants'
 import NumberFormat from 'react-number-format'
 
 const ItemsList = (props) => {
+
+  useEffect(() => {
+    props.getItems()
+  }, [])
 
   const { items, refreshing, searchText } = props.items
 
@@ -29,8 +33,8 @@ const ItemsList = (props) => {
             prefix={currency} />}
         rightTitleStyle={{fontSize: 20}}
       />
-    );
-  };
+    )
+  }
 
   renderFooter = () => {
     return(
@@ -43,21 +47,20 @@ const ItemsList = (props) => {
 
   return(
     <View style={{flex: 1}}>
-      <FlatList
-        keyExtractor={(x, i) => String(i)}
-        data={items}
-        style={styles.container}
-        renderItem={this.renderItem}
-        numColumns={1}
-        onEndReached={() => searchText == ''?props.getItems():null}
-        onEndReachedThreshold={0.1}
-        // ListFooterComponent={this.renderFooter}
-        onRefresh={() => props.handleRefresh()}
-        refreshing={refreshing}
-      />
-      {/* <View>
-        <Text>refreshing {refreshing?'true':'false'}</Text>
-      </View> */}
+      <SafeAreaView style={{flex: 1, margin: 10}}>
+        <FlatList
+          keyExtractor={(x, i) => "item-list-"+String(i)}
+          data={items}
+          style={{flex: 1}}
+          renderItem={this.renderItem}
+          onEndReached={() => props.getItems()}
+          initialNumToRender={2}
+          onEndReachedThreshold={.05}
+          onRefresh={() => props.handleRefresh()}
+          refreshing={refreshing}
+          onMomentumScrollBegin={() => alert('xx')}
+        />
+      </SafeAreaView>
     </View>
   )
 }
@@ -80,10 +83,11 @@ function mapDispatchToProps(dispatch) {
       dispatch(updateItemModalVisible()) 
     },
     getItems: () => {
-      console.log('getting items from getendreach')
+      alert('onendreach')
       dispatch(getItems())
     },
     handleRefresh: () => {
+      alert('handleRefresh')
       dispatch(refreshItemsList())
       dispatch(getItems())
     }

@@ -130,36 +130,6 @@ export function deleteDiscount(id){
  } 
 }
 
-export function computeTaxValues(){
-  
-  return async (dispatch, getState) => {
-
-    const { tax, punched } = getState()
-    
-    await new Promise((resolve, reject) => {
-      dispatch(resetDiscountValues())
-      resolve('done!')
-    })
-    
-    punched.punched.map((item, i) => {
-      if(item.DiscountType){
-        tax.discounts.map((v, i) => {
-          if(v.name.toUpperCase() == item.discountType.toUpperCase()){
-            itemTotalValue = item.count * item.sellPrice
-            discounts[i].amount = ((itemTotalValue * (v.percent/100)) / 1.12)
-            discounts[i].net = punched.total - discounts[i].amount
-          }
-        })
-      }
-    })
-
-    dispatch({
-      type: COMPUTE_DISCOUNT_VALUES_SUCCESS, 
-      discounts: discounts,
-    })
-  }
-}
-
 export function resetDiscountValues(){
   return (dispatch, getState) => {
 
@@ -275,9 +245,8 @@ export function computeDiscount(){
         })
       }
     })
-
+    
     dispatch({type: COMPUTE_DISCOUNT_SUCCESS, discountCharges: discountCharges})
-
   }
 }
 

@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-community/async-storage'
-import { USER_TYPE_STAFF, USER_TYPE_ADMIN, USER_TYPE_ROOT } from './constants/constants'
+import { USER_TYPE_STAFF } from './constants/constants'
 import Sound from 'react-native-sound'
 
 export function dump(obj) {
@@ -366,4 +366,28 @@ export function computeTax(taxes, item){
   })
 
   return taxes_
+}
+
+export function computeTotal(punched, taxes, discounts){
+  console.log('compute total')
+  console.log(discounts)
+
+  var result = punched.reduce(function(a, b){
+
+    discount = b.discounts.reduce(function(c, d){
+      return c + d.amount
+    }, 0)
+    
+    return {
+      sum: a + (b.sellPrice * b.count),
+      discount: discount
+    }
+  }, 0);
+
+  // var discount = punched.reduce(function(a, b){
+    
+  //   return a + (b.discounts.amount)
+  // }, 0)
+
+  return result.discount
 }

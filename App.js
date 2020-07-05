@@ -5,7 +5,6 @@ import { getTransactions } from './actions/transactionActions'
 import { initPrinter } from './actions/settingsPrinterActions'
 import { initDatabase, insertSettingsPrinter } from './actions/databaseActions'
 import { initSettings } from './actions/settingsActions'
-import { getItems } from './actions/itemActions'
 import SignInGuard from './components/signInGuard'
 import { initShelves } from './actions/shelvesActions'
 import { initReportDate } from './actions/reportsActions'
@@ -38,7 +37,6 @@ class App extends Component{
     store.dispatch(insertSettingsPrinter())
     store.dispatch(initSettings())
     store.dispatch(initPrinter())
-    store.dispatch(getItems())
     store.dispatch(getTransactions())
     store.dispatch(getUsers())
     store.dispatch(initShelves())

@@ -29,11 +29,12 @@ import NumberFormat from 'react-number-format'
 import { barcodeSeachItem } from '../actions/barcodeSearchActions'
 import { getCharges } from '../actions/chargeActions'
 import Icon from 'react-native-vector-icons/FontAwesome5'
+import { computeTotal } from '../functions'
 
 
 const HomeScreen = props => {
 
-  const { total } = props.punched
+  const { total, punched  } = props.punched
   const { shelves, activeShelve } = props.shelves
   const { activeContent, taxDetailsVisible } = props.home
   const { taxes, vatableAmount } = props.tax
@@ -103,16 +104,28 @@ const HomeScreen = props => {
         <View style={{flex: 3, padding: 10}}>
           <PunchedItemList />
         </View>
-        <DiscountList discounts={discountCharges} />
-        { taxDetailsVisible?<TaxList taxes={taxes} vatableAmount={vatableAmount}/>:null }
+        { taxDetailsVisible?
+          <View>
+            <DiscountList discounts={discountCharges} />
+            <TaxList taxes={taxes} vatableAmount={vatableAmount}/>
+          </View>:null }
         <View style={styles.rightBottomBar}>
           <View style={styles.customButtonContainer}>
             <View>
               <TaxInfoButton onPress={() => props.taxDetailsToggle()}/>
             </View>
+            <View>
+            </View>
             <View style={styles.punchedButtonPan}>
               <Text style={styles.total}>
-                <NumberFormat renderText={value => <Text style={{fontSize: 40}}>{value}</Text>} fixedDecimalScale={true} decimalScale={2} value={total} displayType={'text'} thousandSeparator={true} prefix={currency} />
+                <NumberFormat 
+                  renderText={value => <Text style={{fontSize: 40}}>{value}</Text>} 
+                  fixedDecimalScale={true} 
+                  decimalScale={2} 
+                  value={computeTotal(punched, taxes, discountCharges)} 
+                  displayType={'text'} 
+                  thousandSeparator={true} 
+                  prefix={currency} />
               </Text>
             </View>
           </View>

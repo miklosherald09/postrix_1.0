@@ -384,10 +384,6 @@ export function computeTotal(punched, taxes, discounts){
     }
   }, 0);
 
-  // var discount = punched.reduce(function(a, b){
-    
-  //   return a + (b.discounts.amount)
-  // }, 0)
+  return result.sum - result.discount
 
-  return result.discount
 }

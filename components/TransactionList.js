@@ -23,6 +23,7 @@ const TransactionList = (props) => {
         <TouchableOpacity style={{flex: 1, padding: 10}} onPress={() => props.showReceipt(item)}>
           <View style={{flex: 1, flexDirection: 'column'}}>
             <View style={{alignItems: 'center', height: 45}}>
+              {/* <Text>{item.id}</Text> */}
               <Text style={{color: '#666', fontSize: 20, textAlign: 'left'}}>{formatDate(item.datetime)}</Text>
               <Text style={{color: '#333', fontSize: 20}}>Receipt No: {item.receipt_no}</Text>
             </View>

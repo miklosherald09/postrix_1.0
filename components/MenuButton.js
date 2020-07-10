@@ -26,6 +26,7 @@ const styles = StyleSheet.create(
     },
     btnContainer: {
       padding: 12,
+      paddingHorizontal: 15
     },
   }
 );

@@ -1,54 +1,66 @@
-import React from 'react'
-import { StyleSheet, View, TouchableOpacity, Text, TouchableHighlight } from 'react-native'
+import React, { useEffect }  from 'react'
+import { StyleSheet, View, TouchableOpacity, Text, FlatList, SafeAreaView } from 'react-native'
+import { ListItem, Input, Badge } from 'react-native-elements'
+import NumberFormat from 'react-number-format'
 import { MenuButton } from '../components/MenuButton'
-// import AddItemButton from '../components/buttons/AddItemButton'
 import SaveItemModal from '../components/modals/SaveItemModal'
-import ItemsList from '../components/ItemsList'
+// import ItemsList from '../components/ItemsList'
 import { connect } from 'react-redux'
 import Icon from 'react-native-vector-icons/FontAwesome5'
-import { linkPermission } from '../functions'
-import { Input } from 'react-native-elements'
-import { saveItemModalVisible, searchItems, addItemPrompt } from '../actions/itemActions'
+import { currency } from '../constants/constants'
+import { saveItemModalVisible, setItemInput, selectItem, getItems, searchItems, addItemPrompt, refreshItemsList, getItemCount } from '../actions/itemActions'
+
+timer = null
+const onChangeText = (text) => {
+  clearTimeout(timer)
+  console.log('trying to search: '+text)
+  timer = setTimeout(function () {
+    console.log('searching... : ' + text)
+    props.searchItems(text)
+  }, 500)
+}
 
 const ItemsScreen = (props) => {
 
-  const { searchText  } = props.items
+  const { items, refreshing, itemCount } = props.items
   const { userType } = props.pin
 
-	openMenu = () => {
+  const openMenu = () => {
     props.navigation.openDrawer()
   }
-
-  openModal = (item) => {
-    props.setModalVisible();
+  
+  const renderItem = ({ item, index }) => {
+    return (
+      <ListItem
+        onPress={ () => props.selectItem(item) }
+        key={String(item.id)}
+        title={String(item.name)}
+        titleStyle={{ fontSize: 20, color: '#333' }}
+        containerStyle={{padding: 10, marginBottom: 5, borderRadius: 4}}
+        rightTitle={
+          <NumberFormat
+            renderText={value => <Text style={{fontSize: 20, color: '#333'}}>{value}</Text>} 
+            fixedDecimalScale={true} 
+            decimalScale={2}
+            value={item.sellPrice}
+            displayType={'text'} 
+            thousandSeparator={true}
+            prefix={currency} />}
+        rightTitleStyle={{fontSize: 20}}
+      />
+    )
   }
 
-  timer = null
-  onChangeText = (text) => {
-    clearTimeout(timer);
-    console.log('trying to search: '+text)
-		timer = setTimeout(function () {
-      console.log('searching... : '+text)
-			props.searchItems(text)
-		}, 500)
-    
-  }
-
-  keyExtractor = (item, index) => index.toString();
-
-  navLink = (nav, text) => {
-		return(
-			<TouchableOpacity style={{height: 50}} onPress={() => props.navigation.navigate(nav)}>
-				<Text style={styles.link}>{text}</Text>
-			</TouchableOpacity>
-		)
-  }
+  useEffect(() => {
+    props.getItems(),
+    props.getItemCount()
+  }, [])
 
 	return (
 		<View style={styles.wrapper}>
 			<View style={styles.topMenu}>
 				<View style={styles.topMenuLeft}>
-					<MenuButton openMenu={this.openMenu.bind(this)} color="#333333"/>
+					<MenuButton openMenu={openMenu.bind(this)} color="#333333"/>
 				</View>
 				<View style={styles.topMenuRight}>
 					<SearchInput onChangeText={(text) => onChangeText(text)}/>
@@ -57,27 +69,40 @@ const ItemsScreen = (props) => {
 			<View style={styles.wrap}>
         <View style={styles.leftContent}>
           <View style={styles.bottomLinks}>
-            {/* <Button
-              title="xx"
-              onPress={() => props.seeAllItems()}
-            /> */}
-            {navLink('Items', 'Items')}
-            {/* {navLink('ItemsAdvance', linkPermission('ItemsAdvance', userType)?'Google Sheet':'')} */}
+          <ListItem
+            title={"Item Count"}
+            rightAvatar={
+              <Badge 
+                value={itemCount} 
+                status="primary" 
+                textStyle={{fontSize: 18}} 
+                badgeStyle={{paddingVertical: 15, paddingHorizontal: 5}} 
+              />
+            }
+            bottomDivider
+          />
           </View>
         </View>
         <View style={styles.rightContent}>
 					<View style={styles.buttonPan}>
-            
-            {/* <View style={styles.buttonPanLeft}>
-             
-              { SyncItemButton(props) }
-              <Text style={{marginTop: 10, marginLeft: 5}}>{syncingGoogleSheet?'synching...':''}</Text>
-            </View> */}
             <View style={styles.buttonPanRight}>
-              {/* <Text>Items: {itemsCount}</Text> */}
             </View>
           </View>
-          <ItemsList/>
+          <View style={{flex: 1}}>
+            <SafeAreaView style={{flex: 1, margin: 10}}>
+              <FlatList
+                keyExtractor={(x, i) => "item-list-"+String(i)}
+                data={items}
+                style={{flex: 1}}
+                renderItem={renderItem}
+                onEndReached={() => props.getItems()}
+                initialNumToRender={2}
+                onEndReachedThreshold={.05}
+                onRefresh={() => props.handleRefresh()}
+                refreshing={refreshing}
+              />
+            </SafeAreaView>
+          </View>
         </View>
         <AddItemBUtton openModal={() => props.addItemPrompt()} />
       </View>
@@ -101,7 +126,23 @@ function mapDispatchToProps(dispatch) {
     return {
       saveItemModalVisible: (val) => { dispatch(saveItemModalVisible(val)) },
       searchItems: (text) => dispatch(searchItems(text)),
-      addItemPrompt: () => dispatch(addItemPrompt())
+      addItemPrompt: () => dispatch(addItemPrompt()),
+      selectItem: (item) => {
+        dispatch(saveItemModalVisible()),
+        dispatch(selectItem(item))
+      },
+      openModal: (item) => {
+        dispatch(setItemInput(item)),
+        dispatch(updateItemModalVisible()) 
+      },
+      getItems: () => {
+        dispatch(getItems())
+      },
+      handleRefresh: () => {
+        dispatch(refreshItemsList())
+        dispatch(getItems())
+      },
+      getItemCount: () => dispatch(getItemCount())
     }
 }
 

@@ -1,5 +1,5 @@
-import { csvJSON, findWithAttr } from '../functions'
-import { ToastAndroid } from 'react-native';
+import { csvJSON, extractSqlData } from '../functions'
+import { ToastAndroid } from 'react-native'
 import { SET_SHELVE_ITEMS } from './shelvesActions'
 
 export const SAVE_ITEM_SUCCESS = 'SAVE_ITEM_SUCCESS'
@@ -20,6 +20,7 @@ export const SYNC_GOOGLE_SHEET_PERCENTAGE = 'SYNC_GOOGLE_SHEET_PERCENTAGE'
 export const DELETE_ALL_ITEMS_SUCCESS = 'DELETE_ALL_ITEMS_SUCCESS'
 export const GET_ITEMS_SUCCESS = 'GET_ITEMS_SUCCESS'
 export const GET_ITEMS_BEGIN = 'GET_ITEMS_BEGIN'
+export const GET_ITEMS_COUNT_SUCCESS = 'GET_ITEMS_COUNT_SUCCESS'
 export const DELETE_ITEM_SUCCESS = 'DELETE_ITEM_SUCCESS'
 export const REFRESH_ITEM_LIST = 'REFRESH_ITEM_LIST'
 export const SEARCH_ITEM_SUCCESS = 'SEARCH_ITEM_SUCCESS'
@@ -29,9 +30,11 @@ export const GET_ITEMS_ERROR = 'GET_ITEMS_ERROR'
 export const SYNCED_ITEM = 'SYNCED_ITEM'
 export const REMOVING_UNUSED_ITEM = 'REMOVING_UNUSED_ITEM'
 export const SAVE_FIELD = 'SAVE_FIELD'
-export const ADD_ITEM_PROMPT = 'ADD_ITEM_PROMPT'
+export const ADD_ITEM_PROMPT = 'A DD_ITEM_PROMPT'
 export const UPDATE_ITEM_SUCCESS = 'UPDATE_ITEM_SUCCESS'
 export const SAVE_ITEM_TAX = 'SAVE_ITEM_TAX'
+export const CS_ITEM_DUPLICATES_SUCCESS = 'CS_ITEM_DUPLICATES_SUCCESS'
+
 
 export function selectItem(item){
   return {
@@ -49,10 +52,10 @@ export function saveItemModalVisible(visible){
 
 export function syncGoogleSheet() {
 
-
   return (dispatch, getState) => {
 
     console.log('trying to sync google sheet...')
+
     dispatch({ type: SYNC_GOOGLE_SHEET_BEGIN })
     
     const { settings, database, tax } = getState()
@@ -60,6 +63,7 @@ export function syncGoogleSheet() {
     _syncItem = async (items, item, index) => {
 
       return new Promise((resolve, reject) => {
+   
         // CHECK IF ITEM EXISTS
         database.db.transaction( function(txn){
           txn.executeSql(
@@ -70,27 +74,15 @@ export function syncGoogleSheet() {
               exists = res.rows.item(0) ? true:false
               existsItem = res.rows.item(0)
 
-              // console.log(item)
-              // tax_type = findWithAttr(tax.taxes, 'id', item.tax_type)
-              // console.log('getting tax shit')
-              // console.log(tax_type)
-
-              // find tax
-              
-
               found = tax.taxes.find((t) => {
                 return t.name.toUpperCase() == item.tax_type.toUpperCase()
               })
 
-              taxTypeId = found?found.id:0  
-
-              console.log(item.title)
-              console.log(taxTypeId)
+              taxTypeId = found?found.id:0
               
-              // console.log()
-              // console.log(taxType)
-
               if(!exists){
+                console.log("adding "+ item.title)
+
                 // INSERT NEW ITEM
                 tx.executeSql(
                   `INSERT INTO items(name, barcode, buy_price, sell_price, tax_type) VALUES(?, ?, ?, ?, ?)`,
@@ -113,6 +105,8 @@ export function syncGoogleSheet() {
               }
               else{
                 // UPDATE ITEM
+                console.log("updating "+ item.title)
+
                 tx.executeSql(
                   `UPDATE items set name=?, barcode=?, buy_price=? , sell_price=?, tax_type=? WHERE id=?`,
                   [item.title, item.id, item.buy_price, item.price, taxTypeId, existsItem.id],
@@ -141,6 +135,7 @@ export function syncGoogleSheet() {
               if(index == items.length - 1){
                 console.log('REMOVE ITEMS THAT NOT EXISTS IN SYNC ITEMS')
                 dispatch(trimItems(items))
+                dispatch(checkDuplicateIds(items))
               }
             }
           )
@@ -148,7 +143,6 @@ export function syncGoogleSheet() {
       })
     }
 
-    console.log(settings.GOOGLE_SHEET_URL_CSV.value)
     fetch(settings.GOOGLE_SHEET_URL_CSV.value, {
       method: 'GET',
       headers: {
@@ -162,18 +156,12 @@ export function syncGoogleSheet() {
     .then((text) => {
 
       csvArray = csvJSON(text)
-      items = JSON.parse(csvArray).slice(0, 100)
       items = JSON.parse(csvArray)
-      // console.log(items)
 
       async function synchronizeItems() {
 
         let resolvedFinalArray = await Promise.all(items.map(async (item, i) => { // map instead of forEach
-
-          // console.log(item)
-
           const result = await _syncItem(items, item, i)
-
           finalValue = {}
           finalValue.item = result.item;
           return finalValue; // important to return the value
@@ -199,6 +187,7 @@ export function trimItems(items) {
     const { database } = getState()
     
     dispatch({type: REMOVING_UNUSED_ITEM, removing: true})
+
     database.db.transaction( function(txn){
       txn.executeSql(
         `SELECT * FROM items`,
@@ -214,7 +203,7 @@ export function trimItems(items) {
               if(savedItem.barcode == item.id){
                 exists = true
               }
-            });
+            })
 
             if(!exists){
               tx.executeSql(
@@ -224,9 +213,9 @@ export function trimItems(items) {
                   // REMOVE ITEMS THAT NOT EXISTS IN SYNC ITEMS
                   if(i == itemLength - 1){
                     console.log('SYNC_GOOGLE_SHEET_SUCCESS')
-                    dispatch({type: SYNC_GOOGLE_SHEET_SUCCESS})
+                    dispatch({ type: SYNC_GOOGLE_SHEET_SUCCESS})
                     dispatch({ type: SET_SHELVE_ITEMS, items: [] })
-                    dispatch({type: REMOVING_UNUSED_ITEM, removing: false})
+                    dispatch({ type: REMOVING_UNUSED_ITEM, removing: false})
                   }
                   console.log(res)
                 },
@@ -316,8 +305,6 @@ export function getItems(){
 
     const { database, items } = getState()
 
-    // if(items.items.length < 0)
-    
     limit = items.limit
     page = items.page
     offset = (page-1) * limit
@@ -516,5 +503,42 @@ export function saveItemTax(tax){
 export function addItemPrompt(){
   return {
     type: ADD_ITEM_PROMPT
+  }
+}
+
+export function getItemCount(){
+  
+  console.log('trying to fetch items...')
+  
+  return ( dispatch, getState ) => {
+    
+    dispatch({type: GET_ITEMS_BEGIN})
+
+    const { database, items } = getState()
+
+    database.db.transaction( function(txn){
+      txn.executeSql(`SELECT COUNT(*) AS count FROM items`,
+      [],
+      function(tx, res){
+        result = (extractSqlData(res))
+        
+        dispatch({type: GET_ITEMS_COUNT_SUCCESS, itemCount: result[0].count || 0})
+      })
+    },
+    function(err){});
+  }
+}
+
+export function checkDuplicateIds(items){
+
+  return (dispatch) => {
+    console.log('checking duplicates')
+    array = items.map((i) => i.id)
+    seen = array.filter((s => v => s.has(v) || !s.add(v))(new Set))
+
+    dispatch({
+      type: CS_ITEM_DUPLICATES_SUCCESS,
+      duplicates: seen
+    })
   }
 }

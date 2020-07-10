@@ -22,7 +22,7 @@ const PunchItemModal = (props) => {
 	return (
 		<View style={styles.wrapper}>
       <Modal
-        animationType="fade"
+        animationType="none"
         transparent={true}
         visible={punchItemVisible}
 				onRequestClose={() => {

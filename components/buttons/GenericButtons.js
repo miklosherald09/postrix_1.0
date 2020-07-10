@@ -1,11 +1,11 @@
 import React from 'react';
-import { StyleSheet, TouchableHighlight, View } from 'react-native';
+import { StyleSheet, TouchableOpacity } from 'react-native';
 import { Icon } from 'react-native-elements'
 
 export class CloseButton extends React.Component{
   render(){
     return(
-      <TouchableHighlight
+      <TouchableOpacity
         style={{alignSelf: 'flex-end', backgroundColor: 'white', padding: 12}}
         onPress={this.props.onPress}>
         <Icon
@@ -13,7 +13,7 @@ export class CloseButton extends React.Component{
           size={30}
           color={this.props.color}
         />
-      </TouchableHighlight>
+      </TouchableOpacity>
     )
   }
 }

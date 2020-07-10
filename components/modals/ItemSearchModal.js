@@ -35,25 +35,24 @@ const ItemSearchModal = (props) => {
 					<View style={styles.leftTopBar}>
 						<View style={{flexDirection: 'row'}} >
 							<View style={{flex: 2}}>
-							<Input
-								inputStyle={styles.input}
-								inputContainerStyle={{borderBottomColor: 'white'}}
-								placeholder='search'
-								onChangeText={ (text) => onChangeText(text) }
-								keyboardType='default'
-								clearTextOnFocus={true}
-								// focus={itemSearchModalVisible}
-								defaultValue={searchText}
-								leftIcon={
-									<Icon
-										name='search'
-										size={24}
-										color='#CCCCCC'
-									/>
-								}
-								/>
+								<Input
+									inputStyle={styles.input}
+									inputContainerStyle={{borderBottomColor: 'white'}}
+									placeholder='search'
+									onChangeText={ (text) => onChangeText(text) }
+									keyboardType='default'
+									clearTextOnFocus={true}
+									// focus={itemSearchModalVisible}
+									defaultValue={searchText}
+									leftIcon={
+										<Icon
+											name='search'
+											size={24}
+											color='#CCCCCC'
+										/>
+									} />
 							</View>
-							<View style={styles.closeButtonPan}>
+							<View style={{marginTop: 2}}>
 								<CloseButton onPress={ () => props.modalClose() } color="#333"/>
 							</View>
 						</View>

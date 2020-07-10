@@ -368,22 +368,20 @@ export function computeTax(taxes, item){
   return taxes_
 }
 
-export function computeTotal(punched, taxes, discounts){
+export function computeTotal(punched, discountCharges){
+  sum = punched.reduce(function(a, b){
+    return  a + (b.sellPrice * b.count)
+  }, 0)
+
+  console.log(discountCharges)
+
+  discount = discountCharges.reduce(function(a, b){
+    return a + (b.amount || 0)
+  }, 0)
+
   console.log('compute total')
-  console.log(discounts)
+  console.log(sum +  "-" + discount)
 
-  var result = punched.reduce(function(a, b){
-
-    discount = b.discounts.reduce(function(c, d){
-      return c + d.amount
-    }, 0)
-    
-    return {
-      sum: a + (b.sellPrice * b.count),
-      discount: discount
-    }
-  }, 0);
-
-  return result.sum - result.discount
+  return sum - discount
 
 }

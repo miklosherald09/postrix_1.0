@@ -1,6 +1,7 @@
 -----------------------------------------------------------------------------------
 adb shell input keyevent 82
 -----------------------------------------------------------------------------------
+npm install -g appcenter-cli
 appcenter codepush release-react -a miklos09/Postrix -d Production
 -----------------------------------------------------------------------------------
 Alias name: androiddebugkey

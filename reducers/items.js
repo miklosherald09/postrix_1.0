@@ -15,10 +15,12 @@ import {
   SYNC_GOOGLE_SHEET_BEGIN,
   SYNC_GOOGLE_SHEET_SUCCESS,
   SYNC_GOOGLE_SHEET_PERCENTAGE,
+  CS_ITEM_DUPLICATES_SUCCESS,
   DELETE_ALL_ITEMS_SUCCESS,
   GET_ITEMS_SUCCESS,
   GET_ITEMS_BEGIN,
   GET_ITEMS_ERROR,
+  GET_ITEMS_COUNT_SUCCESS,
   SYNC_GOOGLE_SHEET_FAIL,
   REFRESH_ITEM_LIST,
   SEARCH_ITEM_SUCCESS,
@@ -46,12 +48,14 @@ const initialState = {
   refreshing: false,
   searchText: '',
   sync_percentage: 0,
-  syncedItem: {Name: ''},
+  syncedItem: {title: ''},
   selectedItem: {
     id: '',
     name: '',
     tax_type: '',
   },
+  itemCount: 0,
+  syncDuplicateItems: []
 }
 
 export default function itemsReducer(state = initialState, action) {
@@ -225,6 +229,10 @@ export default function itemsReducer(state = initialState, action) {
       return{
         ...state,
         syncingGoogleSheet: false,
+        syncedItem: {
+          ...state.syncedItem,
+          title: ''
+        }
       }
     }
     
@@ -286,6 +294,13 @@ export default function itemsReducer(state = initialState, action) {
       }
     }
 
+    case CS_ITEM_DUPLICATES_SUCCESS: {
+      return {
+        ...state,
+        syncDuplicateItems: action.duplicates
+      }
+    }
+
     case SAVE_FIELD: {
       return {
         ...state,
@@ -305,11 +320,15 @@ export default function itemsReducer(state = initialState, action) {
     }
 
     case SAVE_ITEM_TAX: {
-
-
-
       return {
         ...state,
+      }
+    }
+
+    case GET_ITEMS_COUNT_SUCCESS: {
+      return {
+        ...state,
+        itemCount: action.itemCount
       }
     }
 

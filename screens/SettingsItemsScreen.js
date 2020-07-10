@@ -16,7 +16,7 @@ const SettingsItemsScreen = props => {
 	}
 
   const { GOOGLE_SHEET_URL_CSV } = props.settings
-  const { syncingGoogleSheet, syncedItem, removingUnusedItem } = props.items
+  const { syncingGoogleSheet, syncedItem, removingUnusedItem, syncDuplicateItems } = props.items
 
   return (
     <View style={styles.wrapper}>
@@ -49,9 +49,13 @@ const SettingsItemsScreen = props => {
                     </View>
                   </View>
                   <View>
-                    <Text style={{marginTop: 10, fontSize: 20, marginLeft: 5, color: 'green'}}>{syncingGoogleSheet?'synching...'+syncedItem.title : ''}</Text>
+                    <Text style={{marginTop: 10, fontSize: 20, marginLeft: 5, color: 'green'}}>{syncingGoogleSheet?'synching...'+(syncedItem.title || ''): ''}</Text>
                     <Text style={{marginTop: 10, fontSize: 20, marginLeft: 5, color: 'green'}}>{removingUnusedItem?'removing unused item...': ''}</Text>
                   </View>
+                  {
+                    syncDuplicateItems.length?
+                      <Text style={{fontSize: 20, color: 'red'}}>Duplicate item IDs {syncDuplicateItems.join(', ')}</Text>:null
+                  }
                 </View>
               </View>
               {/* <View style={{backgroundColor: 'white', margin: 10, padding: 10}}>

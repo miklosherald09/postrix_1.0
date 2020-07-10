@@ -104,9 +104,12 @@ const HomeScreen = props => {
         <View style={{flex: 3, padding: 10}}>
           <PunchedItemList />
         </View>
+        <View style={{padding: 10}}>
+          <DiscountList discounts={discountCharges} />
+        </View>
         { taxDetailsVisible?
           <View>
-            <DiscountList discounts={discountCharges} />
+            
             <TaxList taxes={taxes} vatableAmount={vatableAmount}/>
           </View>:null }
         <View style={styles.rightBottomBar}>
@@ -122,7 +125,7 @@ const HomeScreen = props => {
                   renderText={value => <Text style={{fontSize: 40}}>{value}</Text>} 
                   fixedDecimalScale={true} 
                   decimalScale={2} 
-                  value={computeTotal(punched, taxes, discountCharges)} 
+                  value={computeTotal(punched, discountCharges)} 
                   displayType={'text'} 
                   thousandSeparator={true} 
                   prefix={currency} />

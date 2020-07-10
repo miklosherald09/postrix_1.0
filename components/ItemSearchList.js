@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, ScrollView, FlatList, Text, Dimensions, TouchableHighlight, ActivityIndicator } from 'react-native';
+import { StyleSheet, View, FlatList, Text, Dimensions, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { connect } from 'react-redux'
 import { modalClose, searchItem } from '../actions/itemSearchActions'
 import { currency } from '../constants/constants'
@@ -31,7 +31,7 @@ const TransactionList = (props) => {
     }
     return (
       <View style={styles.item} >
-        <TouchableHighlight style={{flex: 1}} onPress={() => props.punch(item)}>
+        <TouchableOpacity style={{flex: 1}} onPress={() => props.punch(item)}>
           <View style={{flex: 1, flexDirection: 'column'}}>
             <View style={{flex: 1, }}>
               <Text style={{fontSize: 20, color: '#333', textAlign: 'center'}}>{item.name}</Text>
@@ -40,7 +40,7 @@ const TransactionList = (props) => {
               <Text style={{fontSize: 20,  color: '#333', textAlign: 'center'}}>{currency+' '+item.sellPrice}</Text>
             </View>
           </View>
-        </TouchableHighlight>
+        </TouchableOpacity>
       </View>
     );
   };

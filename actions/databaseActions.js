@@ -12,10 +12,10 @@ export function initDatabase() {
     console.log('iniitilzing db: '+db)
 
     dispatch({ type: INIT_DATABASE, db: db })
-    dispatch(insertSettingsPrinter())
-    dispatch(addReceiptNoField())
-    dispatch(addItemTaxTypeField())
-    dispatch(taxesTable())
+    // dispatch(insertSettingsPrinter())
+    // dispatch(addReceiptNoField())
+    // dispatch(addItemTaxTypeField())
+    // dispatch(taxesTable())
     // dispatch(insertTaxes())
   }
 }
@@ -37,7 +37,7 @@ export function insertSettingsPrinter(){
             WHERE name = ?);`,
       ['SETTINGS_PRINTER', 'SETTINGS_PRINTER'],
       function(tx, res){
-        console.log(res)
+        // console.log(res)
       });
     },
     function(err){

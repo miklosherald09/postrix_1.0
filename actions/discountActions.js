@@ -1,5 +1,5 @@
 import { extractSqlData } from '../functions'
-import { chargeItemDiscount } from './punchedActions'
+// import { chargeItemDiscount } from './punchedActions' <--- this causes chicken or egg problem
 
 export const ADD_DISCOUNT_PROMPT = 'ADD_DISCOUNT_PROMPT'
 export const SELECT_DISCOUNT = 'SELECT_DISCOUNT'
@@ -169,7 +169,7 @@ export function toggleChargeDiscount(v){
     })
 
     dispatch({ type: TOGGLE_CHARGE_DISCOUNT, discountCharges: discountCharges})
-    dispatch(chargeItemDiscount(v))
+    // dispatch(chargeItemDiscount(v)) <--- this causes chicken or egg problem
     dispatch(computeDiscount())
   }
 }

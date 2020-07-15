@@ -1,5 +1,6 @@
 import { GoogleSignin, statusCodes } from '@react-native-community/google-signin'
 import { getBackupList } from '../actions/settingsBackupActions'
+import auth from '@react-native-firebase/auth'
 
 export const GOOGLE_SIGN_IN_SUCCESS = 'GOOGLE_SIGN_IN_SUCCESS'
 export const BIND_GOOGLE_ACCOUNT = 'BIND_GOOGLE_ACCOUNT'
@@ -12,12 +13,17 @@ export function initGoogleSignIn(){
     try {
 
       (async () => {
+        console.log('initiating google')
         GoogleSignin.configure({
           webClientId: '353265660190-gaaeavueigpmaoavql1ocdq6lrq5hhkt.apps.googleusercontent.com', // client ID of type WEB for your server (needed to verify user ID and offline access)
         });
 
         try{
           const userInfo = await GoogleSignin.signInSilently()
+
+          console.log('silent login google')
+          console.log(userInfo)
+
           if(userInfo){
             dispatch({type: GOOGLE_SIGN_IN_SUCCESS, user: userInfo})
             dispatch(getBackupList())
@@ -52,6 +58,7 @@ export function authGoogleSignIn(){
       try {
         await GoogleSignin.hasPlayServices()
         userInfo = await GoogleSignin.signIn()
+        // alert('shit0')
         // alert(JSON.stringify(userInfo))
         if(userInfo){
           signInFirebase(userInfo).then(result => {
@@ -66,15 +73,19 @@ export function authGoogleSignIn(){
       } catch (error) {
         if (error.code === statusCodes.SIGN_IN_CANCELLED) {
           console.log(error)
+          console.log('shit1')
           // user cancelled the login flow
         } else if (error.code === statusCodes.IN_PROGRESS) {
           console.log(error)
+          console.log('shit2')
           // operation (e.g. sign in) is in progress already
         } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
           console.log(error)
+          console.log('shit3')
           // play services not available or outdated
         } else {
           console.log(error)
+          console.log('shit4')
           // some other error happened
         }
       }
@@ -103,8 +114,9 @@ async function signInFirebase(userInfo){
   
   return new Promise(async (resolve, reject) => {
 
-    credential = firebase.auth.GoogleAuthProvider.credential(userInfo.idToken, userInfo.accessToken)
-    currentUser = await firebase.auth().signInWithCredential(credential)
+    // Sign-in the user with the credential
+    credential = auth.GoogleAuthProvider.credential(userInfo.idToken, userInfo.accessToken)
+    currentUser = await auth().signInWithCredential(credential)
 
     // check if user is status
     firebase.auth().onAuthStateChanged(function(user) {

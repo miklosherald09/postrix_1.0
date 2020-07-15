@@ -35,7 +35,7 @@ public class MainApplication extends Application implements ReactApplication {
       @SuppressWarnings("UnnecessaryLocalVariable")
       List<ReactPackage> packages = new PackageList(this).getPackages();
       // Packages that cannot be autolinked yet can be added manually here, for example:
-      // packages.add(new MyReactNativePackage());
+      // packages.add(new RNGoogleSigninPackage() );
       // packages.add(new CodePush("_S9Tvd7vyW3FbHj-wAx6TkLH831dS_c-5HO3E", MainApplication.this, BuildConfig.DEBUG));
       return packages;
     }

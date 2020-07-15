@@ -35,7 +35,7 @@ const SettingsBackupScreen = props => {
         </View>
         <View style={styles.rightContent}>
           <View style={{flex: 1, backgroundColor: 'white', margin: 15, padding: 15}}>
-            <Text style={{fontSize: 22, marginBottom: 10}}>Bind postrix to Google account</Text>
+            <Text style={{fontSize: 22, marginBottom: 10}}>Sign in your Google account to backup all your records</Text>
             <View style={{flex: 1}}>
               {
                 account.user.email?
@@ -81,7 +81,8 @@ const GoogleBindButton = (props) => {
         color={GoogleSigninButton.Color.Dark}
         fontSize={30}
         onPress={props.onPress}
-        disabled={props.account.user.name?true:false} />
+        // disabled={props.account.user.name?true:false} 
+      />
   )
 }
 

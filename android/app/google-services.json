@@ -15,11 +15,48 @@
       },
       "oauth_client": [
         {
-          "client_id": "353265660190-rh4ifjtdbcumopcvvkapgfmjrlvu0rdu.apps.googleusercontent.com",
+          "client_id": "353265660190-n1hguqj04a0spabrla97sub9chjt9988.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.postrixinc.postrix",
-            "certificate_hash": "7b000a3fb5ba7c6261c323ab5f9996f402323593"
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "353265660190-gaaeavueigpmaoavql1ocdq6lrq5hhkt.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDZ-b5HSB3fFrm9Sx8Efov8QIytfmDY6yQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "353265660190-gaaeavueigpmaoavql1ocdq6lrq5hhkt.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:353265660190:android:a1aabce8f75d877ddd190f",
+        "android_client_info": {
+          "package_name": "com.test3"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "353265660190-mtm4mrh4igsn6jac1d0t6an33hgmim4m.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.test3",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
           }
         },
         {

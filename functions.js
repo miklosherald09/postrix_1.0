@@ -379,8 +379,8 @@ export function computeTotal(punched, discountCharges){
     return a + (b.amount || 0)
   }, 0)
 
-  console.log('compute total')
-  console.log(sum +  "-" + discount)
+  // console.log('compute total')
+  // console.log(sum +  "-" + discount)
 
   return sum - discount
 

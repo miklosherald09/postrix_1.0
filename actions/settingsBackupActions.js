@@ -1,11 +1,11 @@
-// import { firebase } from '@react-native-firebase/auth'
+import storage from '@react-native-firebase/storage'
 import { getTransactions } from './transactionActions'
 import { insertSettingsPrinter } from './databaseActions'
 import { initSettings } from './settingsActions'
 import { initShelves } from './shelvesActions'
 import { getUsers } from './usersActions'
 import { refreshItemsList, getItems } from './itemActions'
-import { getShelveItems, getShelveItemsRefresh } from './shelvesActions'
+import { getShelveItemsRefresh } from './shelvesActions'
 
 
 export const BACKUP_SYSTEM_BEGIN = 'BACKUP_SYSTEM_BEGIN'
@@ -189,7 +189,7 @@ export function systemUpload(){
     
     try{
 
-      firebase.app().storage('gs://postrix-4b28c.appspot.com')
+      // storage('gs://postrix-4b28c.appspot.com')
 
       settingsBackup.backupData.date = Date.now()
 
@@ -197,7 +197,7 @@ export function systemUpload(){
       let fname = users.account.user.email+'/'+dateTime+'.bk'
       let data = JSON.stringify(settingsBackup.backupData)
 
-      let folderRef = firebase.storage().ref(fname)
+      let folderRef = storage().ref(fname)
       
       folderRef.put(new Blob([data], {
         type: 'text/plain'
@@ -217,7 +217,7 @@ export function getBackupList(){
   return (dispatch, getState) => {
 
     const { users } = getState()
-    const refFromGsUrl = firebase.storage().refFromURL('gs://postrix-4b28c.appspot.com/'+users.account.user.email)
+    const refFromGsUrl = storage().refFromURL('gs://postrix-4b28c.appspot.com/'+users.account.user.email)
 
     refFromGsUrl.listAll().then(function(res) {
       res.prefixes.forEach(function(folderRef) {
@@ -535,7 +535,7 @@ function getBackupData(path){
   return new Promise((resolve, reject) => {
     try{
 
-      const refFromGsUrl = firebase.storage().refFromURL('gs://postrix-4b28c.appspot.com/'+path)
+      const refFromGsUrl = storage().refFromURL('gs://postrix-4b28c.appspot.com/'+path)
       
       refFromGsUrl.getDownloadURL().then(url => {
         var xhr = new XMLHttpRequest()

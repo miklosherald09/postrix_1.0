@@ -1,6 +1,8 @@
 import { GoogleSignin, statusCodes } from '@react-native-community/google-signin'
 import { getBackupList } from '../actions/settingsBackupActions'
 import auth from '@react-native-firebase/auth'
+import firestore from '@react-native-firebase/firestore'
+import storage from '@react-native-firebase/storage'
 
 export const GOOGLE_SIGN_IN_SUCCESS = 'GOOGLE_SIGN_IN_SUCCESS'
 export const BIND_GOOGLE_ACCOUNT = 'BIND_GOOGLE_ACCOUNT'
@@ -119,7 +121,7 @@ async function signInFirebase(userInfo){
     currentUser = await auth().signInWithCredential(credential)
 
     // check if user is status
-    firebase.auth().onAuthStateChanged(function(user) {
+    auth().onAuthStateChanged(function(user) {
       if (user) {
         // User is signed in.
         // dispatch(enableFirestoreSync())
@@ -141,7 +143,7 @@ export function signOutFirebase(){
   return () => {
     (async () => {
       try {
-        await firebase.auth().signOut()
+        await auth().signOut()
       }
       catch (e) {
         console.log(e);
@@ -152,7 +154,7 @@ export function signOutFirebase(){
 
 export function enableFirestoreSync(){
   return () => {
-    firebase.firestore().enableNetwork()
+    firestore().enableNetwork()
     .then(function() {
       console.log('firestore sync enable')
     })
@@ -161,7 +163,7 @@ export function enableFirestoreSync(){
 
 export function disableFirestoreSync(){
   return () => {
-    firebase.firestore().disableNetwork()
+    firestore().disableNetwork()
     .then(function() {
       console.log('firestore sync disable')
     })
@@ -170,7 +172,7 @@ export function disableFirestoreSync(){
 
 export function showFSTrans(){
   return () => {
-    firebase.firestore().collection("transactions")
+    firestore().collection("transactions")
     .get()
     .then(function(querySnapshot) {
         querySnapshot.forEach(function(doc) {
@@ -186,7 +188,7 @@ export function showFSTrans(){
 
 export function deleteUsers(){
   return () => {
-    firebase.firestore().collection("transactions")
+    firestore().collection("transactions")
     .doc('Rvf5oR6CHx1pJ8mDKJFP')
     .delete()
     .then(function() {
